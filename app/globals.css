@@ -1,0 +1,70 @@
+@import "tailwindcss";
+
+:root {
+  --background: #fafaf9;
+  --foreground: #1c1917;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.prose p {
+  margin-bottom: 1em;
+  line-height: 1.75;
+  color: #44403c;
+}
+
+.prose h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1c1917;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+.prose h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1c1917;
+  margin-top: 1.25em;
+  margin-bottom: 0.4em;
+}
+
+.prose ul {
+  list-style-type: disc;
+  padding-left: 1.5em;
+  margin-bottom: 1em;
+}
+
+.prose ul li {
+  margin-bottom: 0.3em;
+  color: #44403c;
+}
+
+.prose strong {
+  font-weight: 600;
+  color: #1c1917;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fadeInUp 0.4s ease-out forwards;
+}
