@@ -1,5 +1,19 @@
 -- AfterCare UK — Supabase Schema
 
+-- Saved plans (no auth required — identified by UUID link)
+CREATE TABLE IF NOT EXISTS public.saved_plans (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  email TEXT NOT NULL,
+  intake_data JSONB NOT NULL,
+  task_statuses JSONB NOT NULL DEFAULT '{}',
+  want_reminders BOOLEAN DEFAULT true,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- No RLS on saved_plans — access is controlled by knowing the UUID
+-- The UUID is unguessable (122 bits of entropy)
+
 -- Users table (extends Supabase auth.users)
 CREATE TABLE IF NOT EXISTS public.users (
   id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
