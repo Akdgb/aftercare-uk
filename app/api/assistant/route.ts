@@ -1,10 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
 const SYSTEM_PROMPT = `You are an AfterCare bereavement assistant helping UK families navigate what to do after a loved one has died.
 
 Your role is to:
@@ -31,6 +27,12 @@ Keep responses focused and practical. Use bold for key terms. Use bullet points 
 export async function POST(req: NextRequest) {
   try {
     const { messages } = await req.json();
+
+    if (!process.env.OPENAI_API_KEY) {
+      return NextResponse.json({ error: "AI service unavailable" }, { status: 500 });
+    }
+
+    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
