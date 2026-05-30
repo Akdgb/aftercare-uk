@@ -6,7 +6,7 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 
 const nav = [
-  { href: "/plan", label: "My Plan" },
+  { href: "/dashboard", label: "My Dashboard" },
   { href: "/resources", label: "Local Resources" },
   { href: "/guidance", label: "Guidance" },
   { href: "/financial-support", label: "Financial Support" },
