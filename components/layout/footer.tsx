@@ -44,9 +44,9 @@ export function Footer() {
             <ul className="space-y-2.5">
               {[
                 { href: "/guidance/registering-a-death", label: "Registering a Death" },
-                { href: "/guidance/funeral-costs", label: "Funeral Costs" },
-                { href: "/guidance/probate", label: "Probate Explained" },
-                { href: "/guidance/financial-support", label: "Support Payments" },
+                { href: "/guidance/funeral-costs-explained", label: "Funeral Costs" },
+                { href: "/guidance/probate-explained", label: "Probate Explained" },
+                { href: "/guidance/funeral-support-payments", label: "Support Payments" },
                 { href: "/assistant", label: "AI Assistant" },
               ].map((item) => (
                 <li key={item.href}>
@@ -64,11 +64,9 @@ export function Footer() {
             &copy; {new Date().getFullYear()} AfterCare UK. All rights reserved.
           </p>
           <div className="flex gap-6">
-            {["Privacy Policy", "Terms of Use", "Accessibility"].map((item) => (
-              <Link key={item} href="#" className="text-xs text-stone-500 hover:text-stone-300 transition-colors">
-                {item}
-              </Link>
-            ))}
+            <Link href="/privacy" className="text-xs text-stone-500 hover:text-stone-300 transition-colors">Privacy Policy</Link>
+            <Link href="/privacy#terms" className="text-xs text-stone-500 hover:text-stone-300 transition-colors">Terms of Use</Link>
+            <Link href="/privacy#accessibility" className="text-xs text-stone-500 hover:text-stone-300 transition-colors">Accessibility</Link>
           </div>
         </div>
       </div>

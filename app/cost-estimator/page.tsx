@@ -19,48 +19,53 @@ interface Costs {
   misc: [number, number];
 }
 
+// Figures based on SunLife Cost of Dying Report 2025 + funeral industry data, uplifted for 2026
 const FUNERAL_DIRECTOR_BASE: Record<FuneralType, [number, number]> = {
-  burial: [1800, 3200],
-  cremation: [1500, 2800],
-  "direct-cremation": [700, 1600],
+  burial: [2000, 3800],       // National avg professional fee ~£2,900 (2025)
+  cremation: [1700, 3200],    // National avg professional fee ~£2,400 (2025)
+  "direct-cremation": [795, 1895], // Range of major UK providers (Pure Cremation, Dignity, Co-op)
 };
 
 const VENUE_FEE: Record<FuneralType, [number, number]> = {
-  burial: [600, 2500],
-  cremation: [450, 1100],
+  burial: [800, 3500],        // Cemetery fees vary widely; London ~£2,000–£6,000
+  cremation: [500, 1200],     // Cremation fee avg £875 (2025); ranges by council
   "direct-cremation": [0, 0],
 };
 
 const COFFIN_COSTS: Record<CoffinType, [number, number]> = {
-  simple: [200, 600],
-  standard: [600, 1400],
-  premium: [1400, 3500],
-  eco: [350, 900],
+  simple: [250, 700],
+  standard: [700, 1600],
+  premium: [1600, 4500],
+  eco: [400, 1100],           // Wicker, bamboo, or biodegradable
 };
 
 const SERVICE_MULTIPLIER: Record<ServiceSize, number> = {
   small: 1,
-  medium: 1.2,
-  large: 1.45,
+  medium: 1.22,
+  large: 1.5,
 };
 
 const FLOWERS: Record<ServiceSize, [number, number]> = {
-  small: [0, 150],
-  medium: [150, 450],
-  large: [450, 900],
+  small: [0, 180],
+  medium: [180, 550],
+  large: [550, 1200],
 };
 
 const VEHICLES: Record<ServiceSize, [number, number]> = {
-  small: [0, 300],
-  medium: [300, 600],
-  large: [600, 1400],
+  small: [0, 350],
+  medium: [350, 750],
+  large: [750, 1800],
 };
 
 const CATERING: Record<ServiceSize, [number, number]> = {
-  small: [0, 200],
-  medium: [200, 700],
-  large: [700, 2000],
+  small: [0, 300],
+  medium: [250, 900],
+  large: [900, 2500],
 };
+
+// Death certificates: £12.50 each (April 2024 increase). Typical families need 5–10 copies.
+// Probate fee: £300 (2024 rate)
+// Doctors' cremation fee: being phased out — included in overall cremation fee since 2024
 
 function add(a: [number, number], b: [number, number]): [number, number] {
   return [a[0] + b[0], a[1] + b[1]];
@@ -117,7 +122,7 @@ export default function CostEstimatorPage() {
       flowers: includeFlowers ? FLOWERS[serviceSize] : [0, 0],
       vehicles: includeVehicles ? VEHICLES[serviceSize] : [0, 0],
       catering: includeCatering ? CATERING[serviceSize] : [0, 0],
-      death_certs: [55, 110],
+      death_certs: [63, 125],  // £12.50 each × 5–10 copies (April 2024 rate)
       misc: [100, 300],
     };
   }, [funeralType, serviceSize, coffinType, includeFlowers, includeVehicles, includeCatering]);
@@ -317,7 +322,7 @@ export default function CostEstimatorPage() {
               <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex gap-2">
                 <Info className="h-4 w-4 text-amber-600 flex-shrink-0 mt-0.5" />
                 <p className="text-xs text-amber-700">
-                  These are estimates only. Actual costs vary by region and provider. Always request a written itemised quote.
+                  Figures based on SunLife Cost of Dying Report 2025 &amp; funeral industry data, updated for 2026. London and South East costs are typically 20–30% higher. Always request a written itemised quote — funeral directors are legally required to provide one.
                 </p>
               </div>
             </div>

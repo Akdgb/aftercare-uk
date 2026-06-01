@@ -376,7 +376,7 @@ export default function IntakePage() {
                     label: "They lived in supported accommodation",
                     desc: "Care home, sheltered housing, etc.",
                   },
-                  { value: "unsure", label: "I&apos;m not sure", desc: "We&apos;ll include general guidance" },
+                  { value: "unsure", label: "I'm not sure", desc: "We'll include general guidance" },
                 ] as { value: HousingType; label: string; desc: string }[]).map((opt) => (
                   <button
                     key={opt.value}
@@ -456,10 +456,21 @@ export default function IntakePage() {
                   </div>
                 </div>
 
-                <div className="bg-slate-50 border border-slate-200 rounded-xl p-4">
+                <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-3">
                   <p className="text-xs text-slate-600 leading-relaxed">
                     <strong className="font-semibold">You&apos;re almost done.</strong> We&apos;ll save your plan automatically and email you a private link so you can return to it at any time.
                   </p>
+                  <div className="border-t border-slate-200 pt-3">
+                    <p className="text-xs text-slate-500 leading-relaxed">
+                      By creating your plan you agree to AfterCare storing your information to generate and maintain your bereavement plan.
+                      We will not sell your data or share it with third parties for marketing.
+                      You can request deletion at any time.{" "}
+                      <a href="/privacy" target="_blank" className="text-slate-700 underline font-medium">
+                        Read our Privacy Policy
+                      </a>
+                      .
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
