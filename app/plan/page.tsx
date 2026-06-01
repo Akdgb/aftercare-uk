@@ -198,18 +198,26 @@ export default function PlanPage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Save prompt — shown until saved */}
+        {/* Fallback save prompt — only shown if auto-save failed (no Supabase configured) */}
         {!planSaved && (
           <div className="mb-6">
-            <SavePrompt
-              intakeData={intakeData as unknown as Record<string, unknown>}
-              taskStatuses={Object.fromEntries(tasks.map((t) => [t.id, t.status]))}
-              urgentRemaining={tasks.filter((t) => t.priority === "urgent" && t.status !== "completed").length}
-              onSaved={(planId) => {
-                setPlanSaved(true);
-                router.replace(`/plan/${planId}`);
-              }}
-            />
+            <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center gap-3">
+              <div className="flex-1">
+                <p className="text-sm font-semibold text-amber-800">Your plan is not yet saved to the cloud</p>
+                <p className="text-xs text-amber-700 mt-0.5">
+                  It is saved in this browser only. To access it from any device, set up Supabase in your environment variables.
+                </p>
+              </div>
+              <SavePrompt
+                intakeData={intakeData as unknown as Record<string, unknown>}
+                taskStatuses={Object.fromEntries(tasks.map((t) => [t.id, t.status]))}
+                urgentRemaining={tasks.filter((t) => t.priority === "urgent" && t.status !== "completed").length}
+                onSaved={(planId) => {
+                  setPlanSaved(true);
+                  router.replace(`/plan/${planId}`);
+                }}
+              />
+            </div>
           </div>
         )}
 

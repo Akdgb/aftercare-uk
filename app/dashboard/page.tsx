@@ -97,7 +97,7 @@ export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState<"overview" | "notifications" | "documents" | "guidance">("overview");
   const [readIds, setReadIds] = useState<Set<string>>(new Set());
 
-  // On mount, check localStorage for a previously looked-up email
+  // On mount — auto-load if we already know the email (set by intake wizard)
   useEffect(() => {
     const saved = localStorage.getItem("aftercare_dashboard_email");
     if (saved) {
@@ -105,6 +105,7 @@ export default function DashboardPage() {
       setInputEmail(saved);
       loadPlans(saved);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const loadPlans = async (emailToLoad: string) => {
@@ -178,7 +179,8 @@ export default function DashboardPage() {
           </div>
           <h2 className="text-xl font-semibold text-slate-800 mb-2">Enter your email to continue</h2>
           <p className="text-slate-500 text-sm mb-8">
-            We&apos;ll find any plans you&apos;ve saved and show your progress. No password needed.
+            If you completed the intake form on this device, your dashboard loads automatically next time.
+            Enter the email you used to find your saved plans.
           </p>
 
           <div className="space-y-3">

@@ -61,6 +61,7 @@ export default function IntakePage() {
   const [step, setStep] = useState(1);
   const [data, setData] = useState<IntakeFormData>(initialData);
   const [errors, setErrors] = useState<Partial<Record<keyof IntakeFormData, string>>>({});
+  const [submitting, setSubmitting] = useState(false);
 
   const update = <K extends keyof IntakeFormData>(key: K, value: IntakeFormData[K]) => {
     setData((prev) => ({ ...prev, [key]: value }));
@@ -90,10 +91,42 @@ export default function IntakePage() {
     else handleSubmit();
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    setSubmitting(true);
+
+    // Always save to localStorage as fallback
     if (typeof window !== "undefined") {
       localStorage.setItem("aftercare_intake", JSON.stringify(data));
+      // Store email so dashboard can find plans
+      localStorage.setItem("aftercare_dashboard_email", data.email.toLowerCase().trim());
     }
+
+    // Try to save to cloud and get a permanent plan ID
+    try {
+      const res = await fetch("/api/save-plan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: data.email.trim(),
+          intakeData: data,
+          taskStatuses: {},
+        }),
+      });
+
+      if (res.ok) {
+        const { planId } = await res.json();
+        // Save plan ID locally so dashboard can reference it without email lookup
+        const existing = JSON.parse(localStorage.getItem("aftercare_plan_ids") || "[]");
+        localStorage.setItem("aftercare_plan_ids", JSON.stringify([planId, ...existing]));
+        router.push(`/plan/${planId}`);
+        return;
+      }
+    } catch {
+      // Supabase not configured yet — fall through to localStorage plan
+    }
+
+    // Fallback: localStorage-only plan
+    setSubmitting(false);
     router.push("/plan");
   };
 
@@ -425,7 +458,7 @@ export default function IntakePage() {
 
                 <div className="bg-slate-50 border border-slate-200 rounded-xl p-4">
                   <p className="text-xs text-slate-600 leading-relaxed">
-                    <strong className="font-semibold">You&apos;re almost done.</strong> Once you submit, we will generate your personalised bereavement plan. You can update any answers later.
+                    <strong className="font-semibold">You&apos;re almost done.</strong> We&apos;ll save your plan automatically and email you a private link so you can return to it at any time.
                   </p>
                 </div>
               </div>
@@ -442,10 +475,10 @@ export default function IntakePage() {
               <ArrowLeft className="h-4 w-4" />
               Back
             </Button>
-            <Button onClick={handleNext}>
-              {step === TOTAL_STEPS ? "Create My Plan" : "Continue"}
-              {step < TOTAL_STEPS && <ArrowRight className="h-4 w-4" />}
-              {step === TOTAL_STEPS && <Check className="h-4 w-4" />}
+            <Button onClick={handleNext} loading={submitting} disabled={submitting}>
+              {submitting ? "Saving your plan..." : step === TOTAL_STEPS ? "Create My Plan" : "Continue"}
+              {!submitting && step < TOTAL_STEPS && <ArrowRight className="h-4 w-4" />}
+              {!submitting && step === TOTAL_STEPS && <Check className="h-4 w-4" />}
             </Button>
           </div>
         </div>
