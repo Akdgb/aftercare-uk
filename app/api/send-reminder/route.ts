@@ -38,9 +38,12 @@ export async function POST(req: NextRequest) {
     const resend = new Resend(process.env.RESEND_API_KEY);
     const { subject, html } = reminderEmail(deceasedName, planUrl, urgentPending, daysSince);
 
+    const toEmail = (plan.intake_data as unknown as { email?: string })?.email;
+    if (!toEmail) return NextResponse.json({ error: "No email on plan" }, { status: 400 });
+
     await resend.emails.send({
       from: "AfterCare <no-reply@aftercare-uk.co.uk>",
-      to: plan.email,
+      to: toEmail,
       subject,
       html,
     });

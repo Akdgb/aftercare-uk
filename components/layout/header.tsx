@@ -3,6 +3,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Heart, Menu, X } from "lucide-react";
 import { useState } from "react";
+import { SignInButton, SignUpButton, UserButton, useAuth } from "@clerk/nextjs";
 import { cn } from "@/lib/utils";
 
 const nav = [
@@ -16,12 +17,13 @@ const nav = [
 export function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const { isSignedIn } = useAuth();
 
   return (
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-stone-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <Link href="/" className="flex items-center gap-2.5 group">
+          <Link href="/" className="flex items-center gap-2.5">
             <div className="w-8 h-8 bg-slate-700 rounded-lg flex items-center justify-center">
               <Heart className="h-4 w-4 text-white" strokeWidth={1.5} />
             </div>
@@ -46,12 +48,29 @@ export function Header() {
           </nav>
 
           <div className="hidden md:flex items-center gap-3">
-            <Link
-              href="/intake"
-              className="bg-slate-700 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-slate-800 transition-colors"
-            >
-              Start Your Plan
-            </Link>
+            {isSignedIn ? (
+              <UserButton
+                                appearance={{
+                  elements: {
+                    avatarBox: "w-8 h-8",
+                  },
+                }}
+              />
+            ) : (
+              <>
+                <SignInButton mode="modal">
+                  <button className="text-slate-600 text-sm font-medium px-3 py-2 rounded-lg hover:bg-stone-100 transition-colors">
+                    Sign in
+                  </button>
+                </SignInButton>
+                <Link
+                  href="/intake"
+                  className="bg-slate-700 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-slate-800 transition-colors"
+                >
+                  Start Your Plan
+                </Link>
+              </>
+            )}
           </div>
 
           <button
@@ -80,13 +99,24 @@ export function Header() {
               {item.label}
             </Link>
           ))}
-          <Link
-            href="/intake"
-            onClick={() => setOpen(false)}
-            className="block mt-2 bg-slate-700 text-white text-sm font-medium px-4 py-2.5 rounded-lg text-center"
-          >
-            Start Your Plan
-          </Link>
+          <div className="pt-2 border-t border-stone-100 flex items-center gap-3">
+            {isSignedIn ? (
+              <UserButton />
+            ) : (
+              <>
+                <SignInButton mode="modal">
+                  <button className="text-sm text-slate-600 font-medium">Sign in</button>
+                </SignInButton>
+                <Link
+                  href="/intake"
+                  onClick={() => setOpen(false)}
+                  className="flex-1 bg-slate-700 text-white text-sm font-medium px-4 py-2.5 rounded-lg text-center"
+                >
+                  Start Your Plan
+                </Link>
+              </>
+            )}
+          </div>
         </div>
       )}
     </header>

@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@clerk/nextjs";
 import { ArrowLeft, ArrowRight, Check, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -58,6 +59,7 @@ function OptionCard({
 
 export default function IntakePage() {
   const router = useRouter();
+  const { isSignedIn } = useAuth();
   const [step, setStep] = useState(1);
   const [data, setData] = useState<IntakeFormData>(initialData);
   const [errors, setErrors] = useState<Partial<Record<keyof IntakeFormData, string>>>({});
@@ -94,40 +96,30 @@ export default function IntakePage() {
   const handleSubmit = async () => {
     setSubmitting(true);
 
-    // Always save to localStorage as fallback
-    if (typeof window !== "undefined") {
-      localStorage.setItem("aftercare_intake", JSON.stringify(data));
-      // Store email so dashboard can find plans
-      localStorage.setItem("aftercare_dashboard_email", data.email.toLowerCase().trim());
+    // Always persist to localStorage — used after sign-in to auto-save
+    localStorage.setItem("aftercare_intake", JSON.stringify(data));
+
+    if (isSignedIn) {
+      // User already signed in — save immediately and go to dashboard
+      try {
+        const res = await fetch("/api/save-plan", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ intakeData: data, taskStatuses: {} }),
+        });
+        if (res.ok) {
+          const { planId } = await res.json();
+          router.push(`/plan/${planId}`);
+          return;
+        }
+      } catch {}
+      // DB not set up yet — go to local plan
+      setSubmitting(false);
+      router.push("/plan");
+    } else {
+      // Not signed in — send to sign-up; dashboard will auto-save on return
+      router.push("/sign-up?redirect_url=/dashboard");
     }
-
-    // Try to save to cloud and get a permanent plan ID
-    try {
-      const res = await fetch("/api/save-plan", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: data.email.trim(),
-          intakeData: data,
-          taskStatuses: {},
-        }),
-      });
-
-      if (res.ok) {
-        const { planId } = await res.json();
-        // Save plan ID locally so dashboard can reference it without email lookup
-        const existing = JSON.parse(localStorage.getItem("aftercare_plan_ids") || "[]");
-        localStorage.setItem("aftercare_plan_ids", JSON.stringify([planId, ...existing]));
-        router.push(`/plan/${planId}`);
-        return;
-      }
-    } catch {
-      // Supabase not configured yet — fall through to localStorage plan
-    }
-
-    // Fallback: localStorage-only plan
-    setSubmitting(false);
-    router.push("/plan");
   };
 
   const progress = (step / TOTAL_STEPS) * 100;
@@ -278,7 +270,7 @@ export default function IntakePage() {
                   onChange={(e) => update("email", e.target.value)}
                   error={errors.email}
                   placeholder="you@example.com"
-                  hint="We'll send your plan here"
+                  hint="Used for your account and optional email updates"
                 />
                 <Input
                   label="Phone number (optional)"
