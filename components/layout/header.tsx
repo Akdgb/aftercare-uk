@@ -1,9 +1,8 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Heart, Menu, X } from "lucide-react";
-import { useState } from "react";
-import { SignInButton, SignUpButton, UserButton, useAuth } from "@clerk/nextjs";
+import { Heart, LogIn, Menu, X } from "lucide-react";
+import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 
 const nav = [
@@ -17,7 +16,21 @@ const nav = [
 export function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  const { isSignedIn } = useAuth();
+  const [email, setEmail] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Check if signed in by hitting a lightweight endpoint
+    fetch("/api/auth/me")
+      .then((r) => r.ok ? r.json() : null)
+      .then((d) => d?.email ? setEmail(d.email) : null)
+      .catch(() => null);
+  }, [pathname]);
+
+  const signOut = async () => {
+    await fetch("/api/auth/signout", { method: "POST" });
+    setEmail(null);
+    window.location.href = "/";
+  };
 
   return (
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-stone-200">
@@ -48,21 +61,25 @@ export function Header() {
           </nav>
 
           <div className="hidden md:flex items-center gap-3">
-            {isSignedIn ? (
-              <UserButton
-                                appearance={{
-                  elements: {
-                    avatarBox: "w-8 h-8",
-                  },
-                }}
-              />
+            {email ? (
+              <>
+                <span className="text-xs text-slate-400 max-w-[140px] truncate">{email}</span>
+                <button
+                  onClick={signOut}
+                  className="text-sm text-slate-500 hover:text-slate-800 px-3 py-2 rounded-lg hover:bg-stone-100 transition-colors"
+                >
+                  Sign out
+                </button>
+              </>
             ) : (
               <>
-                <SignInButton mode="modal">
-                  <button className="text-slate-600 text-sm font-medium px-3 py-2 rounded-lg hover:bg-stone-100 transition-colors">
-                    Sign in
-                  </button>
-                </SignInButton>
+                <Link
+                  href="/auth/signin"
+                  className="text-slate-600 text-sm font-medium px-3 py-2 rounded-lg hover:bg-stone-100 transition-colors flex items-center gap-1.5"
+                >
+                  <LogIn className="h-3.5 w-3.5" />
+                  Sign in
+                </Link>
                 <Link
                   href="/intake"
                   className="bg-slate-700 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-slate-800 transition-colors"
@@ -99,22 +116,16 @@ export function Header() {
               {item.label}
             </Link>
           ))}
-          <div className="pt-2 border-t border-stone-100 flex items-center gap-3">
-            {isSignedIn ? (
-              <UserButton />
+          <div className="pt-2 border-t border-stone-100">
+            {email ? (
+              <button onClick={signOut} className="block w-full text-left px-3 py-2.5 text-sm text-slate-600">
+                Sign out ({email})
+              </button>
             ) : (
-              <>
-                <SignInButton mode="modal">
-                  <button className="text-sm text-slate-600 font-medium">Sign in</button>
-                </SignInButton>
-                <Link
-                  href="/intake"
-                  onClick={() => setOpen(false)}
-                  className="flex-1 bg-slate-700 text-white text-sm font-medium px-4 py-2.5 rounded-lg text-center"
-                >
-                  Start Your Plan
-                </Link>
-              </>
+              <Link href="/auth/signin" onClick={() => setOpen(false)}
+                className="block px-3 py-2.5 text-sm text-slate-600">
+                Sign in
+              </Link>
             )}
           </div>
         </div>

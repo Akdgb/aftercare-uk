@@ -1,7 +1,6 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@clerk/nextjs";
 import { ArrowLeft, ArrowRight, Check, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -59,8 +58,12 @@ function OptionCard({
 
 export default function IntakePage() {
   const router = useRouter();
-  const { isSignedIn } = useAuth();
+  const [isSignedIn, setIsSignedIn] = useState(false);
   const [step, setStep] = useState(1);
+
+  useEffect(() => {
+    fetch("/api/auth/me").then((r) => { if (r.ok) setIsSignedIn(true); }).catch(() => {});
+  }, []);
   const [data, setData] = useState<IntakeFormData>(initialData);
   const [errors, setErrors] = useState<Partial<Record<keyof IntakeFormData, string>>>({});
   const [submitting, setSubmitting] = useState(false);
@@ -118,7 +121,7 @@ export default function IntakePage() {
       router.push("/plan");
     } else {
       // Not signed in — send to sign-up; dashboard will auto-save on return
-      router.push("/sign-up?redirect_url=/dashboard");
+      router.push("/auth/signin");
     }
   };
 

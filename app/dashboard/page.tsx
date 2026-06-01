@@ -2,7 +2,6 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useUser } from "@clerk/nextjs";
 import {
   AlertCircle,
   ArrowRight,
@@ -50,17 +49,13 @@ const SAVED_ARTICLES = [
 ];
 
 export default function DashboardPage() {
-  const { user, isLoaded } = useUser();
   const router = useRouter();
+  const [userEmail, setUserEmail] = useState<string | null>(null);
   const [plans, setPlans] = useState<SavedPlan[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<"overview" | "documents" | "guidance">("overview");
 
-  useEffect(() => {
-    if (!isLoaded) return;
-    loadPlans();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoaded]);
+  useEffect(() => { loadPlans(); }, []);
 
   const loadPlans = async () => {
     setLoading(true);
@@ -85,7 +80,12 @@ export default function DashboardPage() {
         localStorage.removeItem("aftercare_intake");
       }
 
-      // Load all plans for this user
+      // Load session info + all plans for this user
+      const meRes = await fetch("/api/auth/me");
+      if (meRes.ok) {
+        const me = await meRes.json();
+        setUserEmail(me.email);
+      }
       const res = await fetch("/api/plans");
       if (res.ok) {
         const { plans: fetched } = await res.json();
@@ -98,7 +98,7 @@ export default function DashboardPage() {
     }
   };
 
-  if (!isLoaded || loading) {
+  if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -124,7 +124,7 @@ export default function DashboardPage() {
             <div>
               <p className="text-sm text-slate-500 mb-1">Dashboard</p>
               <h1 className="text-2xl font-bold text-slate-900">
-                {user?.firstName ? `Hello, ${user.firstName}` : "My Dashboard"}
+                {userEmail ? `Hello, ${userEmail.split("@")[0]}` : "My Dashboard"}
               </h1>
               <p className="text-sm text-slate-500 mt-1">
                 {plans.length} saved plan{plans.length !== 1 ? "s" : ""}
