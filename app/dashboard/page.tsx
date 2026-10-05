@@ -445,6 +445,8 @@ function AccountSettings({
     setBusy(true);
     const res = await fetch("/api/account", { method: "DELETE" }).catch(() => null);
     if (res?.ok) {
+      // Full reload on purpose: drops all in-memory data from the old session
+      // eslint-disable-next-line @next/next/no-location-assign-relative-destination
       window.location.href = "/";
     } else {
       setError("Couldn't delete your account. Please try again or email privacy@aftercare-uk.co.uk.");

@@ -30,6 +30,8 @@ export function Header() {
   const signOut = async () => {
     await fetch("/api/auth/signout", { method: "POST" });
     setEmail(null);
+    // Full reload on purpose: drops all in-memory data from the old session
+    // eslint-disable-next-line @next/next/no-location-assign-relative-destination
     window.location.href = "/";
   };
 

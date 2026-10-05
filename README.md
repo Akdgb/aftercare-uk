@@ -23,58 +23,63 @@ through alone or share with family.
 
 ## Tech
 
-Next.js 16 (App Router) · React 19 · Tailwind CSS 4 · Postgres via
-`@vercel/postgres` (Neon) · Resend for email · OpenAI for the assistant ·
-`jose` signed-cookie sessions · Vitest.
+Next.js 16 (App Router) · React 19 · Tailwind CSS 4 · Postgres via the
+dependency-free [`postgres`](https://github.com/porsager/postgres) driver (works
+with any Postgres host) · `jose` signed-cookie sessions · Zod · Vitest.
+Email (Resend) and the AI assistant (OpenAI) are called over plain HTTPS — no SDKs.
 
-## Local development
+## Run it locally
+
+You need Node.js 20+ and Docker.
 
 ```bash
 npm install
-cp .env.example .env.local   # fill in at least SESSION_SECRET and POSTGRES_URL
-npm run db:migrate           # creates/updates tables (safe to re-run)
-npm run dev
+cp .env.example .env.local     # then set SESSION_SECRET (see the file)
+docker compose up -d           # starts a local Postgres
+npm run db:migrate             # creates the tables (safe to re-run)
+npm run dev                    # http://localhost:3000
 ```
 
-Without `RESEND_API_KEY`, emails (including sign-in links) are printed to the
-server console, so you can sign in locally by copying the link from there.
-Without `OPENAI_API_KEY`, the assistant falls back to built-in answers for
-common questions.
-
-`@vercel/postgres` talks to Neon over WebSockets, so `POSTGRES_URL` should point at
-a Neon / Vercel Postgres database (a free Neon branch works well for development).
+No email or AI keys are needed locally: sign-in links and other emails are
+printed in the terminal running `npm run dev` — copy the link into your browser.
+The assistant falls back to built-in answers for common questions.
 
 ### Checks
 
 ```bash
 npm run lint
 npm run typecheck
-npm test
+npm test        # add TEST_DATABASE_URL=... to also run the database tests
 npm run build
 ```
 
-CI runs all four on every pull request (`.github/workflows/ci.yml`).
+`TEST_DATABASE_URL` must point at a **throwaway** database — the tests empty it.
+CI runs everything, including the database tests, on every pull request.
 
-## Deploying to Vercel
+## Deploying (Vercel + Neon)
 
-1. Import the repo into Vercel.
-2. **Storage → Create → Postgres (Neon)** and connect it to the project — this adds
-   `POSTGRES_URL`.
-3. Add the other environment variables from `.env.example`
-   (`SESSION_SECRET`, `NEXT_PUBLIC_APP_URL`, `RESEND_API_KEY`, `EMAIL_FROM`,
-   `OPENAI_API_KEY`, `CRON_SECRET`).
-4. Verify your sending domain in Resend and use it in `EMAIL_FROM`.
-5. Run the schema once: `vercel env pull .env.local`, then
-   `npm run db:migrate` (or paste `db/schema.sql` into the database's Query tab).
-6. Deploy. `vercel.json` schedules `/api/cron/reminders` daily at 09:00 UTC; it
-   sends reminders and enforces data retention.
+1. Create a free Postgres database at [neon.tech](https://neon.tech) (choose the
+   London/EU region) and copy its **pooled** connection string.
+2. Import the GitHub repo into [Vercel](https://vercel.com/new).
+3. In Vercel → Settings → Environment Variables, add the variables from
+   `.env.example`: `DATABASE_URL` (the Neon string, ending in `?sslmode=require`),
+   `SESSION_SECRET`, `NEXT_PUBLIC_APP_URL`, `CRON_SECRET`, and optionally
+   `RESEND_API_KEY` + `EMAIL_FROM` (real emails) and `OPENAI_API_KEY` (AI assistant).
+4. Create the tables once from your computer:
+   `DATABASE_URL="<neon string>" npm run db:migrate`
+5. Deploy. `vercel.json` runs `/api/cron/reminders` daily at 09:00 UTC to send
+   reminders and delete expired data.
+
+Any other Postgres host (Supabase, Railway, a VPS…) works the same way — only
+`DATABASE_URL` changes. If you switch from Neon, update the processor list in
+`app/privacy/page.tsx`.
 
 ## How it fits together
 
 | Area | Where |
 | --- | --- |
 | Task generation | `lib/action-plan.ts` — stable task IDs; `normaliseTaskKeys` migrates progress saved under the old numeric IDs |
-| Data access | `lib/db.ts` — every plan read goes through `getPlanForUser` (owner or invited member) |
+| Data access | `lib/postgres.ts` (connection), `lib/db.ts` — every plan read goes through `getPlanForUser` (owner or invited member) |
 | Auth | `lib/session.ts`, `lib/auth-db.ts`, `proxy.ts` (guards `/dashboard` and `/plan/<id>`) |
 | Plan UI | `components/plan/plan-view.tsx`, shared by `/plan` (local) and `/plan/[id]` (saved, with family) |
 | Emails | `lib/email.ts`, `lib/email-templates.ts` |

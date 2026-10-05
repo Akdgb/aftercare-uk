@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import OpenAI from "openai";
 import { z } from "zod";
 
 // Only user/assistant turns are accepted from the browser — a client-supplied
@@ -49,26 +48,33 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "AI service unavailable" }, { status: 503 });
     }
 
-    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [
-        { role: "system", content: SYSTEM_PROMPT },
-        ...messages,
-      ],
-      max_tokens: 800,
-      temperature: 0.3,
+    // OpenAI's REST API directly — no SDK needed for a single endpoint
+    const res = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: process.env.OPENAI_MODEL ?? "gpt-4o-mini",
+        messages: [{ role: "system", content: SYSTEM_PROMPT }, ...messages],
+        max_tokens: 800,
+        temperature: 0.3,
+      }),
+      signal: AbortSignal.timeout(30_000),
     });
+    if (!res.ok) throw new Error(`OpenAI ${res.status}: ${await res.text().catch(() => "")}`);
+    const completion = await res.json();
 
-    const content = completion.choices[0]?.message?.content ?? "I was unable to generate a response. Please try again.";
+    const content: string =
+      completion.choices?.[0]?.message?.content ?? "I was unable to generate a response. Please try again.";
 
     return NextResponse.json({ content, sources: [] });
   } catch (error) {
     console.error("OpenAI error:", error);
     return NextResponse.json(
       { error: "AI service unavailable" },
-      { status: 500 }
+      { status: 503 }
     );
   }
 }

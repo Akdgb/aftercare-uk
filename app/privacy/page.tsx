@@ -102,7 +102,7 @@ export default function PrivacyPage() {
             <div className="prose text-sm text-slate-600">
               <p>We use the following third-party processors. All are contractually required to process your data only on our instructions and in compliance with UK GDPR:</p>
               <ul>
-                <li><strong>Neon Inc.</strong> (database hosting, via Vercel Postgres) — stores your account and saved plans</li>
+                <li><strong>Neon Inc.</strong> (database hosting) — stores your account and saved plans</li>
                 <li><strong>OpenAI LLC</strong> (AI assistant) — messages sent to the AI are processed in the USA under EU/UK Standard Contractual Clauses</li>
                 <li><strong>Resend Inc.</strong> (email delivery) — email addresses are processed to send sign-in links, family invitations, your plan link and reminders</li>
                 <li><strong>Vercel Inc.</strong> (website hosting) — your requests are processed on Vercel servers</li>

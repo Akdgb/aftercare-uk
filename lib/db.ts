@@ -1,4 +1,5 @@
-import { sql } from "@vercel/postgres";
+import type { JSONValue } from "postgres";
+import { db } from "@/lib/postgres";
 
 export interface SavedPlan {
   id: string;
@@ -36,12 +37,15 @@ export async function savePlan(
   taskStatuses: Record<string, string> = {}
 ): Promise<string | null> {
   try {
-    const result = await sql`
+    // Pass objects via sql.json — the driver serialises them. Passing a
+    // JSON.stringify'd string would be stored as a double-encoded JSON string.
+    const sql = db();
+    const rows = await sql`
       INSERT INTO saved_plans (user_id, intake_data, task_statuses)
-      VALUES (${userId}, ${JSON.stringify(intakeData)}, ${JSON.stringify(taskStatuses)})
+      VALUES (${userId}, ${sql.json(intakeData as JSONValue)}, ${sql.json(taskStatuses)})
       RETURNING id
     `;
-    return result.rows[0]?.id ?? null;
+    return rows[0]?.id ?? null;
   } catch (e) {
     console.error("savePlan error:", e);
     return null;
@@ -50,8 +54,8 @@ export async function savePlan(
 
 async function getPlan(id: string): Promise<SavedPlan | null> {
   try {
-    const result = await sql`SELECT * FROM saved_plans WHERE id = ${id}`;
-    return (result.rows[0] as SavedPlan) ?? null;
+    const rows = await db()`SELECT * FROM saved_plans WHERE id = ${id}`;
+    return (rows[0] as unknown as SavedPlan) ?? null;
   } catch {
     // Invalid UUIDs throw — treat as not found
     return null;
@@ -70,17 +74,17 @@ export async function getPlanForUser(
   if (!plan) return null;
   if (plan.user_id === user.userId) return { plan, role: "owner" };
 
-  const member = await sql`
+  const member = await db()`
     SELECT 1 FROM plan_members WHERE plan_id = ${id} AND email = ${user.email.toLowerCase()}
   `;
-  return member.rows.length ? { plan, role: "member" } : null;
+  return member.length ? { plan, role: "member" } : null;
 }
 
 export async function getPlansForUser(
   user: { userId: string; email: string }
 ): Promise<(SavedPlan & { role: PlanRole })[]> {
   try {
-    const result = await sql`
+    const rows = await db()`
       SELECT p.*, 'owner' AS role FROM saved_plans p WHERE p.user_id = ${user.userId}
       UNION ALL
       SELECT p.*, 'member' AS role FROM saved_plans p
@@ -88,7 +92,7 @@ export async function getPlansForUser(
         WHERE m.email = ${user.email.toLowerCase()} AND p.user_id <> ${user.userId}
       ORDER BY created_at DESC
     `;
-    return result.rows as (SavedPlan & { role: PlanRole })[];
+    return rows as unknown as (SavedPlan & { role: PlanRole })[];
   } catch (e) {
     console.error("getPlansForUser error:", e);
     return [];
@@ -96,16 +100,16 @@ export async function getPlansForUser(
 }
 
 export async function getPlanOwnerEmail(planId: string): Promise<string | null> {
-  const result = await sql`
+  const rows = await db()`
     SELECT u.email FROM saved_plans p JOIN users u ON u.id = p.user_id WHERE p.id = ${planId}
   `;
-  return result.rows[0]?.email ?? null;
+  return rows[0]?.email ?? null;
 }
 
 // Single-key JSONB merges so two family members ticking different tasks
 // at the same time never overwrite each other's changes.
 export async function setTaskStatus(planId: string, taskId: string, status: TaskStatus) {
-  await sql`
+  await db()`
     UPDATE saved_plans
     SET task_statuses = task_statuses || jsonb_build_object(${taskId}::text, ${status}::text),
         updated_at = NOW()
@@ -115,14 +119,14 @@ export async function setTaskStatus(planId: string, taskId: string, status: Task
 
 export async function setTaskAssignee(planId: string, taskId: string, email: string | null) {
   if (email) {
-    await sql`
+    await db()`
       UPDATE saved_plans
       SET task_assignees = task_assignees || jsonb_build_object(${taskId}::text, ${email}::text),
           updated_at = NOW()
       WHERE id = ${planId}
     `;
   } else {
-    await sql`
+    await db()`
       UPDATE saved_plans
       SET task_assignees = task_assignees - ${taskId}::text, updated_at = NOW()
       WHERE id = ${planId}
@@ -131,34 +135,34 @@ export async function setTaskAssignee(planId: string, taskId: string, email: str
 }
 
 export async function deletePlan(id: string, userId: string): Promise<boolean> {
-  const result = await sql`DELETE FROM saved_plans WHERE id = ${id} AND user_id = ${userId}`;
-  return (result.rowCount ?? 0) > 0;
+  const rows = await db()`DELETE FROM saved_plans WHERE id = ${id} AND user_id = ${userId}`;
+  return rows.count > 0;
 }
 
 // ── Family members ──────────────────────────────────────────────────────────
 
 export async function getMembers(planId: string): Promise<PlanMember[]> {
-  const result = await sql`
+  const rows = await db()`
     SELECT email, name, created_at FROM plan_members
     WHERE plan_id = ${planId} ORDER BY created_at
   `;
-  return result.rows as PlanMember[];
+  return rows as unknown as PlanMember[];
 }
 
 export async function addMember(planId: string, email: string, name: string): Promise<boolean> {
-  const result = await sql`
+  const rows = await db()`
     INSERT INTO plan_members (plan_id, email, name)
     VALUES (${planId}, ${email.toLowerCase()}, ${name})
     ON CONFLICT (plan_id, email) DO NOTHING
   `;
-  return (result.rowCount ?? 0) > 0;
+  return rows.count > 0;
 }
 
 export async function removeMember(planId: string, email: string) {
   const lower = email.toLowerCase();
-  await sql`DELETE FROM plan_members WHERE plan_id = ${planId} AND email = ${lower}`;
+  await db()`DELETE FROM plan_members WHERE plan_id = ${planId} AND email = ${lower}`;
   // Unassign anything that was given to them
-  await sql`
+  await db()`
     UPDATE saved_plans
     SET task_assignees = COALESCE(
       (SELECT jsonb_object_agg(key, value) FROM jsonb_each(task_assignees) WHERE value <> to_jsonb(${lower}::text)),
@@ -171,11 +175,11 @@ export async function removeMember(planId: string, email: string) {
 // ── Comments ────────────────────────────────────────────────────────────────
 
 export async function getComments(planId: string): Promise<TaskComment[]> {
-  const result = await sql`
+  const rows = await db()`
     SELECT id, task_id, author_email, body, created_at FROM task_comments
     WHERE plan_id = ${planId} ORDER BY created_at
   `;
-  return result.rows as TaskComment[];
+  return rows as unknown as TaskComment[];
 }
 
 export async function addComment(
@@ -184,38 +188,38 @@ export async function addComment(
   authorEmail: string,
   body: string
 ): Promise<TaskComment> {
-  const result = await sql`
+  const rows = await db()`
     INSERT INTO task_comments (plan_id, task_id, author_email, body)
     VALUES (${planId}, ${taskId}, ${authorEmail}, ${body})
     RETURNING id, task_id, author_email, body, created_at
   `;
-  return result.rows[0] as TaskComment;
+  return rows[0] as unknown as TaskComment;
 }
 
 // ── Account ─────────────────────────────────────────────────────────────────
 
 export async function getUserPreferences(userId: string): Promise<{ reminders_enabled: boolean } | null> {
-  const result = await sql`SELECT reminders_enabled FROM users WHERE id = ${userId}`;
-  return (result.rows[0] as { reminders_enabled: boolean }) ?? null;
+  const rows = await db()`SELECT reminders_enabled FROM users WHERE id = ${userId}`;
+  return (rows[0] as unknown as { reminders_enabled: boolean }) ?? null;
 }
 
 export async function setRemindersEnabled(userId: string, enabled: boolean) {
-  await sql`UPDATE users SET reminders_enabled = ${enabled} WHERE id = ${userId}`;
+  await db()`UPDATE users SET reminders_enabled = ${enabled} WHERE id = ${userId}`;
 }
 
 /** Erases the user, their plans (cascading members/comments), memberships and login tokens. */
 export async function deleteAccount(userId: string, email: string) {
   const lower = email.toLowerCase();
-  await sql`DELETE FROM plan_members WHERE email = ${lower}`;
-  await sql`DELETE FROM magic_links WHERE email = ${lower}`;
-  await sql`DELETE FROM users WHERE id = ${userId}`;
+  await db()`DELETE FROM plan_members WHERE email = ${lower}`;
+  await db()`DELETE FROM magic_links WHERE email = ${lower}`;
+  await db()`DELETE FROM users WHERE id = ${userId}`;
 }
 
 // ── Scheduled jobs ──────────────────────────────────────────────────────────
 
 /** Plans at least 2 days old whose owner wants reminders and hasn't had one this week. */
 export async function getPlansDueReminder(): Promise<(SavedPlan & { owner_email: string })[]> {
-  const result = await sql`
+  const rows = await db()`
     SELECT p.*, u.email AS owner_email
     FROM saved_plans p JOIN users u ON u.id = p.user_id
     WHERE u.reminders_enabled
@@ -223,16 +227,16 @@ export async function getPlansDueReminder(): Promise<(SavedPlan & { owner_email:
       AND p.created_at > NOW() - INTERVAL '90 days'
       AND (p.last_reminded_at IS NULL OR p.last_reminded_at < NOW() - INTERVAL '7 days')
   `;
-  return result.rows as (SavedPlan & { owner_email: string })[];
+  return rows as unknown as (SavedPlan & { owner_email: string })[];
 }
 
 export async function markReminded(planId: string) {
-  await sql`UPDATE saved_plans SET last_reminded_at = NOW() WHERE id = ${planId}`;
+  await db()`UPDATE saved_plans SET last_reminded_at = NOW() WHERE id = ${planId}`;
 }
 
 /** Enforces the retention periods stated in the privacy policy. */
 export async function purgeExpiredData() {
-  const plans = await sql`DELETE FROM saved_plans WHERE created_at < NOW() - INTERVAL '3 years'`;
-  const links = await sql`DELETE FROM magic_links WHERE created_at < NOW() - INTERVAL '1 day'`;
-  return { plans: plans.rowCount ?? 0, magicLinks: links.rowCount ?? 0 };
+  const plans = await db()`DELETE FROM saved_plans WHERE created_at < NOW() - INTERVAL '3 years'`;
+  const links = await db()`DELETE FROM magic_links WHERE created_at < NOW() - INTERVAL '1 day'`;
+  return { plans: plans.count, magicLinks: links.count };
 }

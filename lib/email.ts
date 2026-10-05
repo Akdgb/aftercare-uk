@@ -1,5 +1,3 @@
-import { Resend } from "resend";
-
 export function appUrl(): string {
   return (process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000").replace(/\/$/, "");
 }
@@ -17,10 +15,18 @@ export async function sendEmail(to: string, subject: string, html: string, text?
     return true;
   }
   try {
-    const resend = new Resend(process.env.RESEND_API_KEY);
-    const { error } = await resend.emails.send({ from: FROM(), to, subject, html, text });
-    if (error) {
-      console.error("sendEmail error:", error);
+    // Resend's REST API directly — no SDK needed for a single endpoint
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ from: FROM(), to, subject, html, text }),
+      signal: AbortSignal.timeout(10_000),
+    });
+    if (!res.ok) {
+      console.error("sendEmail error:", res.status, await res.text().catch(() => ""));
       return false;
     }
     return true;
