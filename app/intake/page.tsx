@@ -5,6 +5,7 @@ import { ArrowLeft, ArrowRight, Check, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { LOCAL_KEYS, writeLocal } from "@/lib/use-local-storage";
 import type { IntakeFormData, FuneralPreference, FaithOption, HousingType, YesNoUnsure, DeceasedLocation } from "@/types";
 
 const TOTAL_STEPS = 6;
@@ -27,7 +28,6 @@ const initialData: IntakeFormData = {
 };
 
 function OptionCard({
-  value,
   selected,
   onClick,
   children,
@@ -60,13 +60,16 @@ export default function IntakePage() {
   const router = useRouter();
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [step, setStep] = useState(1);
-
-  useEffect(() => {
-    fetch("/api/auth/me").then((r) => { if (r.ok) setIsSignedIn(true); }).catch(() => {});
-  }, []);
   const [data, setData] = useState<IntakeFormData>(initialData);
   const [errors, setErrors] = useState<Partial<Record<keyof IntakeFormData, string>>>({});
   const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    fetch("/api/auth/me")
+      .then((r) => r.json())
+      .then((d) => setIsSignedIn(Boolean(d?.email)))
+      .catch(() => {});
+  }, []);
 
   const update = <K extends keyof IntakeFormData>(key: K, value: IntakeFormData[K]) => {
     setData((prev) => ({ ...prev, [key]: value }));
@@ -84,7 +87,8 @@ export default function IntakePage() {
     if (step === 2) {
       if (!data.relationship) newErrors.relationship = "Please select your relationship";
       if (!data.postcode.trim()) newErrors.postcode = "Postcode is required";
-      if (!data.email.trim()) newErrors.email = "Email is required";
+      if (data.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email.trim()))
+        newErrors.email = "Please enter a valid email address";
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -99,11 +103,11 @@ export default function IntakePage() {
   const handleSubmit = async () => {
     setSubmitting(true);
 
-    // Always persist to localStorage — used after sign-in to auto-save
-    localStorage.setItem("aftercare_intake", JSON.stringify(data));
+    // A new intake starts a fresh local plan
+    writeLocal(LOCAL_KEYS.intake, JSON.stringify(data));
+    writeLocal(LOCAL_KEYS.statuses, null);
 
     if (isSignedIn) {
-      // User already signed in — save immediately and go to dashboard
       try {
         const res = await fetch("/api/save-plan", {
           method: "POST",
@@ -112,17 +116,14 @@ export default function IntakePage() {
         });
         if (res.ok) {
           const { planId } = await res.json();
+          writeLocal(LOCAL_KEYS.intake, null);
           router.push(`/plan/${planId}`);
           return;
         }
       } catch {}
-      // DB not set up yet — go to local plan
-      setSubmitting(false);
-      router.push("/plan");
-    } else {
-      // Not signed in — send to sign-up; dashboard will auto-save on return
-      router.push("/auth/signin");
     }
+    // Signed out (or saving failed): show the plan straight away; it can be saved from there
+    router.push("/plan");
   };
 
   const progress = (step / TOTAL_STEPS) * 100;
@@ -267,20 +268,13 @@ export default function IntakePage() {
                   hint="Used to find your local services"
                 />
                 <Input
-                  label="Your email address"
+                  label="Your email address (optional)"
                   type="email"
                   value={data.email}
                   onChange={(e) => update("email", e.target.value)}
                   error={errors.email}
                   placeholder="you@example.com"
-                  hint="Used for your account and optional email updates"
-                />
-                <Input
-                  label="Phone number (optional)"
-                  type="tel"
-                  value={data.phone}
-                  onChange={(e) => update("phone", e.target.value)}
-                  placeholder="07700 900000"
+                  hint="Only used if you choose to save your plan to an account"
                 />
               </div>
             </div>

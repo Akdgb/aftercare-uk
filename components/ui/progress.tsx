@@ -10,7 +10,7 @@ interface ProgressProps {
 }
 
 export function Progress({ value, max = 100, className, showLabel }: ProgressProps) {
-  const pct = Math.round((value / max) * 100);
+  const pct = max > 0 ? Math.round((value / max) * 100) : 0;
   return (
     <div className={cn("w-full", className)}>
       {showLabel && (

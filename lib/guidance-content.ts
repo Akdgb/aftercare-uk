@@ -110,7 +110,7 @@ Most register offices require an appointment. Book as soon as possible, as appoi
 
 ## What you will receive
 
-- A **death certificate** — this is the official record. Order at least 5–10 certified copies at £11 each
+- A **death certificate** — this is the official record. Order at least 5–10 certified copies at £12.50 each (England and Wales)
 - A **Certificate for Burial or Cremation** (the 'green form') — give this to the funeral director
 - A **BD8 form** — for notifying the DWP about pension and benefits
 
@@ -225,7 +225,7 @@ Costs in London and the South East are typically 20–30% higher than the nation
 - Coffin: £200–£3,500+
 - Flowers: £0–£900
 - Funeral cars (hearse + limousine): £200–£1,400
-- Death certificates: £11 each
+- Death certificates: £12.50 each (England and Wales)
 - Catering/wake: variable
 
 ## How to keep costs down

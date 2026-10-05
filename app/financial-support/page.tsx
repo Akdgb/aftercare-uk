@@ -39,7 +39,6 @@ interface SupportProgram {
 }
 
 function OptionBtn({
-  value,
   selected,
   onClick,
   children,
@@ -189,21 +188,6 @@ export default function FinancialSupportPage() {
     setResults(calculateResults());
     setStep(99);
   };
-
-  const QUESTIONS = [
-    {
-      id: "relationship",
-      question: "What was your relationship to the deceased?",
-      options: [
-        { value: "spouse-partner", label: "Spouse or civil partner" },
-        { value: "parent", label: "Parent" },
-        { value: "child", label: "Son or daughter" },
-        { value: "sibling", label: "Sibling" },
-        { value: "other", label: "Other relative or friend" },
-      ],
-      field: "relationship" as keyof CheckerState,
-    },
-  ];
 
   return (
     <div className="bg-stone-50 min-h-screen">

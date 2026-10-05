@@ -1,15 +1,31 @@
 "use client";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { ArrowRight, CheckCircle2, Heart, Loader2, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function SignInPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-[60vh] flex items-center justify-center">
+          <Loader2 className="h-6 w-6 animate-spin text-slate-400" />
+        </div>
+      }
+    >
+      <SignInForm />
+    </Suspense>
+  );
+}
+
+function SignInForm() {
   const params = useSearchParams();
   const error = params.get("error");
+  const next = params.get("next");
+  const invited = next?.startsWith("/plan/") && params.get("email");
 
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(params.get("email") ?? "");
   const [state, setState] = useState<"idle" | "loading" | "sent">("idle");
   const [err, setErr] = useState("");
 
@@ -25,12 +41,15 @@ export default function SignInPage() {
       const res = await fetch("/api/auth/magic-link", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email.trim() }),
+        body: JSON.stringify({ email: email.trim(), next }),
       });
-      if (!res.ok) throw new Error();
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error ?? "Something went wrong. Please try again.");
+      }
       setState("sent");
-    } catch {
-      setErr("Something went wrong. Please try again.");
+    } catch (e) {
+      setErr((e as Error).message);
       setState("idle");
     }
   };
@@ -55,7 +74,7 @@ export default function SignInPage() {
               <h1 className="text-lg font-semibold text-slate-800 mb-2">Check your email</h1>
               <p className="text-slate-500 text-sm leading-relaxed">
                 We sent a sign-in link to <strong className="text-slate-700">{email}</strong>.
-                Click it to access your dashboard. The link expires in 20 minutes.
+                Click it to continue — you can close this tab. The link expires in 20 minutes.
               </p>
               <button
                 onClick={() => setState("idle")}
@@ -66,9 +85,13 @@ export default function SignInPage() {
             </div>
           ) : (
             <>
-              <h1 className="text-xl font-semibold text-slate-800 mb-1 text-center">Welcome back</h1>
+              <h1 className="text-xl font-semibold text-slate-800 mb-1 text-center">
+                {invited ? "You've been invited to a plan" : "Sign in to AfterCare"}
+              </h1>
               <p className="text-sm text-slate-500 text-center mb-6">
-                Enter your email and we&apos;ll send you a sign-in link — no password needed.
+                {invited
+                  ? "Confirm your email address and we'll send you a link to open the family plan — no password needed."
+                  : "Enter your email and we'll send you a sign-in link — no password needed. New here? This creates your account."}
               </p>
 
               {error && (
