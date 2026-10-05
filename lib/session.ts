@@ -2,7 +2,8 @@ import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 
 const COOKIE = "aftercare_session";
-const EXPIRY_DAYS = 365;
+const EXPIRY_DAYS = 90;
+export const SESSION_AUDIENCE = "aftercare-session";
 
 function getSecret() {
   const secret = process.env.SESSION_SECRET;
@@ -17,8 +18,9 @@ export interface Session {
 }
 
 export async function createSession(session: Session): Promise<void> {
-  const token = await new SignJWT(session)
+  const token = await new SignJWT({ userId: session.userId, email: session.email })
     .setProtectedHeader({ alg: "HS256" })
+    .setAudience(SESSION_AUDIENCE)
     .setIssuedAt()
     .setExpirationTime(`${EXPIRY_DAYS}d`)
     .sign(getSecret());
@@ -38,8 +40,28 @@ export async function getSession(): Promise<Session | null> {
     const cookieStore = await cookies();
     const token = cookieStore.get(COOKIE)?.value;
     if (!token) return null;
-    const { payload } = await jwtVerify(token, getSecret());
-    return payload as unknown as Session;
+    const { payload } = await jwtVerify(token, getSecret(), { audience: SESSION_AUDIENCE });
+    if (typeof payload.userId !== "string" || typeof payload.email !== "string") return null;
+    return { userId: payload.userId, email: payload.email };
+  } catch {
+    return null;
+  }
+}
+
+/** Signed, purpose-scoped token for the one-click "stop reminders" link in emails. */
+export async function createUnsubscribeToken(userId: string): Promise<string> {
+  return new SignJWT({ userId, purpose: "unsubscribe" })
+    .setProtectedHeader({ alg: "HS256" })
+    .setAudience("aftercare-unsubscribe")
+    .setIssuedAt()
+    .setExpirationTime("180d")
+    .sign(getSecret());
+}
+
+export async function verifyUnsubscribeToken(token: string): Promise<string | null> {
+  try {
+    const { payload } = await jwtVerify(token, getSecret(), { audience: "aftercare-unsubscribe" });
+    return payload.purpose === "unsubscribe" && typeof payload.userId === "string" ? payload.userId : null;
   } catch {
     return null;
   }

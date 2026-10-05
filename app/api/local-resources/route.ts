@@ -28,7 +28,6 @@ function toMiles(km: number) {
 function classifyElement(tags: Record<string, string>) {
   const amenity = tags.amenity ?? "";
   const landuse = tags.landuse ?? "";
-  const religion = tags.religion ?? "";
 
   if (amenity === "funeral_hall" || amenity === "funeral_home" || tags.shop === "funeral_directors")
     return "funeral-director";

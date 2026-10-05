@@ -8,7 +8,8 @@ export type FaithOption =
   | "humanist"
   | "african-caribbean"
   | "other"
-  | "none";
+  | "none"
+  | "prefer-not-to-say";
 export type HousingType =
   | "owned"
   | "private-rental"
@@ -35,8 +36,10 @@ export interface IntakeFormData {
   // Funeral preferences
   funeralPreference: FuneralPreference;
 
-  // Faith
+  // Faith — religious/philosophical belief is "special category" data under
+  // UK GDPR, so it is only kept with explicit consent (faithConsent)
   faith: FaithOption;
+  faithConsent?: boolean;
 
   // Housing
   housingType: HousingType;

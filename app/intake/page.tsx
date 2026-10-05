@@ -5,6 +5,7 @@ import { ArrowLeft, ArrowRight, Check, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { LOCAL_KEYS, writeLocal } from "@/lib/use-local-storage";
 import type { IntakeFormData, FuneralPreference, FaithOption, HousingType, YesNoUnsure, DeceasedLocation } from "@/types";
 
 const TOTAL_STEPS = 6;
@@ -20,14 +21,14 @@ const initialData: IntakeFormData = {
   email: "",
   phone: "",
   funeralPreference: "unsure",
-  faith: "none",
+  faith: "prefer-not-to-say",
+  faithConsent: false,
   housingType: "unsure",
   receivingBenefits: "unsure",
   needsFinancialHelp: "unsure",
 };
 
 function OptionCard({
-  value,
   selected,
   onClick,
   children,
@@ -60,13 +61,16 @@ export default function IntakePage() {
   const router = useRouter();
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [step, setStep] = useState(1);
-
-  useEffect(() => {
-    fetch("/api/auth/me").then((r) => { if (r.ok) setIsSignedIn(true); }).catch(() => {});
-  }, []);
   const [data, setData] = useState<IntakeFormData>(initialData);
   const [errors, setErrors] = useState<Partial<Record<keyof IntakeFormData, string>>>({});
   const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    fetch("/api/auth/me")
+      .then((r) => r.json())
+      .then((d) => setIsSignedIn(Boolean(d?.email)))
+      .catch(() => {});
+  }, []);
 
   const update = <K extends keyof IntakeFormData>(key: K, value: IntakeFormData[K]) => {
     setData((prev) => ({ ...prev, [key]: value }));
@@ -81,10 +85,14 @@ export default function IntakePage() {
       if (!data.dateOfDeath) newErrors.dateOfDeath = "Date of death is required";
       if (!data.locationOfDeath.trim()) newErrors.locationOfDeath = "Location is required";
     }
+    if (step === 4 && data.faith !== "prefer-not-to-say" && !data.faithConsent) {
+      newErrors.faithConsent = "Please tick the box to let us use this, or choose \"Prefer not to say\".";
+    }
     if (step === 2) {
       if (!data.relationship) newErrors.relationship = "Please select your relationship";
       if (!data.postcode.trim()) newErrors.postcode = "Postcode is required";
-      if (!data.email.trim()) newErrors.email = "Email is required";
+      if (data.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email.trim()))
+        newErrors.email = "Please enter a valid email address";
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -99,11 +107,11 @@ export default function IntakePage() {
   const handleSubmit = async () => {
     setSubmitting(true);
 
-    // Always persist to localStorage — used after sign-in to auto-save
-    localStorage.setItem("aftercare_intake", JSON.stringify(data));
+    // A new intake starts a fresh local plan
+    writeLocal(LOCAL_KEYS.intake, JSON.stringify(data));
+    writeLocal(LOCAL_KEYS.statuses, null);
 
     if (isSignedIn) {
-      // User already signed in — save immediately and go to dashboard
       try {
         const res = await fetch("/api/save-plan", {
           method: "POST",
@@ -112,17 +120,14 @@ export default function IntakePage() {
         });
         if (res.ok) {
           const { planId } = await res.json();
+          writeLocal(LOCAL_KEYS.intake, null);
           router.push(`/plan/${planId}`);
           return;
         }
       } catch {}
-      // DB not set up yet — go to local plan
-      setSubmitting(false);
-      router.push("/plan");
-    } else {
-      // Not signed in — send to sign-up; dashboard will auto-save on return
-      router.push("/auth/signin");
     }
+    // Signed out (or saving failed): show the plan straight away; it can be saved from there
+    router.push("/plan");
   };
 
   const progress = (step / TOTAL_STEPS) * 100;
@@ -267,20 +272,13 @@ export default function IntakePage() {
                   hint="Used to find your local services"
                 />
                 <Input
-                  label="Your email address"
+                  label="Your email address (optional)"
                   type="email"
                   value={data.email}
                   onChange={(e) => update("email", e.target.value)}
                   error={errors.email}
                   placeholder="you@example.com"
-                  hint="Used for your account and optional email updates"
-                />
-                <Input
-                  label="Phone number (optional)"
-                  type="tel"
-                  value={data.phone}
-                  onChange={(e) => update("phone", e.target.value)}
-                  placeholder="07700 900000"
+                  hint="Only used if you choose to save your plan to an account"
                 />
               </div>
             </div>
@@ -328,7 +326,8 @@ export default function IntakePage() {
             <div className="animate-fade-up">
               <h2 className="text-xl font-semibold text-slate-800 mb-1">Faith &amp; cultural requirements</h2>
               <p className="text-sm text-slate-500 mb-6">
-                This helps us provide relevant guidance for arranging the funeral.
+                Optional. This helps us include faith-specific steps — for example, some traditions
+                hold the funeral within 24 hours.
               </p>
               <div className="grid grid-cols-2 gap-2">
                 {([
@@ -340,18 +339,40 @@ export default function IntakePage() {
                   { value: "humanist", label: "Humanist" },
                   { value: "african-caribbean", label: "African / Caribbean" },
                   { value: "other", label: "Other" },
-                  { value: "none", label: "No preference" },
+                  { value: "none", label: "No religious requirements" },
+                  { value: "prefer-not-to-say", label: "Prefer not to say" },
                 ] as { value: FaithOption; label: string }[]).map((opt) => (
                   <OptionCard
                     key={opt.value}
                     value={opt.value}
                     selected={data.faith === opt.value}
-                    onClick={() => update("faith", opt.value)}
+                    onClick={() => {
+                      update("faith", opt.value);
+                      if (opt.value === "prefer-not-to-say") update("faithConsent", false);
+                    }}
                   >
                     {opt.label}
                   </OptionCard>
                 ))}
               </div>
+              {data.faith !== "prefer-not-to-say" && (
+                <label className="mt-5 flex items-start gap-3 bg-stone-50 border border-stone-200 rounded-xl p-4 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    className="mt-0.5 h-4 w-4 flex-shrink-0"
+                    checked={data.faithConsent ?? false}
+                    onChange={(e) => update("faithConsent", e.target.checked)}
+                  />
+                  <span className="text-sm text-slate-600 leading-relaxed">
+                    I agree to AfterCare using this answer to tailor the plan. If I save the plan, it is stored
+                    securely and seen only by me and family members I invite. I can remove it at any time.{" "}
+                    <a href="/privacy#special-category" target="_blank" className="underline">
+                      Why we ask
+                    </a>
+                  </span>
+                </label>
+              )}
+              {errors.faithConsent && <p className="mt-2 text-xs text-red-600">{errors.faithConsent}</p>}
             </div>
           )}
 

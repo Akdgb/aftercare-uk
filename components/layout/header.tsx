@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 
 const nav = [
   { href: "/dashboard", label: "My Dashboard" },
+  { href: "/family", label: "Family" },
   { href: "/resources", label: "Local Resources" },
   { href: "/guidance", label: "Guidance" },
   { href: "/financial-support", label: "Financial Support" },
@@ -29,11 +30,13 @@ export function Header() {
   const signOut = async () => {
     await fetch("/api/auth/signout", { method: "POST" });
     setEmail(null);
+    // Full reload on purpose: drops all in-memory data from the old session
+    // eslint-disable-next-line @next/next/no-location-assign-relative-destination
     window.location.href = "/";
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-stone-200">
+    <header className="print:hidden sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-stone-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-2.5">
@@ -50,7 +53,7 @@ export function Header() {
                 href={item.href}
                 className={cn(
                   "px-3 py-2 text-sm rounded-md transition-colors",
-                  pathname === item.href
+                  pathname.startsWith(item.href)
                     ? "bg-stone-100 text-slate-800 font-medium"
                     : "text-slate-500 hover:text-slate-800 hover:bg-stone-50"
                 )}

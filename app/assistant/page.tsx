@@ -59,7 +59,7 @@ function getFallbackResponse(question: string): string {
   }
 
   if (q.includes("register") && q.includes("death")) {
-    return "**Registering a death in England and Wales**\n\n**When:** You must register within 5 days of the death (8 days in Scotland).\n\n**Who can register:**\n- A relative who was present at the death\n- A relative living in the area\n- Any person present at the death\n- The funeral director (if no family is available)\n\n**What you need:**\n- The Medical Certificate of Cause of Death (from the doctor or hospital)\n- The deceased's NHS medical card (if available)\n- Any NHS or DWP paperwork\n\n**Where to go:**\nVisit your local register office. You must book an appointment. Find your nearest office at GOV.UK.\n\n**What you'll receive:**\n- The death certificate (you'll need multiple certified copies — approximately £11 each)\n- A Certificate for Burial or Cremation (the 'green form')\n- A BD8 form for the DWP\n\n**Source:** GOV.UK — Register a Death";
+    return "**Registering a death in England and Wales**\n\n**When:** You must register within 5 days of the death (8 days in Scotland).\n\n**Who can register:**\n- A relative who was present at the death\n- A relative living in the area\n- Any person present at the death\n- The person arranging the funeral (but not the funeral director themselves)\n\n**What you need:**\n- The Medical Certificate of Cause of Death (from the doctor or hospital)\n- The deceased's NHS medical card (if available)\n- Any NHS or DWP paperwork\n\n**Where to go:**\nVisit your local register office. You must book an appointment. Find your nearest office at GOV.UK.\n\n**What you'll receive:**\n- The death certificate (you'll need multiple certified copies — £12.50 each in England and Wales)\n- A Certificate for Burial or Cremation (the 'green form')\n- A BD8 form for the DWP\n\n**Source:** GOV.UK — Register a Death";
   }
 
   if (q.includes("bereavement support payment") || q.includes("bsp")) {
@@ -86,6 +86,7 @@ export default function AssistantPage() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const nextId = useRef(0);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -97,7 +98,7 @@ export default function AssistantPage() {
     setInput("");
 
     const userMsg: Message = {
-      id: `u${Date.now()}`,
+      id: `u${nextId.current++}`,
       role: "user",
       content,
       timestamp: new Date(),
@@ -110,7 +111,7 @@ export default function AssistantPage() {
     const { content: reply, sources } = await getAssistantResponse(allMessages);
 
     const assistantMsg: Message = {
-      id: `a${Date.now()}`,
+      id: `a${nextId.current++}`,
       role: "assistant",
       content: reply,
       sources,

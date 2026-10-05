@@ -12,7 +12,7 @@ export default function PrivacyPage() {
       <div className="bg-white border-b border-stone-200">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
           <h1 className="text-3xl font-bold text-slate-900 mb-2">Privacy Policy</h1>
-          <p className="text-slate-500 text-sm">Last updated: June 2026</p>
+          <p className="text-slate-500 text-sm">Last updated: October 2026</p>
         </div>
       </div>
 
@@ -41,10 +41,11 @@ export default function PrivacyPage() {
             <div className="prose text-sm text-slate-600">
               <p>When you use AfterCare, we may collect the following personal data:</p>
               <ul>
-                <li><strong>Your contact details:</strong> name, email address, phone number, postcode</li>
+                <li><strong>Your contact details:</strong> email address and postcode</li>
                 <li><strong>Your relationship</strong> to the deceased</li>
-                <li><strong>Plan preferences:</strong> funeral type, faith/cultural requirements, housing situation, financial support needs</li>
+                <li><strong>Plan preferences:</strong> funeral type, housing situation, financial support needs, and — only if you consent — faith/cultural requirements</li>
                 <li><strong>Usage data:</strong> which tasks you have completed, when you last accessed your plan</li>
+                <li><strong>Family workspace:</strong> the names and email addresses of people you invite to a plan, who has taken on which task, and notes left on tasks</li>
                 <li><strong>AI chat messages:</strong> questions you ask the AI assistant</li>
               </ul>
               <p>We also receive information about the deceased person. Under UK law, GDPR does not apply to deceased individuals — however, we treat all bereavement data with the same care and confidentiality as personal data.</p>
@@ -66,7 +67,9 @@ export default function PrivacyPage() {
                     ["Generate your personalised bereavement plan", "Legitimate interests (necessary to provide the service you requested)"],
                     ["Save your plan and allow you to return to it", "Legitimate interests / Contract"],
                     ["Send you your plan link by email", "Legitimate interests / Contract"],
-                    ["Send task reminder emails (if opted in)", "Consent"],
+                    ["Use your faith answer to add faith-specific steps (optional)", "Explicit consent — UK GDPR Article 9(2)(a)"],
+                    ["Let invited family members see and update a shared plan", "Legitimate interests (you asked us to share it)"],
+                    ["Send occasional task reminder emails (at most weekly; turn off any time)", "Legitimate interests"],
                     ["Improve the service and fix errors", "Legitimate interests"],
                     ["Comply with legal obligations", "Legal obligation"],
                   ].map(([purpose, basis]) => (
@@ -80,13 +83,35 @@ export default function PrivacyPage() {
             </div>
           </section>
 
+          <section className="p-6 sm:p-8" id="special-category">
+            <h2 className="text-lg font-semibold text-slate-800 mb-3">Faith and belief (special category data)</h2>
+            <div className="prose text-sm text-slate-600">
+              <p>
+                The question about faith is optional. Some traditions have specific requirements — for example,
+                burial within 24 hours — so the answer lets us add the right steps to your plan.
+              </p>
+              <p>
+                Religious and philosophical beliefs are &ldquo;special category&rdquo; data under UK GDPR. We only
+                keep your answer if you tick the consent box (UK GDPR Article 9(2)(a), explicit consent). If you
+                choose &ldquo;Prefer not to say&rdquo; or don&apos;t tick the box, we don&apos;t store it.
+              </p>
+              <p>
+                You can withdraw consent at any time with &ldquo;Remove faith details from this plan&rdquo; on your
+                saved plan, by deleting the plan, or by emailing us. The answer is visible only to you and family
+                members you invite to the plan.
+              </p>
+            </div>
+          </section>
+
           <section className="p-6 sm:p-8">
             <h2 className="text-lg font-semibold text-slate-800 mb-3">4. How long we keep your data</h2>
             <div className="prose text-sm text-slate-600">
               <ul>
                 <li><strong>Saved plans:</strong> 3 years from the date of creation, then automatically deleted</li>
-                <li><strong>Email addresses:</strong> deleted with the plan, unless separately opted in to communications</li>
-                <li><strong>AI chat logs:</strong> not stored beyond the current session unless explicitly saved</li>
+                <li><strong>Your account:</strong> until you delete it from your dashboard (Account tab) — this removes all plans you own</li>
+                <li><strong>Family members and task notes:</strong> deleted with the plan, or when the owner removes that person</li>
+                <li><strong>Sign-in links:</strong> expire after 20 minutes and are deleted after 1 day</li>
+                <li><strong>AI chat messages:</strong> not stored by AfterCare; they are sent to OpenAI to generate a reply</li>
                 <li><strong>Server logs:</strong> 90 days</li>
               </ul>
               <p>You can request deletion of your data at any time — see section 7.</p>
@@ -98,9 +123,9 @@ export default function PrivacyPage() {
             <div className="prose text-sm text-slate-600">
               <p>We use the following third-party processors. All are contractually required to process your data only on our instructions and in compliance with UK GDPR:</p>
               <ul>
-                <li><strong>Supabase Inc.</strong> (database hosting) — data stored in EU (Frankfurt) region</li>
+                <li><strong>Neon Inc.</strong> (database hosting) — stores your account and saved plans</li>
                 <li><strong>OpenAI LLC</strong> (AI assistant) — messages sent to the AI are processed in the USA under EU/UK Standard Contractual Clauses</li>
-                <li><strong>Resend Inc.</strong> (email delivery) — email addresses are processed to send your plan link and reminders</li>
+                <li><strong>Resend Inc.</strong> (email delivery) — email addresses are processed to send sign-in links, family invitations, your plan link and reminders</li>
                 <li><strong>Vercel Inc.</strong> (website hosting) — your requests are processed on Vercel servers</li>
               </ul>
               <p><strong>We do not sell your data.</strong> We do not share your data with funeral directors, insurers, or any other commercial partners without your explicit consent.</p>
@@ -111,13 +136,12 @@ export default function PrivacyPage() {
             <h2 className="text-lg font-semibold text-slate-800 mb-3">6. Transfers outside the UK</h2>
             <div className="prose text-sm text-slate-600">
               <p>
-                Some of our processors (OpenAI, Vercel, Resend) are based in the USA. Transfers to the USA are protected by either:
+                Our processors (Neon, OpenAI, Vercel, Resend) are based in the USA. Transfers to the USA are protected by either:
               </p>
               <ul>
                 <li>The UK International Data Transfer Agreement (IDTA), or</li>
                 <li>UK adequacy decisions where applicable</li>
               </ul>
-              <p>Supabase stores all AfterCare data in EU data centres.</p>
             </div>
           </section>
 
@@ -127,11 +151,11 @@ export default function PrivacyPage() {
               <p>Under UK GDPR you have the following rights:</p>
               <ul>
                 <li><strong>Right of access:</strong> request a copy of the data we hold about you</li>
-                <li><strong>Right to erasure:</strong> request deletion of your data</li>
+                <li><strong>Right to erasure:</strong> delete individual plans, or your whole account, yourself from the dashboard — or ask us to</li>
                 <li><strong>Right to rectification:</strong> correct inaccurate data</li>
                 <li><strong>Right to portability:</strong> receive your data in a machine-readable format</li>
                 <li><strong>Right to object:</strong> object to processing based on legitimate interests</li>
-                <li><strong>Right to withdraw consent:</strong> withdraw consent for reminder emails at any time</li>
+                <li><strong>Right to stop reminders:</strong> use the link in any reminder email, or the Account tab on your dashboard</li>
               </ul>
               <p>
                 To exercise any of these rights, email{" "}
