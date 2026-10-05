@@ -1,7 +1,8 @@
-// Applies db/schema.sql (idempotent — safe to run any number of times)
+// Applies db/schema.mjs (idempotent — safe to run any number of times)
 // to the database in DATABASE_URL (or POSTGRES_URL).
 //   npm run db:migrate
 import { readFileSync, existsSync } from "node:fs";
+import { SCHEMA_SQL } from "../db/schema.mjs";
 import postgres from "postgres";
 
 // Load .env.local / .env so `npm run db:migrate` works without exporting variables
@@ -21,7 +22,7 @@ if (!url) {
 
 const sql = postgres(url, { max: 1, onnotice: () => {} });
 try {
-  await sql.unsafe(readFileSync(new URL("../db/schema.sql", import.meta.url), "utf8"));
+  await sql.unsafe(SCHEMA_SQL);
   console.log("✓ Database schema is up to date.");
 } catch (e) {
   console.error("✗ Migration failed:", e.message);

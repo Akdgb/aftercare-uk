@@ -36,7 +36,6 @@ You need Node.js 20+ and Docker.
 npm install
 cp .env.example .env.local     # then set SESSION_SECRET (see the file)
 docker compose up -d           # starts a local Postgres
-npm run db:migrate             # creates the tables (safe to re-run)
 npm run dev                    # http://localhost:3000
 ```
 
@@ -65,9 +64,8 @@ CI runs everything, including the database tests, on every pull request.
    `.env.example`: `DATABASE_URL` (the Neon string, ending in `?sslmode=require`),
    `SESSION_SECRET`, `NEXT_PUBLIC_APP_URL`, `CRON_SECRET`, and optionally
    `RESEND_API_KEY` + `EMAIL_FROM` (real emails) and `OPENAI_API_KEY` (AI assistant).
-4. Create the tables once from your computer:
-   `DATABASE_URL="<neon string>" npm run db:migrate`
-5. Deploy. `vercel.json` runs `/api/cron/reminders` daily at 09:00 UTC to send
+4. Deploy. The app creates and upgrades its own database tables when it starts
+   (`instrumentation.ts`); `npm run db:migrate` does the same by hand if you want. `vercel.json` runs `/api/cron/reminders` daily at 09:00 UTC to send
    reminders and delete expired data.
 
 Any other Postgres host (Supabase, Railway, a VPS…) works the same way — only
@@ -83,7 +81,7 @@ Any other Postgres host (Supabase, Railway, a VPS…) works the same way — onl
 | Auth | `lib/session.ts`, `lib/auth-db.ts`, `proxy.ts` (guards `/dashboard` and `/plan/<id>`) |
 | Plan UI | `components/plan/plan-view.tsx`, shared by `/plan` (local) and `/plan/[id]` (saved, with family) |
 | Emails | `lib/email.ts`, `lib/email-templates.ts` |
-| Schema | `db/schema.sql` (idempotent) |
+| Schema | `db/schema.mjs` (idempotent; applied automatically on startup) |
 
 ## Disclaimer
 

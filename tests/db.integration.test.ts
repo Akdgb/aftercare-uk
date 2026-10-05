@@ -4,7 +4,6 @@
  * TEST_DATABASE_URL=postgres://aftercare:aftercare@localhost:5432/aftercare npm test).
  * WARNING: truncates all AfterCare tables in that database.
  */
-import { readFileSync } from "node:fs";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 const url = process.env.TEST_DATABASE_URL;
@@ -22,7 +21,9 @@ describe.skipIf(!url)("database layer (real Postgres)", async () => {
 
   beforeAll(async () => {
     const sql = db();
-    await sql.unsafe(readFileSync("db/schema.sql", "utf8"));
+    // Run the real startup migration twice: it must be safe to repeat
+    const { migrate } = await import("@/lib/migrate");
+    await Promise.all([migrate(sql), migrate(sql)]);
     await sql`TRUNCATE users, magic_links, saved_plans, plan_members, task_comments CASCADE`;
     for (const u of [owner, sister, stranger]) {
       const user = await auth.verifyMagicLink(await auth.createMagicLink(u.email));

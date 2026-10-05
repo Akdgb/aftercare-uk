@@ -1,7 +1,7 @@
--- AfterCare UK — Postgres schema
--- Idempotent: safe to re-run. Apply with `npm run db:migrate`
--- (or paste into Vercel Dashboard → Storage → your DB → Query tab).
-
+// AfterCare UK — Postgres schema.
+// Idempotent (safe to run any number of times). Applied automatically when the
+// app starts (instrumentation.ts) and by `npm run db:migrate`.
+export const SCHEMA_SQL = `
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
 -- Users (created automatically on first sign-in)
@@ -65,3 +65,4 @@ CREATE TABLE IF NOT EXISTS task_comments (
 );
 
 CREATE INDEX IF NOT EXISTS task_comments_plan_idx ON task_comments (plan_id, created_at);
+`;
