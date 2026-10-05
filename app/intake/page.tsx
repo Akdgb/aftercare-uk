@@ -21,7 +21,8 @@ const initialData: IntakeFormData = {
   email: "",
   phone: "",
   funeralPreference: "unsure",
-  faith: "none",
+  faith: "prefer-not-to-say",
+  faithConsent: false,
   housingType: "unsure",
   receivingBenefits: "unsure",
   needsFinancialHelp: "unsure",
@@ -83,6 +84,9 @@ export default function IntakePage() {
       if (!data.deceasedLastName.trim()) newErrors.deceasedLastName = "Last name is required";
       if (!data.dateOfDeath) newErrors.dateOfDeath = "Date of death is required";
       if (!data.locationOfDeath.trim()) newErrors.locationOfDeath = "Location is required";
+    }
+    if (step === 4 && data.faith !== "prefer-not-to-say" && !data.faithConsent) {
+      newErrors.faithConsent = "Please tick the box to let us use this, or choose \"Prefer not to say\".";
     }
     if (step === 2) {
       if (!data.relationship) newErrors.relationship = "Please select your relationship";
@@ -322,7 +326,8 @@ export default function IntakePage() {
             <div className="animate-fade-up">
               <h2 className="text-xl font-semibold text-slate-800 mb-1">Faith &amp; cultural requirements</h2>
               <p className="text-sm text-slate-500 mb-6">
-                This helps us provide relevant guidance for arranging the funeral.
+                Optional. This helps us include faith-specific steps — for example, some traditions
+                hold the funeral within 24 hours.
               </p>
               <div className="grid grid-cols-2 gap-2">
                 {([
@@ -334,18 +339,40 @@ export default function IntakePage() {
                   { value: "humanist", label: "Humanist" },
                   { value: "african-caribbean", label: "African / Caribbean" },
                   { value: "other", label: "Other" },
-                  { value: "none", label: "No preference" },
+                  { value: "none", label: "No religious requirements" },
+                  { value: "prefer-not-to-say", label: "Prefer not to say" },
                 ] as { value: FaithOption; label: string }[]).map((opt) => (
                   <OptionCard
                     key={opt.value}
                     value={opt.value}
                     selected={data.faith === opt.value}
-                    onClick={() => update("faith", opt.value)}
+                    onClick={() => {
+                      update("faith", opt.value);
+                      if (opt.value === "prefer-not-to-say") update("faithConsent", false);
+                    }}
                   >
                     {opt.label}
                   </OptionCard>
                 ))}
               </div>
+              {data.faith !== "prefer-not-to-say" && (
+                <label className="mt-5 flex items-start gap-3 bg-stone-50 border border-stone-200 rounded-xl p-4 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    className="mt-0.5 h-4 w-4 flex-shrink-0"
+                    checked={data.faithConsent ?? false}
+                    onChange={(e) => update("faithConsent", e.target.checked)}
+                  />
+                  <span className="text-sm text-slate-600 leading-relaxed">
+                    I agree to AfterCare using this answer to tailor the plan. If I save the plan, it is stored
+                    securely and seen only by me and family members I invite. I can remove it at any time.{" "}
+                    <a href="/privacy#special-category" target="_blank" className="underline">
+                      Why we ask
+                    </a>
+                  </span>
+                </label>
+              )}
+              {errors.faithConsent && <p className="mt-2 text-xs text-red-600">{errors.faithConsent}</p>}
             </div>
           )}
 

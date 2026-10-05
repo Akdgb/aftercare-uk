@@ -55,6 +55,14 @@ describe.skipIf(!url)("database layer (real Postgres)", async () => {
     expect(found?.plan.task_statuses).toEqual({ "1": "completed", "notify-hmrc": "completed", "notify-banks": "in-progress" });
   });
 
+  it("removes the faith answer when consent is withdrawn, keeping the rest", async () => {
+    const id = (await store.savePlan(owner.userId, { deceasedFirstName: "Ann", faith: "jewish", faithConsent: true }))!;
+    await store.removeFaith(id);
+    const found = await store.getPlanForUser(id, owner);
+    expect(found?.plan.intake_data).toEqual({ deceasedFirstName: "Ann", faith: "prefer-not-to-say", faithConsent: false });
+    await store.deletePlan(id, owner.userId);
+  });
+
   it("only lets the owner and invited members see a plan", async () => {
     expect((await store.getPlanForUser(planId, owner))?.role).toBe("owner");
     expect(await store.getPlanForUser(planId, sister)).toBeNull();

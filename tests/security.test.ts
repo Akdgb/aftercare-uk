@@ -77,6 +77,17 @@ describe("intakeSchema", () => {
     expect(intakeSchema.safeParse({ ...valid, deceasedFirstName: "  " }).success).toBe(false);
   });
 
+  it("keeps a faith answer only with explicit consent", () => {
+    const withConsent = intakeSchema.parse({ ...valid, faith: "muslim", faithConsent: true });
+    expect(withConsent.faith).toBe("muslim");
+
+    for (const faithConsent of [false, undefined]) {
+      const parsed = intakeSchema.parse({ ...valid, faith: "muslim", faithConsent });
+      expect(parsed.faith).toBe("prefer-not-to-say");
+      expect(parsed.faithConsent).toBe(false);
+    }
+  });
+
   it("strips unexpected fields", () => {
     const parsed = intakeSchema.parse({ ...valid, isAdmin: true });
     expect(parsed).not.toHaveProperty("isAdmin");

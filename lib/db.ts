@@ -134,6 +134,17 @@ export async function setTaskAssignee(planId: string, taskId: string, email: str
   }
 }
 
+/** Withdraws consent for faith data: erases the answer from the stored intake. */
+export async function removeFaith(planId: string) {
+  const sql = db();
+  await sql`
+    UPDATE saved_plans
+    SET intake_data = intake_data || ${sql.json({ faith: "prefer-not-to-say", faithConsent: false })},
+        updated_at = NOW()
+    WHERE id = ${planId}
+  `;
+}
+
 export async function deletePlan(id: string, userId: string): Promise<boolean> {
   const rows = await db()`DELETE FROM saved_plans WHERE id = ${id} AND user_id = ${userId}`;
   return rows.count > 0;

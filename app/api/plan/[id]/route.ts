@@ -4,6 +4,7 @@ import {
   getComments,
   getMembers,
   getPlanOwnerEmail,
+  removeFaith,
   setTaskAssignee,
   setTaskStatus,
   TASK_STATUSES,
@@ -52,6 +53,15 @@ export async function PATCH(req: NextRequest, { params }: Params) {
 
   const raw = await req.json().catch(() => null);
   const body: Record<string, unknown> = raw && typeof raw === "object" ? raw : {};
+
+  if (body.removeFaith === true) {
+    if (access.role !== "owner") {
+      return NextResponse.json({ error: "Only the plan owner can change this" }, { status: 403 });
+    }
+    await removeFaith(id);
+    return NextResponse.json({ ok: true });
+  }
+
   const taskId = body.taskId;
   if (typeof taskId !== "string" || !generateActionPlan(intake).some((t) => t.id === taskId)) {
     return NextResponse.json({ error: "Unknown task" }, { status: 400 });

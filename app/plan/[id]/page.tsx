@@ -164,6 +164,14 @@ export default function SavedPlanPage() {
       sidebar={
         <>
           <FamilyPanel plan={plan} onChange={(members) => setPlan({ ...plan, members })} />
+          {plan.role === "owner" && plan.intake_data.faith && plan.intake_data.faith !== "prefer-not-to-say" && (
+            <RemoveFaith
+              planId={planId}
+              onRemoved={() =>
+                setPlan({ ...plan, intake_data: { ...plan.intake_data, faith: "prefer-not-to-say", faithConsent: false } })
+              }
+            />
+          )}
           {plan.role === "owner" ? (
             <DeletePlan planId={planId} onDeleted={() => router.push("/dashboard")} />
           ) : (
@@ -421,6 +429,31 @@ function TaskCollaboration({
         </div>
       )}
     </div>
+  );
+}
+
+function RemoveFaith({ planId, onRemoved }: { planId: string; onRemoved: () => void }) {
+  const [busy, setBusy] = useState(false);
+  const remove = async () => {
+    if (!confirm("Remove the faith answer from this plan? Faith-specific tasks will be removed from the list.")) return;
+    setBusy(true);
+    try {
+      await api(`/api/plan/${planId}`, { method: "PATCH", body: JSON.stringify({ removeFaith: true }) });
+      onRemoved();
+    } catch (e) {
+      alert((e as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <button
+      onClick={remove}
+      disabled={busy}
+      className="w-full text-xs text-slate-400 hover:text-slate-700 py-2"
+    >
+      Remove faith details from this plan
+    </button>
   );
 }
 

@@ -43,7 +43,7 @@ export default function PrivacyPage() {
               <ul>
                 <li><strong>Your contact details:</strong> email address and postcode</li>
                 <li><strong>Your relationship</strong> to the deceased</li>
-                <li><strong>Plan preferences:</strong> funeral type, faith/cultural requirements, housing situation, financial support needs</li>
+                <li><strong>Plan preferences:</strong> funeral type, housing situation, financial support needs, and — only if you consent — faith/cultural requirements</li>
                 <li><strong>Usage data:</strong> which tasks you have completed, when you last accessed your plan</li>
                 <li><strong>Family workspace:</strong> the names and email addresses of people you invite to a plan, who has taken on which task, and notes left on tasks</li>
                 <li><strong>AI chat messages:</strong> questions you ask the AI assistant</li>
@@ -67,6 +67,7 @@ export default function PrivacyPage() {
                     ["Generate your personalised bereavement plan", "Legitimate interests (necessary to provide the service you requested)"],
                     ["Save your plan and allow you to return to it", "Legitimate interests / Contract"],
                     ["Send you your plan link by email", "Legitimate interests / Contract"],
+                    ["Use your faith answer to add faith-specific steps (optional)", "Explicit consent — UK GDPR Article 9(2)(a)"],
                     ["Let invited family members see and update a shared plan", "Legitimate interests (you asked us to share it)"],
                     ["Send occasional task reminder emails (at most weekly; turn off any time)", "Legitimate interests"],
                     ["Improve the service and fix errors", "Legitimate interests"],
@@ -79,6 +80,26 @@ export default function PrivacyPage() {
                   ))}
                 </tbody>
               </table>
+            </div>
+          </section>
+
+          <section className="p-6 sm:p-8" id="special-category">
+            <h2 className="text-lg font-semibold text-slate-800 mb-3">Faith and belief (special category data)</h2>
+            <div className="prose text-sm text-slate-600">
+              <p>
+                The question about faith is optional. Some traditions have specific requirements — for example,
+                burial within 24 hours — so the answer lets us add the right steps to your plan.
+              </p>
+              <p>
+                Religious and philosophical beliefs are &ldquo;special category&rdquo; data under UK GDPR. We only
+                keep your answer if you tick the consent box (UK GDPR Article 9(2)(a), explicit consent). If you
+                choose &ldquo;Prefer not to say&rdquo; or don&apos;t tick the box, we don&apos;t store it.
+              </p>
+              <p>
+                You can withdraw consent at any time with &ldquo;Remove faith details from this plan&rdquo; on your
+                saved plan, by deleting the plan, or by emailing us. The answer is visible only to you and family
+                members you invite to the plan.
+              </p>
             </div>
           </section>
 

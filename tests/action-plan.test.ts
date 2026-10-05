@@ -51,6 +51,11 @@ describe("generateActionPlan", () => {
     expect(other).toContain("notify-land-registry");
   });
 
+  it("adds no faith tasks when faith is not shared", () => {
+    const ids = generateActionPlan({ ...base, faith: "prefer-not-to-say" }).map((t) => t.id);
+    expect(ids.filter((id) => id.startsWith("contact-") && id !== "contact-funeral-director" && id !== "contact-solicitor" && id !== "contact-landlord")).toEqual([]);
+  });
+
   it("does not leak the internal legacyId field", () => {
     for (const t of generateActionPlan(base)) expect(t).not.toHaveProperty("legacyId");
   });
