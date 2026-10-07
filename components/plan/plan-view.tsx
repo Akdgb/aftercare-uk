@@ -1,5 +1,6 @@
 "use client";
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import {
   ArrowRight,
   Building2,
@@ -7,6 +8,7 @@ import {
   ChevronDown,
   ExternalLink,
   Home,
+  Pencil,
   Phone,
   PoundSterling,
   Printer,
@@ -52,6 +54,8 @@ interface PlanViewProps {
   sidebar?: React.ReactNode;
   /** Extra controls shown when a task is opened (e.g. assignee and notes). */
   renderTaskExtras?: (task: ActionPlanTask) => React.ReactNode;
+  /** Where "Edit answers" goes; omit to hide it (e.g. for invited family). */
+  editHref?: string;
   /** Extra controls on the "Up next" card (e.g. who's doing it). */
   renderUpNextExtras?: (task: ActionPlanTask) => React.ReactNode;
   /** Small summary shown on the collapsed task row (e.g. who's doing it). */
@@ -70,6 +74,7 @@ export function PlanView({
   renderTaskExtras,
   renderTaskMeta,
   renderUpNextExtras,
+  editHref,
   extraFilter,
 }: PlanViewProps) {
   const [view, setView] = useState<View>("todo");
@@ -161,6 +166,14 @@ export function PlanView({
                     </span>
                   )}
                 </p>
+              )}
+              {editHref && (
+                <Link
+                  href={editHref}
+                  className="print:hidden inline-flex items-center gap-1.5 mt-2 text-sm font-medium text-ink-700 underline underline-offset-4 decoration-ink-300 hover:decoration-ink-700"
+                >
+                  <Pencil className="h-3.5 w-3.5" /> Edit answers
+                </Link>
               )}
               <p className="text-sm sm:text-base text-ink-600 mt-3 max-w-xl print:hidden">
                 {encouragement(done, tasks.length)}

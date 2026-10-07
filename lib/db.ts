@@ -134,6 +134,27 @@ export async function setTaskAssignee(planId: string, taskId: string, email: str
   }
 }
 
+/**
+ * Replaces a plan's answers. Progress and assignees are passed in already keyed
+ * by stable task IDs, so ticks on tasks that still apply are kept.
+ */
+export async function updateIntake(
+  planId: string,
+  intake: Record<string, unknown>,
+  taskStatuses: Record<string, string>,
+  taskAssignees: Record<string, string>
+) {
+  const sql = db();
+  await sql`
+    UPDATE saved_plans
+    SET intake_data = ${sql.json(intake as JSONValue)},
+        task_statuses = ${sql.json(taskStatuses)},
+        task_assignees = ${sql.json(taskAssignees)},
+        updated_at = NOW()
+    WHERE id = ${planId}
+  `;
+}
+
 /** Withdraws consent for faith data: erases the answer from the stored intake. */
 export async function removeFaith(planId: string) {
   const sql = db();

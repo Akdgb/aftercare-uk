@@ -150,6 +150,7 @@ export default function SavedPlanPage() {
       <PlanView
         intake={plan.intake_data}
         statuses={plan.task_statuses}
+        editHref={plan.role === "owner" ? `/edit-answers?plan=${planId}` : undefined}
         onToggle={toggle}
         extraFilter={{ label: "Only tasks assigned to me", test: (t) => plan.task_assignees[t.id] === plan.me }}
         headerActions={

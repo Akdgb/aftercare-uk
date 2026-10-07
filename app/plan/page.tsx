@@ -72,6 +72,7 @@ export default function LocalPlanPage() {
     <PlanView
       intake={intake}
       statuses={statuses}
+      editHref="/edit-answers?plan=local"
       onToggle={(taskId, next) => setRawStatuses(JSON.stringify({ ...statuses, [taskId]: next }))}
       banner={
         linkSentTo ? (

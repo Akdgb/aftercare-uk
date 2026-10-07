@@ -74,6 +74,15 @@ describe.skipIf(!url)("database layer (real Postgres)", async () => {
     await store.deletePlan(id, owner.userId);
   });
 
+  it("updates a plan's answers while keeping progress", async () => {
+    const id = (await store.savePlan(owner.userId, { deceasedFirstName: "Ann", faith: "christian" }, { "register-death": "completed" }))!;
+    await store.updateIntake(id, { deceasedFirstName: "Ann", faith: "muslim", faiths: ["muslim"] }, { "register-death": "completed" }, {});
+    const found = await store.getPlanForUser(id, owner);
+    expect(found?.plan.intake_data).toMatchObject({ faith: "muslim", faiths: ["muslim"] });
+    expect(found?.plan.task_statuses).toEqual({ "register-death": "completed" });
+    await store.deletePlan(id, owner.userId);
+  });
+
   it("only lets the owner and invited members see a plan", async () => {
     expect((await store.getPlanForUser(planId, owner))?.role).toBe("owner");
     expect(await store.getPlanForUser(planId, sister)).toBeNull();
