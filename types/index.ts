@@ -39,6 +39,8 @@ export interface IntakeFormData {
   // Faith — religious/philosophical belief is "special category" data under
   // UK GDPR, so it is only kept with explicit consent (faithConsent)
   faith: FaithOption;
+  /** All faiths/traditions chosen (people often identify with more than one). */
+  faiths?: FaithOption[];
   faithConsent?: boolean;
 
   // Housing

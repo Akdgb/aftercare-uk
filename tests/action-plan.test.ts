@@ -56,6 +56,20 @@ describe("generateActionPlan", () => {
     expect(ids.filter((id) => id.startsWith("contact-") && id !== "contact-funeral-director" && id !== "contact-solicitor" && id !== "contact-landlord")).toEqual([]);
   });
 
+  it("includes steps for every faith chosen, not just one", () => {
+    const ids = generateActionPlan({ ...base, faith: "muslim", faiths: ["african-caribbean", "christian", "muslim"] }).map(
+      (t) => t.id
+    );
+    expect(ids).toContain("contact-mosque");
+    expect(ids).toContain("contact-faith-community");
+    expect(ids.filter((id) => id === "contact-faith-community")).toHaveLength(1);
+  });
+
+  it("reads older plans that stored a single faith", () => {
+    const ids = generateActionPlan({ ...base, faith: "jewish", faiths: undefined }).map((t) => t.id);
+    expect(ids).toContain("contact-chevra-kadisha");
+  });
+
   it("does not leak the internal legacyId field", () => {
     for (const t of generateActionPlan(base)) expect(t).not.toHaveProperty("legacyId");
   });

@@ -49,4 +49,6 @@ export const LOCAL_KEYS = {
   statuses: "aftercare_task_statuses",
   /** Set when a signed-out user asks to save their local plan; the dashboard saves it after sign-in. */
   pendingSave: "aftercare_pending_save",
+  /** Email a save link was sent to during the questions (shown on the plan until used). */
+  linkSentTo: "aftercare_link_sent_to",
 } as const;

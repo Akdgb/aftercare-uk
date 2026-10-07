@@ -1,4 +1,5 @@
 import type { IntakeFormData, ActionPlanTask } from "@/types";
+import { getFaiths } from "@/lib/faith";
 
 // Task IDs are stable slugs so saved progress survives changes to the plan.
 // Plans saved before slugs existed stored progress under sequential numbers
@@ -315,8 +316,9 @@ function buildTasks(data: IntakeFormData) {
     )
   );
 
-  // ── Faith-specific ─────────────────────────────────────────────────────────
-  if (data.faith === "muslim") {
+  // ── Faith-specific (several can apply) ────────────────────────────────────
+  const faiths = getFaiths(data);
+  if (faiths.includes("muslim")) {
     tasks.push(
       makeTask("contact-mosque", {
         title: "Contact your local mosque for funeral guidance",
@@ -328,7 +330,7 @@ function buildTasks(data: IntakeFormData) {
     );
   }
 
-  if (data.faith === "jewish") {
+  if (faiths.includes("jewish")) {
     tasks.push(
       makeTask("contact-chevra-kadisha", {
         title: "Contact the Chevra Kadisha (Jewish burial society)",
@@ -340,7 +342,7 @@ function buildTasks(data: IntakeFormData) {
     );
   }
 
-  if (data.faith === "hindu" || data.faith === "sikh") {
+  if (faiths.includes("hindu") || faiths.includes("sikh")) {
     tasks.push(
       makeTask("contact-temple", {
         title: "Contact your local temple or religious community",
@@ -349,6 +351,23 @@ function buildTasks(data: IntakeFormData) {
         category: "immediate",
         priority: "urgent",
       })
+    );
+  }
+
+  // Traditions without a specific step above still get a pointer to their community
+  if (faiths.some((f) => ["christian", "humanist", "african-caribbean", "other"].includes(f))) {
+    tasks.push(
+      makeTask(
+        "contact-faith-community",
+        {
+          title: "Speak to your faith or cultural community",
+          description:
+            "A minister, celebrant or community elder can help plan the funeral and any traditions that matter to the family — for example a wake or nine-night. Let the funeral director know early.",
+          category: "personal",
+          priority: "this-week",
+        },
+        { legacy: false }
+      )
     );
   }
 

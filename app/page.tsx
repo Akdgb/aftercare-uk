@@ -18,12 +18,13 @@ export default function HomePage() {
       <main className="flex-1 flex items-center">
         <div className="max-w-xl w-full mx-auto px-5 py-10 text-center animate-fade-up">
           <h1 className="text-4xl sm:text-5xl font-semibold text-ink-900 leading-[1.1]">
-            Someone has died.
+            We&apos;ll help you with
             <br />
-            <span className="text-ink-600">Here&apos;s what to do next.</span>
+            <span className="text-ink-600">what comes next.</span>
           </h1>
           <p className="text-lg text-ink-600 mt-5">
-            Answer 6 quick questions and get a personal, step-by-step checklist. Free and private.
+            When someone close to you has died, there&apos;s a lot to sort out. Answer a few gentle questions and
+            we&apos;ll give you a step-by-step checklist. Free and private.
           </p>
           <Link
             href="/intake"

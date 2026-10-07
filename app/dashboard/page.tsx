@@ -50,6 +50,7 @@ export default function DashboardPage() {
               const { planId } = await res.json();
               writeLocal(LOCAL_KEYS.intake, null);
               writeLocal(LOCAL_KEYS.statuses, null);
+              writeLocal(LOCAL_KEYS.linkSentTo, null);
               router.replace(`/plan/${planId}`);
               return;
             }

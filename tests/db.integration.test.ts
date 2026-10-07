@@ -57,10 +57,20 @@ describe.skipIf(!url)("database layer (real Postgres)", async () => {
   });
 
   it("removes the faith answer when consent is withdrawn, keeping the rest", async () => {
-    const id = (await store.savePlan(owner.userId, { deceasedFirstName: "Ann", faith: "jewish", faithConsent: true }))!;
+    const id = (await store.savePlan(owner.userId, {
+      deceasedFirstName: "Ann",
+      faith: "jewish",
+      faiths: ["jewish", "african-caribbean"],
+      faithConsent: true,
+    }))!;
     await store.removeFaith(id);
     const found = await store.getPlanForUser(id, owner);
-    expect(found?.plan.intake_data).toEqual({ deceasedFirstName: "Ann", faith: "prefer-not-to-say", faithConsent: false });
+    expect(found?.plan.intake_data).toEqual({
+      deceasedFirstName: "Ann",
+      faith: "prefer-not-to-say",
+      faiths: [],
+      faithConsent: false,
+    });
     await store.deletePlan(id, owner.userId);
   });
 

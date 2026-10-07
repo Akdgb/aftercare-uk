@@ -88,6 +88,16 @@ describe("intakeSchema", () => {
     }
   });
 
+  it("keeps several faiths with consent and drops them all without", () => {
+    const kept = intakeSchema.parse({ ...valid, faith: "christian", faiths: ["african-caribbean", "christian"], faithConsent: true });
+    expect(kept.faiths).toEqual(["african-caribbean", "christian"]);
+    expect(kept.faith).toBe("african-caribbean");
+
+    const dropped = intakeSchema.parse({ ...valid, faiths: ["african-caribbean", "christian"] });
+    expect(dropped.faiths).toEqual([]);
+    expect(dropped.faith).toBe("prefer-not-to-say");
+  });
+
   it("strips unexpected fields", () => {
     const parsed = intakeSchema.parse({ ...valid, isAdmin: true });
     expect(parsed).not.toHaveProperty("isAdmin");

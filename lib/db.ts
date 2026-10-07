@@ -139,7 +139,7 @@ export async function removeFaith(planId: string) {
   const sql = db();
   await sql`
     UPDATE saved_plans
-    SET intake_data = intake_data || ${sql.json({ faith: "prefer-not-to-say", faithConsent: false })},
+    SET intake_data = intake_data || ${sql.json({ faith: "prefer-not-to-say", faiths: [], faithConsent: false })},
         updated_at = NOW()
     WHERE id = ${planId}
   `;
