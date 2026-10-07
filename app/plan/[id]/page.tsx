@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PlanView, type TaskStatus } from "@/components/plan/plan-view";
 import { cn } from "@/lib/utils";
+import { getFaiths } from "@/lib/faith";
 import type { ActionPlanTask, IntakeFormData } from "@/types";
 
 interface Member {
@@ -149,6 +150,7 @@ export default function SavedPlanPage() {
       <PlanView
         intake={plan.intake_data}
         statuses={plan.task_statuses}
+        editHref={plan.role === "owner" ? `/edit-answers?plan=${planId}` : undefined}
         onToggle={toggle}
         extraFilter={{ label: "Only tasks assigned to me", test: (t) => plan.task_assignees[t.id] === plan.me }}
         headerActions={
@@ -161,11 +163,11 @@ export default function SavedPlanPage() {
         sidebar={
           <>
             <FamilyPanel plan={plan} onChange={(members) => setPlan({ ...plan, members })} />
-            {plan.role === "owner" && plan.intake_data.faith && plan.intake_data.faith !== "prefer-not-to-say" && (
+            {plan.role === "owner" && getFaiths(plan.intake_data).length > 0 && (
               <RemoveFaith
                 planId={planId}
                 onRemoved={() =>
-                  setPlan({ ...plan, intake_data: { ...plan.intake_data, faith: "prefer-not-to-say", faithConsent: false } })
+                  setPlan({ ...plan, intake_data: { ...plan.intake_data, faith: "prefer-not-to-say", faiths: [], faithConsent: false } })
                 }
               />
             )}
@@ -175,6 +177,27 @@ export default function SavedPlanPage() {
               <LeavePlan planId={planId} me={plan.me} onLeft={() => router.push("/dashboard")} />
             )}
           </>
+        }
+        renderUpNextExtras={
+          plan.members.length > 0
+            ? (task) => (
+                <label className="inline-flex items-center gap-2 text-sm text-ink-100">
+                  Who&apos;s doing this?
+                  <select
+                    value={plan.task_assignees[task.id] ?? ""}
+                    onChange={(e) => assign(task.id, e.target.value || null)}
+                    className="bg-white/10 border border-white/25 rounded-lg px-2.5 py-1.5 text-white text-sm [&>option]:text-ink-900"
+                  >
+                    <option value="">Nobody yet</option>
+                    {people.map((p) => (
+                      <option key={p.email} value={p.email}>
+                        {p.name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              )
+            : undefined
         }
         renderTaskMeta={(task) => {
           const who = plan.task_assignees[task.id];

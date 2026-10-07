@@ -5,6 +5,7 @@ import {
   getMembers,
   getPlanOwnerEmail,
   removeFaith,
+  updateIntake,
   setTaskAssignee,
   setTaskStatus,
   TASK_STATUSES,
@@ -12,6 +13,7 @@ import {
 } from "@/lib/db";
 import { generateActionPlan, normaliseTaskKeys } from "@/lib/action-plan";
 import { requirePlanAccess } from "@/lib/plan-access";
+import { intakeSchema } from "@/lib/intake-schema";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -53,6 +55,24 @@ export async function PATCH(req: NextRequest, { params }: Params) {
 
   const raw = await req.json().catch(() => null);
   const body: Record<string, unknown> = raw && typeof raw === "object" ? raw : {};
+
+  if ("intakeData" in body) {
+    if (access.role !== "owner") {
+      return NextResponse.json({ error: "Only the plan owner can change the answers" }, { status: 403 });
+    }
+    const parsed = intakeSchema.safeParse(body.intakeData);
+    if (!parsed.success) return NextResponse.json({ error: "Invalid answers" }, { status: 400 });
+    // Keep contact details the edit form doesn't show
+    const next = { ...parsed.data, email: access.intake.email ?? "", phone: access.intake.phone ?? "" };
+    // Re-key progress against the OLD answers first: legacy numeric IDs depend on them
+    await updateIntake(
+      id,
+      next,
+      normaliseTaskKeys(access.intake, access.plan.task_statuses),
+      normaliseTaskKeys(access.intake, access.plan.task_assignees)
+    );
+    return NextResponse.json({ ok: true });
+  }
 
   if (body.removeFaith === true) {
     if (access.role !== "owner") {

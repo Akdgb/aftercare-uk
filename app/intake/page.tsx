@@ -2,9 +2,10 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, ArrowRight, Check, Loader2 } from "lucide-react";
+import { FAITHS, HOMES, LOCATIONS, MONEY, RELATIONSHIPS, type Choice } from "@/lib/intake-options";
 import { cn } from "@/lib/utils";
 import { LOCAL_KEYS, writeLocal } from "@/lib/use-local-storage";
-import type { DeceasedLocation, FaithOption, HousingType, IntakeFormData, YesNoUnsure } from "@/types";
+import type { FaithOption, IntakeFormData } from "@/types";
 
 // Only questions that change the plan. Every screen after the first is a
 // single tap that moves on by itself.
@@ -26,59 +27,14 @@ const initialData: IntakeFormData = {
   needsFinancialHelp: "unsure",
 };
 
-type Choice<T extends string> = { value: T; label: string; hint?: string };
-
-const LOCATIONS: Choice<DeceasedLocation>[] = [
-  { value: "hospital", label: "In hospital" },
-  { value: "hospice", label: "In a hospice" },
-  { value: "care-home", label: "In a care home" },
-  { value: "home", label: "At home" },
-  { value: "funeral-director", label: "Already with a funeral director" },
-];
-
-const RELATIONSHIPS: Choice<string>[] = [
-  { value: "Spouse / Partner", label: "Husband, wife or partner" },
-  { value: "Son / Daughter", label: "Son or daughter" },
-  { value: "Parent", label: "Parent" },
-  { value: "Sibling", label: "Brother or sister" },
-  { value: "Grandchild", label: "Grandchild" },
-  { value: "Other relative", label: "Other relative" },
-  { value: "Close friend", label: "Friend" },
-];
-
-const HOMES: Choice<HousingType>[] = [
-  { value: "owned", label: "They owned their home" },
-  { value: "private-rental", label: "They rented privately" },
-  { value: "council", label: "Council or housing association" },
-  { value: "supported", label: "Care home or sheltered housing" },
-  { value: "unsure", label: "Not sure" },
-];
-
-const MONEY: Choice<YesNoUnsure>[] = [
-  { value: "yes", label: "Yes, we'll need help", hint: "We'll add the government Funeral Expenses Payment" },
-  { value: "unsure", label: "Not sure yet" },
-  { value: "no", label: "No" },
-];
-
-const FAITHS: Choice<FaithOption>[] = [
-  { value: "prefer-not-to-say", label: "Skip this question" },
-  { value: "none", label: "No religious needs" },
-  { value: "christian", label: "Christian" },
-  { value: "muslim", label: "Muslim" },
-  { value: "jewish", label: "Jewish" },
-  { value: "hindu", label: "Hindu" },
-  { value: "sikh", label: "Sikh" },
-  { value: "humanist", label: "Humanist" },
-  { value: "african-caribbean", label: "African / Caribbean traditions" },
-  { value: "other", label: "Other" },
-];
-
 const TOTAL = 6;
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function IntakePage() {
   const router = useRouter();
   const [isSignedIn, setIsSignedIn] = useState(false);
-  const [step, setStep] = useState(1);
+  // Step 0 is the optional "keep your plan safe" email screen
+  const [step, setStep] = useState(0);
   const [data, setData] = useState<IntakeFormData>(initialData);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -89,7 +45,12 @@ export default function IntakePage() {
   useEffect(() => {
     fetch("/api/auth/me")
       .then((r) => r.json())
-      .then((d) => setIsSignedIn(Boolean(d?.email)))
+      .then((d) => {
+        if (!d?.email) return;
+        setIsSignedIn(true);
+        // Already signed in: no need to ask for an email
+        setStep((s) => (s === 0 ? 1 : s));
+      })
       .catch(() => {});
   }, []);
 
@@ -104,6 +65,20 @@ export default function IntakePage() {
     // A new set of answers starts a fresh plan on this device
     writeLocal(LOCAL_KEYS.intake, JSON.stringify(final));
     writeLocal(LOCAL_KEYS.statuses, null);
+    writeLocal(LOCAL_KEYS.linkSentTo, null);
+    if (!isSignedIn && EMAIL_RE.test(final.email.trim())) {
+      // Email a sign-in link; clicking it saves this plan to their account
+      const email = final.email.trim();
+      const res = await fetch("/api/auth/magic-link", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, next: "/dashboard" }),
+      }).catch(() => null);
+      if (res?.ok) {
+        writeLocal(LOCAL_KEYS.pendingSave, "1");
+        writeLocal(LOCAL_KEYS.linkSentTo, email);
+      }
+    }
     if (isSignedIn) {
       try {
         const res = await fetch("/api/save-plan", {
@@ -129,13 +104,24 @@ export default function IntakePage() {
     if (step < TOTAL) go(step + 1);
   };
 
-  const chooseFaith = (value: FaithOption) => {
-    const next = { ...data, faith: value, faithConsent: false };
-    setData(next);
-    setAnswered((prev) => new Set(prev).add("faith"));
+  const selectedFaiths = data.faiths ?? [];
+
+  const toggleFaith = (value: FaithOption) => {
+    const faiths = selectedFaiths.includes(value)
+      ? selectedFaiths.filter((f) => f !== value)
+      : [...selectedFaiths, value];
+    setData({ ...data, faiths, faith: faiths[0] ?? "prefer-not-to-say", faithConsent: false });
     setError(null);
-    // Not sharing a faith: done. Sharing one: we need consent first (special category data).
-    if (value === "prefer-not-to-say" || value === "none") finish(next);
+  };
+
+  // "No religious needs" / "Skip" end the questions straight away
+  const finishWithoutFaith = (value: FaithOption) =>
+    finish({ ...data, faith: value, faiths: [], faithConsent: false });
+
+  const submitEmail = () => {
+    const email = data.email.trim();
+    if (email && !EMAIL_RE.test(email)) return setError("That email address doesn't look right.");
+    go(1);
   };
 
   const submitNames = () => {
@@ -161,21 +147,76 @@ export default function IntakePage() {
       {/* Progress + back */}
       <div className="flex items-center gap-3 mb-8">
         <button
-          onClick={() => (step > 1 ? go(step - 1) : router.push("/"))}
+          onClick={() => (step > 1 || (step === 1 && !isSignedIn) ? go(step - 1) : router.push("/"))}
           className="p-2 -ml-2 rounded-full text-ink-600 hover:bg-stone-100"
           aria-label="Back"
         >
           <ArrowLeft className="h-5 w-5" />
         </button>
-        <div className="flex-1 h-1.5 bg-stone-200 rounded-full overflow-hidden" role="progressbar" aria-valuenow={step} aria-valuemin={1} aria-valuemax={TOTAL}>
-          <div className="h-full bg-ink-700 rounded-full transition-all duration-500" style={{ width: `${(step / TOTAL) * 100}%` }} />
+        <div className="flex-1 h-1.5 bg-stone-200 rounded-full overflow-hidden" role="progressbar" aria-valuenow={Math.max(step, 0)} aria-valuemin={1} aria-valuemax={TOTAL}>
+          <div className="h-full bg-ink-700 rounded-full transition-all duration-500" style={{ width: `${(Math.max(step, 0.3) / TOTAL) * 100}%` }} />
         </div>
         <span className="text-sm text-ink-500 tabular-nums">
-          {step}/{TOTAL}
+          {step === 0 ? "Optional" : `${step}/${TOTAL}`}
         </span>
       </div>
 
       <div key={step} className="animate-fade-up flex-1">
+        {step === 0 && (
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              submitEmail();
+            }}
+          >
+            <Title>Keep your plan safe</Title>
+            <p className="text-ink-500 mb-6">Optional — add your email and we&apos;ll save the plan to an account for you.</p>
+            <ul className="space-y-3 mb-6">
+              {[
+                ["Gentle reminders", "A short email if a task with a deadline is still open. Turn it off any time."],
+                ["Open it anywhere", "Your phone, a laptop, a relative's computer — your progress follows you."],
+                ["Share the load", "Invite family so everyone can see and tick off tasks."],
+              ].map(([title, body]) => (
+                <li key={title} className="flex gap-3">
+                  <span className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5">
+                    <Check className="h-3.5 w-3.5" strokeWidth={3} />
+                  </span>
+                  <span>
+                    <span className="block font-medium text-ink-900">{title}</span>
+                    <span className="block text-sm text-ink-600">{body}</span>
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <Field label="Your email">
+              <input
+                type="email"
+                inputMode="email"
+                autoComplete="email"
+                value={data.email}
+                onChange={(e) => setData({ ...data, email: e.target.value })}
+                placeholder="you@example.com"
+                className={inputClass}
+              />
+            </Field>
+            <p className="text-xs text-ink-500 mt-2">No password. We&apos;ll email you a link to save your plan. We never share your email.</p>
+            {error && <p className="text-sm text-rose-700 mt-3">{error}</p>}
+            <button type="submit" className={primaryClass + " mt-6"} disabled={!data.email.trim()}>
+              Continue <ArrowRight className="h-5 w-5" />
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setData({ ...data, email: "" });
+                go(1);
+              }}
+              className="w-full mt-3 py-3 text-ink-600 font-medium hover:text-ink-900"
+            >
+              Skip for now
+            </button>
+          </form>
+        )}
+
         {step === 1 && (
           <form
             onSubmit={(e) => {
@@ -183,8 +224,8 @@ export default function IntakePage() {
               submitNames();
             }}
           >
-            <Title>Who has died?</Title>
-            <p className="text-ink-500 mb-6">We&apos;re sorry for your loss. This takes about a minute.</p>
+            <Title>Who is this plan for?</Title>
+            <p className="text-ink-500 mb-6">We&apos;re so sorry for your loss. Tell us their name and when they died.</p>
             <div className="grid grid-cols-2 gap-3">
               <Field label="First name">
                 <input
@@ -242,16 +283,38 @@ export default function IntakePage() {
         )}
 
         {step === 6 && (
-          <>
-            <Question
-              title="Any faith or cultural needs?"
-              subtitle="Some traditions hold the funeral very quickly, so we'd add those steps first. Optional."
-              options={FAITHS}
-              selected={picked("faith")}
-              onPick={chooseFaith}
-              columns
-            />
-            {answered.has("faith") && data.faith !== "prefer-not-to-say" && data.faith !== "none" && (
+          <div>
+            <Title>Any faith or cultural traditions?</Title>
+            <p className="text-ink-500 mb-6">Choose all that apply — we&apos;ll add the steps each one needs. Optional.</p>
+            <div className="grid grid-cols-2 gap-2.5">
+              {FAITHS.filter((f) => f.value !== "prefer-not-to-say" && f.value !== "none").map((f) => {
+                const on = selectedFaiths.includes(f.value);
+                return (
+                  <button
+                    key={f.value}
+                    type="button"
+                    onClick={() => toggleFaith(f.value)}
+                    aria-pressed={on}
+                    className={cn(
+                      "text-left px-4 py-3.5 rounded-2xl border-2 transition-all active:scale-[0.99] flex items-center justify-between gap-2",
+                      on ? "border-ink-700 bg-ink-50" : "border-stone-200 bg-white hover:border-ink-300"
+                    )}
+                  >
+                    <span className="font-medium text-ink-900 leading-snug">{f.label}</span>
+                    <span
+                      className={cn(
+                        "w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0",
+                        on ? "bg-ink-700 border-ink-700" : "border-stone-300"
+                      )}
+                    >
+                      {on && <Check className="h-3 w-3 text-white" strokeWidth={3} />}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {selectedFaiths.length > 0 ? (
               <div className="mt-5 animate-fade-up">
                 <label className="flex items-start gap-3 bg-white border border-stone-200 rounded-2xl p-4 cursor-pointer">
                   <input
@@ -261,8 +324,8 @@ export default function IntakePage() {
                     onChange={(e) => setData({ ...data, faithConsent: e.target.checked })}
                   />
                   <span className="text-sm text-ink-700 leading-relaxed">
-                    I agree to AfterCare using this answer to tailor the plan. It&apos;s only seen by me and family I
-                    invite, and I can remove it at any time.{" "}
+                    I agree to AfterCare using this to tailor the plan. It&apos;s only seen by me and family I invite,
+                    and I can remove it at any time.{" "}
                     <a href="/privacy#special-category" target="_blank" className="underline">
                       Why we ask
                     </a>
@@ -271,17 +334,30 @@ export default function IntakePage() {
                 {error && <p className="text-sm text-rose-700 mt-3">{error}</p>}
                 <button
                   onClick={() =>
-                    data.faithConsent
-                      ? finish(data)
-                      : setError('Please tick the box, or choose "Skip this question".')
+                    data.faithConsent ? finish(data) : setError('Please tick the box, or choose "Skip this question".')
                   }
                   className={primaryClass + " mt-4"}
                 >
                   Show my plan <ArrowRight className="h-5 w-5" />
                 </button>
               </div>
+            ) : (
+              <div className="grid grid-cols-2 gap-2.5 mt-5">
+                <button
+                  onClick={() => finishWithoutFaith("none")}
+                  className="px-4 py-3.5 rounded-2xl border-2 border-stone-200 bg-white font-medium text-ink-900 hover:border-ink-300"
+                >
+                  No religious needs
+                </button>
+                <button
+                  onClick={() => finishWithoutFaith("prefer-not-to-say")}
+                  className="px-4 py-3.5 rounded-2xl border-2 border-stone-200 bg-white font-medium text-ink-900 hover:border-ink-300"
+                >
+                  Skip this question
+                </button>
+              </div>
             )}
-          </>
+          </div>
         )}
       </div>
 

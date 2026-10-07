@@ -2,7 +2,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Cloud, Loader2 } from "lucide-react";
+import { Cloud, Loader2, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PlanView } from "@/components/plan/plan-view";
 import { LOCAL_KEYS, useLocalStorage, writeLocal } from "@/lib/use-local-storage";
@@ -22,6 +22,7 @@ export default function LocalPlanPage() {
   const router = useRouter();
   const [rawIntake] = useLocalStorage(LOCAL_KEYS.intake);
   const [rawStatuses, setRawStatuses] = useLocalStorage(LOCAL_KEYS.statuses);
+  const [linkSentTo] = useLocalStorage(LOCAL_KEYS.linkSentTo);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -71,8 +72,21 @@ export default function LocalPlanPage() {
     <PlanView
       intake={intake}
       statuses={statuses}
+      editHref="/edit-answers?plan=local"
       onToggle={(taskId, next) => setRawStatuses(JSON.stringify({ ...statuses, [taskId]: next }))}
       banner={
+        linkSentTo ? (
+          <div className="bg-white border border-stone-200/80 rounded-2xl p-4 flex items-center gap-3">
+            <Mail className="h-5 w-5 text-emerald-700 shrink-0" />
+            <p className="flex-1 text-sm text-ink-700">
+              <span className="font-medium text-ink-900">Check your email.</span> Open the link we sent to{" "}
+              <span className="font-medium">{linkSentTo}</span> to save this plan and switch on reminders.
+            </p>
+            <button onClick={save} className="text-sm font-medium text-ink-700 underline underline-offset-4 shrink-0">
+              Resend
+            </button>
+          </div>
+        ) : (
         <div className="bg-white border border-stone-200/80 rounded-2xl p-4 flex items-center gap-3">
           <Cloud className="h-5 w-5 text-amber-700 shrink-0" />
           <p className="flex-1 text-sm text-ink-700">
@@ -84,6 +98,7 @@ export default function LocalPlanPage() {
             Save &amp; share
           </Button>
         </div>
+        )
       }
     />
   );
@@ -116,7 +131,7 @@ function NoLocalPlan() {
   return (
     <div className="max-w-md mx-auto px-5 py-20 text-center">
       <h1 className="text-3xl font-semibold text-ink-900">No plan yet</h1>
-      <p className="text-ink-600 mt-3">Answer 6 quick questions and we&apos;ll build your checklist.</p>
+      <p className="text-ink-600 mt-3">Answer a few quick questions and we&apos;ll build your checklist.</p>
       <Link
         href="/intake"
         className="mt-8 w-full inline-flex items-center justify-center bg-ink-700 text-white text-lg font-medium py-4 rounded-2xl hover:bg-ink-800"

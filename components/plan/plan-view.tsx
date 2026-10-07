@@ -1,11 +1,14 @@
 "use client";
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import {
+  ArrowRight,
   Building2,
   Check,
   ChevronDown,
   ExternalLink,
   Home,
+  Pencil,
   Phone,
   PoundSterling,
   Printer,
@@ -51,6 +54,10 @@ interface PlanViewProps {
   sidebar?: React.ReactNode;
   /** Extra controls shown when a task is opened (e.g. assignee and notes). */
   renderTaskExtras?: (task: ActionPlanTask) => React.ReactNode;
+  /** Where "Edit answers" goes; omit to hide it (e.g. for invited family). */
+  editHref?: string;
+  /** Extra controls on the "Up next" card (e.g. who's doing it). */
+  renderUpNextExtras?: (task: ActionPlanTask) => React.ReactNode;
   /** Small summary shown on the collapsed task row (e.g. who's doing it). */
   renderTaskMeta?: (task: ActionPlanTask) => React.ReactNode;
   /** Optional extra filter, e.g. "assigned to me". */
@@ -66,6 +73,8 @@ export function PlanView({
   sidebar,
   renderTaskExtras,
   renderTaskMeta,
+  renderUpNextExtras,
+  editHref,
   extraFilter,
 }: PlanViewProps) {
   const [view, setView] = useState<View>("todo");
@@ -96,7 +105,19 @@ export function PlanView({
   );
 
   const done = tasks.filter((t) => t.status === "completed").length;
-  const nextTask = sortByStage(tasks).find((t) => t.status !== "completed");
+  // The "Up next" queue: open tasks in stage order, with any the person said
+  // "Not yet" to moved to the back (for this visit).
+  const [notYet, setNotYet] = useState<string[]>([]);
+  const open = sortByStage(tasks).filter((t) => t.status !== "completed");
+  const queue = [
+    ...open.filter((t) => !notYet.includes(t.id)),
+    ...notYet.map((id) => open.find((t) => t.id === id)).filter((t): t is (typeof open)[number] => Boolean(t)),
+  ];
+  const nextTask = queue[0];
+  const later = () => {
+    if (!nextTask || queue.length < 2) return;
+    setNotYet((prev) => [...prev.filter((id) => id !== nextTask.id), nextTask.id]);
+  };
 
   const visible = tasks.filter(
     (t) =>
@@ -146,6 +167,14 @@ export function PlanView({
                   )}
                 </p>
               )}
+              {editHref && (
+                <Link
+                  href={editHref}
+                  className="print:hidden inline-flex items-center gap-1.5 mt-2 text-sm font-medium text-ink-700 underline underline-offset-4 decoration-ink-300 hover:decoration-ink-700"
+                >
+                  <Pencil className="h-3.5 w-3.5" /> Edit answers
+                </Link>
+              )}
               <p className="text-sm sm:text-base text-ink-600 mt-3 max-w-xl print:hidden">
                 {encouragement(done, tasks.length)}
               </p>
@@ -162,41 +191,65 @@ export function PlanView({
 
             {/* ── Up next ──────────────────────────────────────────────── */}
             {nextTask ? (
-              <section
-                aria-labelledby="up-next"
-                className="print:hidden relative overflow-hidden rounded-2xl bg-ink-800 text-white p-6 sm:p-7 shadow-lg"
-              >
-                <div className="absolute -right-16 -top-16 w-56 h-56 rounded-full bg-white/5" aria-hidden="true" />
-                <p id="up-next" className="text-xs font-semibold uppercase tracking-wider text-ink-200 mb-2">
-                  Up next
-                </p>
-                <h2 className="text-xl sm:text-2xl font-semibold leading-snug">{nextTask.title}</h2>
-                <p className="text-ink-100/90 mt-2 leading-relaxed max-w-2xl">{nextTask.description}</p>
-                <div className="flex flex-wrap items-center gap-3 mt-5">
-                  <button
-                    onClick={() => toggleTask(nextTask.id, "completed")}
-                    className="inline-flex items-center gap-2 bg-white text-ink-900 font-medium px-5 py-2.5 rounded-xl hover:bg-ink-50 active:scale-[0.98] transition-all"
-                  >
-                    <Check className="h-4 w-4" /> I&apos;ve done this
-                  </button>
-                  {nextTask.link && (
-                    <a
-                      href={nextTask.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 text-sm font-medium px-4 py-2.5 rounded-xl border border-white/25 hover:bg-white/10"
-                    >
-                      How to do it <ExternalLink className="h-3.5 w-3.5" />
-                    </a>
+              <section aria-labelledby="up-next" className="print:hidden relative">
+                {/* Stacked cards behind hint that more are coming */}
+                {queue.length > 2 && (
+                  <div className="absolute inset-x-6 -bottom-3 h-full rounded-2xl bg-ink-800/25" aria-hidden="true" />
+                )}
+                {queue.length > 1 && (
+                  <div className="absolute inset-x-3 -bottom-1.5 h-full rounded-2xl bg-ink-800/50" aria-hidden="true" />
+                )}
+                <div
+                  key={nextTask.id}
+                  className="relative overflow-hidden rounded-2xl bg-ink-800 text-white p-6 sm:p-7 shadow-lg animate-card-in"
+                >
+                  <div className="absolute -right-16 -top-16 w-56 h-56 rounded-full bg-white/5" aria-hidden="true" />
+                  <div className="flex items-center justify-between gap-3 mb-2">
+                    <p id="up-next" className="text-xs font-semibold uppercase tracking-wider text-ink-200">
+                      Up next
+                    </p>
+                    <p className="text-xs text-ink-200 tabular-nums">{queue.length} to do</p>
+                  </div>
+                  <h2 className="text-xl sm:text-2xl font-semibold leading-snug">{nextTask.title}</h2>
+                  <p className="text-ink-100/90 mt-2 leading-relaxed max-w-2xl">{nextTask.description}</p>
+                  {(nextTask.link || nextTask.phone) && (
+                    <div className="flex flex-wrap items-center gap-x-5 gap-y-2 mt-4 text-sm">
+                      {nextTask.link && (
+                        <a
+                          href={nextTask.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 font-medium text-white underline underline-offset-4 decoration-white/40 hover:decoration-white"
+                        >
+                          How to do it <ExternalLink className="h-3.5 w-3.5" />
+                        </a>
+                      )}
+                      {nextTask.phone && (
+                        <a
+                          href={`tel:${nextTask.phone.replace(/\s/g, "")}`}
+                          className="inline-flex items-center gap-1.5 font-medium text-white underline underline-offset-4 decoration-white/40 hover:decoration-white"
+                        >
+                          <Phone className="h-3.5 w-3.5" /> {nextTask.phone}
+                        </a>
+                      )}
+                    </div>
                   )}
-                  {nextTask.phone && (
-                    <a
-                      href={`tel:${nextTask.phone.replace(/\s/g, "")}`}
-                      className="inline-flex items-center gap-1.5 text-sm font-medium px-4 py-2.5 rounded-xl border border-white/25 hover:bg-white/10"
+                  {renderUpNextExtras && <div className="mt-4">{renderUpNextExtras(nextTask)}</div>}
+                  <div className="grid grid-cols-2 gap-3 mt-6">
+                    <button
+                      onClick={() => toggleTask(nextTask.id, "completed")}
+                      className="inline-flex items-center justify-center gap-2 bg-white text-ink-900 font-semibold py-3.5 rounded-xl hover:bg-ink-50 active:scale-[0.98] transition-all"
                     >
-                      <Phone className="h-3.5 w-3.5" /> {nextTask.phone}
-                    </a>
-                  )}
+                      <Check className="h-5 w-5" /> I&apos;ve done this
+                    </button>
+                    <button
+                      onClick={later}
+                      disabled={queue.length < 2}
+                      className="inline-flex items-center justify-center gap-2 font-semibold py-3.5 rounded-xl border border-white/30 hover:bg-white/10 active:scale-[0.98] transition-all disabled:opacity-40"
+                    >
+                      Not yet <ArrowRight className="h-4 w-4" />
+                    </button>
+                  </div>
                 </div>
               </section>
             ) : (

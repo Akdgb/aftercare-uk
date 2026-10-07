@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 
 // Four tabs, app-style: everything is reachable in one tap from anywhere.
 const TABS = [
-  { href: "/plan", label: "Plan", icon: ListChecks, match: ["/plan", "/intake"] },
+  { href: "/plan", label: "Plan", icon: ListChecks, match: ["/plan", "/intake", "/edit-answers"] },
   {
     href: "/help",
     label: "Help",
