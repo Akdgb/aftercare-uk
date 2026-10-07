@@ -1,6 +1,6 @@
 import { GuidePage } from "@/components/help/guide-page";
 
-export const metadata = { title: "Condolences and online memorials — AfterCare UK" };
+export const metadata = { title: "Condolences and online memorials" };
 
 export default function MemorialsPage() {
   return (
@@ -25,7 +25,7 @@ export default function MemorialsPage() {
         },
         {
           title: "Help with funeral costs from friends and family",
-          body: "Some families set up a fundraising page so people can contribute to the funeral itself — especially useful when relatives abroad can't attend.",
+          body: "Some families set up a fundraising page so people can contribute to the cost of the funeral. This can help when relatives abroad cannot attend.",
           link: { href: "https://www.gofundme.com/en-gb", label: "GoFundMe" },
         },
         {
@@ -38,7 +38,7 @@ export default function MemorialsPage() {
           body: "Often the simplest of all: one group for sharing updates, the funeral link and memories.",
         },
       ]}
-      footnote="We list these because they're widely used, not because they pay us — AfterCare has no paid partnerships. Check each site's fees before you start."
+      footnote="We list these because they're widely used, not because they pay us. AfterCare has no paid partnerships. Check each site's fees before you start."
     />
   );
 }

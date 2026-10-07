@@ -24,7 +24,7 @@ function layout(body: string, footerExtra = ""): string {
         <tr>
           <td style="background:#f5f5f4;border-top:1px solid #e7e5e4;padding:20px 36px;">
             <p style="margin:0;color:#a8a29e;font-size:12px;line-height:1.6;">
-              AfterCare UK — Bereavement guidance for UK families.<br>
+              AfterCare UK: bereavement guidance for UK families.<br>
               The information in this email is for guidance only and does not constitute legal or financial advice.
               ${footerExtra}
             </p>
@@ -59,9 +59,9 @@ export function magicLinkEmail(link: string): Email {
       h("Sign in to AfterCare") +
         p("Click the button below to sign in. This link expires in 20 minutes and can only be used once.") +
         button(link, "Sign in to AfterCare →") +
-        small("If you didn't request this, you can safely ignore this email.")
+        small("If you did not request this, you can safely ignore this email.")
     ),
-    text: `Sign in to AfterCare: ${link}\n\nThis link expires in 20 minutes. If you didn't request it, ignore this email.`,
+    text: `Sign in to AfterCare: ${link}\n\nThis link expires in 20 minutes. If you did not request it, ignore this email.`,
   };
 }
 
@@ -75,14 +75,14 @@ export function planConfirmationEmail(deceasedName: string, planUrl: string, urg
               You have ${urgentCount} urgent task${urgentCount > 1 ? "s" : ""} that need attention soon
             </p>
             <p style="margin:6px 0 0;color:#b91c1c;font-size:13px;">
-              These include registering the death and contacting a funeral director. Please aim to complete these within the next 1–2 days.
+              These include registering the death and contacting a funeral director. Please aim to complete these within the next 1 to 2 days.
             </p>
           </td></tr>
         </table>`
       : "";
 
   return {
-    subject: `Your AfterCare plan is saved — ${deceasedName}`,
+    subject: `Your AfterCare plan for ${deceasedName} is saved`,
     html: layout(
       h("Your plan has been saved") +
         p(`We have saved your AfterCare bereavement plan for <strong>${name}</strong>. You can return to it at any time.`) +
@@ -111,13 +111,13 @@ export function reminderEmail(
       : "";
 
   return {
-    subject: `A gentle reminder: ${pendingTasks.length} task${pendingTasks.length > 1 ? "s" : ""} still to do — AfterCare`,
+    subject: `A gentle reminder: ${pendingTasks.length} task${pendingTasks.length > 1 ? "s" : ""} still to do`,
     html: layout(
       h("A gentle reminder about your plan") +
         p(
           `It has been ${daysSince} day${daysSince !== 1 ? "s" : ""} since you created your AfterCare plan for <strong>${escapeHtml(
             deceasedName
-          )}</strong>. These tasks are still open — there's no rush, but some have legal deadlines:`
+          )}</strong>. These tasks are still open. There is no rush, but some have legal deadlines:`
         ) +
         `<ul style="margin:0 0 24px;padding-left:20px;">${list}</ul>${more}` +
         button(planUrl, "Continue My Plan →"),
@@ -140,7 +140,7 @@ export function inviteEmail(inviterEmail: string, inviteeName: string, deceasedN
           )}</strong>. You'll be able to see the task list, tick off tasks, take on tasks and leave notes for the family.`
         ) +
         button(signInUrl, "Open the plan →") +
-        small("You'll be asked to confirm your email address — no password needed. If you weren't expecting this, you can ignore this email.")
+        small("You'll be asked to confirm your email address. No password is needed. If you weren't expecting this, you can ignore this email.")
     ),
     text: `${inviterEmail} has invited you to help with the AfterCare plan for ${deceasedName}.\n\nOpen the plan: ${signInUrl}`,
   };

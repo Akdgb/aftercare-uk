@@ -15,7 +15,7 @@ export async function sendEmail(to: string, subject: string, html: string, text?
     return true;
   }
   try {
-    // Resend's REST API directly — no SDK needed for a single endpoint
+    // Resend's REST API directly: no SDK needed for a single endpoint
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {

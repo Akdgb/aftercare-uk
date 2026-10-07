@@ -56,11 +56,13 @@ describe.skipIf(!url)("database layer (real Postgres)", async () => {
     expect(found?.plan.task_statuses).toEqual({ "1": "completed", "notify-hmrc": "completed", "notify-banks": "in-progress" });
   });
 
-  it("removes the faith answer when consent is withdrawn, keeping the rest", async () => {
+  it("removes faith and background answers when consent is withdrawn, keeping the rest", async () => {
     const id = (await store.savePlan(owner.userId, {
       deceasedFirstName: "Ann",
       faith: "jewish",
       faiths: ["jewish", "african-caribbean"],
+      backgrounds: ["polish"],
+      backgroundOther: "Kashubian",
       faithConsent: true,
     }))!;
     await store.removeFaith(id);
@@ -69,6 +71,7 @@ describe.skipIf(!url)("database layer (real Postgres)", async () => {
       deceasedFirstName: "Ann",
       faith: "prefer-not-to-say",
       faiths: [],
+      backgrounds: [],
       faithConsent: false,
     });
     await store.deletePlan(id, owner.userId);

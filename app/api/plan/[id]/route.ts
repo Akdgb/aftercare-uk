@@ -29,7 +29,7 @@ export async function GET(_req: NextRequest, { params }: Params) {
     getPlanOwnerEmail(id),
   ]);
 
-  // Family members don't need the owner's personal contact details
+  // Family members do not need the owner's personal contact details
   const intakeData = role === "owner" ? intake : { ...intake, email: "", phone: "" };
 
   return NextResponse.json({
@@ -62,7 +62,7 @@ export async function PATCH(req: NextRequest, { params }: Params) {
     }
     const parsed = intakeSchema.safeParse(body.intakeData);
     if (!parsed.success) return NextResponse.json({ error: "Invalid answers" }, { status: 400 });
-    // Keep contact details the edit form doesn't show
+    // Keep contact details the edit form does not show
     const next = { ...parsed.data, email: access.intake.email ?? "", phone: access.intake.phone ?? "" };
     // Re-key progress against the OLD answers first: legacy numeric IDs depend on them
     await updateIntake(

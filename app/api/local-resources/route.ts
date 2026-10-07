@@ -145,13 +145,13 @@ out body center;
       }
     }
 
-    // 3. Add registry office via GOV.UK data lookup (static — registry offices are not in OSM)
+    // 3. Add registry office via GOV.UK data lookup (static: registry offices are not in OSM)
     // We always add the council's registration service
     resources.push({
       id: "gov-registry",
       type: "registry-office",
       name: `${district ?? "Local"} Register Office`,
-      address: `${district ?? "Your local"} Register Office — book via GOV.UK`,
+      address: `${district ?? "Your local"} Register Office (book through GOV.UK)`,
       website: "https://www.gov.uk/register-a-death/find-register-office",
       distance: "Local",
       distanceKm: 0,
@@ -176,6 +176,6 @@ out body center;
     });
   } catch (err) {
     console.error("local-resources error:", err);
-    return NextResponse.json({ error: "Search failed — please try again" }, { status: 500 });
+    return NextResponse.json({ error: "The search did not work. Please try again." }, { status: 500 });
   }
 }

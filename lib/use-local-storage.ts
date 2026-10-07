@@ -25,7 +25,7 @@ export function writeLocal(key: string, value: string | null) {
     if (value === null) localStorage.removeItem(key);
     else localStorage.setItem(key, value);
   } catch {
-    // Storage unavailable (private mode / blocked) — the in-memory UI still works
+    // Storage unavailable (private mode / blocked): the in-memory UI still works
   }
   window.dispatchEvent(new Event(EVENT));
 }
@@ -46,6 +46,8 @@ export function useLocalStorage(key: string): [string | null | undefined, (value
 
 export const LOCAL_KEYS = {
   intake: "aftercare_intake",
+  /** Answers in progress, so leaving the questions and coming back resumes them. */
+  intakeDraft: "aftercare_intake_draft",
   statuses: "aftercare_task_statuses",
   /** Set when a signed-out user asks to save their local plan; the dashboard saves it after sign-in. */
   pendingSave: "aftercare_pending_save",

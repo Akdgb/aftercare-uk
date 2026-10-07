@@ -20,16 +20,18 @@ interface Costs {
   misc: [number, number];
 }
 
-// Figures based on SunLife Cost of Dying Report 2025 + funeral industry data, uplifted for 2026
+// Ranges informed by the SunLife Cost of Dying Report 2026 (2025 data) and published funeral director price lists.
+// SunLife 2026 averages: traditional funeral £4,510 (burial about £5,440, cremation about £4,200),
+// simple attended funeral £3,828, direct cremation £1,628.
 const FUNERAL_DIRECTOR_BASE: Record<FuneralType, [number, number]> = {
-  burial: [2000, 3800],       // National avg professional fee ~£2,900 (2025)
-  cremation: [1700, 3200],    // National avg professional fee ~£2,400 (2025)
-  "direct-cremation": [795, 1895], // Range of major UK providers (Pure Cremation, Dignity, Co-op)
+  burial: [2000, 3800],       // Funeral director professional fees for a burial
+  cremation: [1700, 3200],    // Funeral director professional fees for a cremation
+  "direct-cremation": [795, 1895], // Typical range of direct cremation packages (SunLife 2026 average £1,628)
 };
 
 const VENUE_FEE: Record<FuneralType, [number, number]> = {
-  burial: [800, 3500],        // Cemetery fees vary widely; London ~£2,000–£6,000
-  cremation: [500, 1200],     // Cremation fee avg £875 (2025); ranges by council
+  burial: [800, 3500],        // Cemetery fees vary widely; London about £2,000 to £6,000
+  cremation: [500, 1200],     // Crematorium fees vary by provider and area
   "direct-cremation": [0, 0],
 };
 
@@ -64,9 +66,9 @@ const CATERING: Record<ServiceSize, [number, number]> = {
   large: [900, 2500],
 };
 
-// Death certificates: £12.50 each (April 2024 increase). Typical families need 5–10 copies.
-// Probate fee: £300 (2024 rate)
-// Doctors' cremation fee: being phased out — included in overall cremation fee since 2024
+// Death certificates: £12.50 each in England and Wales when bought at registration (fees may change from 9 November 2026).
+// Many families need 5 to 10 copies.
+// Probate fee (not included in this estimate): £526 for estates over £5,000 since 13 July 2026; no fee at £5,000 or less.
 
 function add(a: [number, number], b: [number, number]): [number, number] {
   return [a[0] + b[0], a[1] + b[1]];
@@ -123,7 +125,7 @@ export default function CostEstimatorPage() {
       flowers: includeFlowers ? FLOWERS[serviceSize] : [0, 0],
       vehicles: includeVehicles ? VEHICLES[serviceSize] : [0, 0],
       catering: includeCatering ? CATERING[serviceSize] : [0, 0],
-      death_certs: [63, 125],  // £12.50 each × 5–10 copies (April 2024 rate)
+      death_certs: [63, 125],  // £12.50 each x 5 to 10 copies (England and Wales)
       misc: [100, 300],
     };
   }, [funeralType, serviceSize, coffinType, includeFlowers, includeVehicles, includeCatering]);
@@ -135,11 +137,11 @@ export default function CostEstimatorPage() {
 
   const breakdown = [
     { label: "Funeral director fees", range: estimate.funeralDirector },
-    { label: "Burial / cremation fee", range: estimate.venueFee },
+    { label: "Burial or cremation fee", range: estimate.venueFee },
     { label: "Coffin", range: estimate.coffin },
     { label: "Flowers", range: estimate.flowers, optional: true },
     { label: "Funeral vehicles", range: estimate.vehicles, optional: true },
-    { label: "Catering / wake", range: estimate.catering, optional: true },
+    { label: "Catering or wake", range: estimate.catering, optional: true },
     { label: "Death certificates", range: estimate.death_certs },
     { label: "Miscellaneous", range: estimate.misc },
   ].filter((item) => item.range[1] > 0);
@@ -151,7 +153,7 @@ export default function CostEstimatorPage() {
           <div className="max-w-2xl">
             <h1 className="text-3xl sm:text-4xl font-semibold text-ink-900 mb-2">Estimate funeral costs</h1>
             <p className="text-ink-500">
-              Understand the likely cost of a funeral before making any commitments. Figures are typical UK price ranges — always get written quotes.
+              Understand the likely cost of a funeral before making any commitments. Figures are typical UK price ranges. Ask for a written, itemised quote.
             </p>
             <Link
               href="/help/save-money"
@@ -176,7 +178,7 @@ export default function CostEstimatorPage() {
                   <OptionCard
                     selected={funeralType === "cremation"}
                     onClick={() => setFuneralType("cremation")}
-                    note="Most common in the UK – around 80% of funerals"
+                    note="The most common choice in the UK, around 80% of funerals"
                   >
                     Cremation
                   </OptionCard>
@@ -190,9 +192,9 @@ export default function CostEstimatorPage() {
                   <OptionCard
                     selected={funeralType === "direct-cremation"}
                     onClick={() => setFuneralType("direct-cremation")}
-                    note="No service — the most affordable option. Growing rapidly in the UK."
+                    note="No service at the crematorium. The most affordable option, chosen for about 1 in 5 funerals."
                   >
-                    Direct Cremation (no service)
+                    Direct cremation (no service)
                   </OptionCard>
                 </div>
               </CardContent>
@@ -209,7 +211,7 @@ export default function CostEstimatorPage() {
                       <OptionCard key={s} selected={serviceSize === s} onClick={() => setServiceSize(s)}>
                         {s === "small" ? "Small" : s === "medium" ? "Medium" : "Large"}
                         <div className="text-xs text-ink-400 font-normal mt-0.5">
-                          {s === "small" ? "Under 20 guests" : s === "medium" ? "20–60 guests" : "60+ guests"}
+                          {s === "small" ? "Under 20 guests" : s === "medium" ? "20 to 60 guests" : "More than 60 guests"}
                         </div>
                       </OptionCard>
                     ))}
@@ -225,10 +227,10 @@ export default function CostEstimatorPage() {
               <CardContent>
                 <div className="grid grid-cols-2 gap-2">
                   {([
-                    { value: "simple", label: "Simple / Basic", note: "Chipboard or basic wood" },
+                    { value: "simple", label: "Simple", note: "Chipboard or basic wood" },
                     { value: "standard", label: "Standard", note: "Solid wood veneer" },
                     { value: "premium", label: "Premium", note: "Hardwood, oak or mahogany" },
-                    { value: "eco", label: "Eco / Natural", note: "Wicker, bamboo, or cardboard" },
+                    { value: "eco", label: "Eco or natural", note: "Wicker, bamboo, or cardboard" },
                   ] as { value: CoffinType; label: string; note: string }[]).map((opt) => (
                     <OptionCard
                       key={opt.value}
@@ -252,8 +254,8 @@ export default function CostEstimatorPage() {
                   <div className="space-y-3">
                     {[
                       { key: "flowers", label: "Flowers", value: includeFlowers, set: setIncludeFlowers },
-                      { key: "vehicles", label: "Funeral vehicles (hearse + limousine)", value: includeVehicles, set: setIncludeVehicles },
-                      { key: "catering", label: "Catering / wake", value: includeCatering, set: setIncludeCatering },
+                      { key: "vehicles", label: "Funeral vehicles (hearse and limousine)", value: includeVehicles, set: setIncludeVehicles },
+                      { key: "catering", label: "Catering or wake", value: includeCatering, set: setIncludeCatering },
                     ].map((item) => (
                       <label key={item.key} className="flex items-center gap-3 cursor-pointer">
                         <input
@@ -278,13 +280,13 @@ export default function CostEstimatorPage() {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <PoundSterling className="h-5 w-5 text-emerald-600" />
-                    Estimated Total
+                    Estimated total
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="text-center py-4">
                     <p className="text-3xl sm:text-4xl font-semibold text-ink-900">
-                      {fmt(total[0])} – {fmt(total[1])}
+                      {fmt(total[0])} to {fmt(total[1])}
                     </p>
                     <p className="text-sm text-ink-500 mt-1">Typical UK range for your selections</p>
                   </div>
@@ -301,14 +303,14 @@ export default function CostEstimatorPage() {
                             ? "Included"
                             : item.range[0] === item.range[1]
                             ? fmt(item.range[0])
-                            : `${fmt(item.range[0])}–${fmt(item.range[1])}`}
+                            : `${fmt(item.range[0])} to ${fmt(item.range[1])}`}
                         </span>
                       </div>
                     ))}
                     <div className="border-t border-stone-200 pt-2 flex items-center justify-between text-sm font-semibold">
                       <span className="text-ink-800">Total range</span>
                       <span className="text-ink-900">
-                        {fmt(total[0])} – {fmt(total[1])}
+                        {fmt(total[0])} to {fmt(total[1])}
                       </span>
                     </div>
                   </div>
@@ -318,18 +320,18 @@ export default function CostEstimatorPage() {
               <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 space-y-2">
                 <p className="text-sm font-semibold text-emerald-800">Cost-saving tips</p>
                 <ul className="text-sm text-emerald-700 space-y-1 list-disc pl-4">
-                  <li>Get at least 3 quotes from funeral directors</li>
-                  {funeralType === "burial" && <li>Direct cremation can save £2,000–£4,000 vs. a full service</li>}
-                  <li>By law, funeral directors must publish a standard price list (CMA rules)</li>
-                  <li>Consider a simple coffin — most are the same quality internally</li>
-                  {includeCatering && <li>DIY catering at home can save £300–£1,500 vs. a venue</li>}
+                  <li>Compare prices from more than one funeral director</li>
+                  {funeralType === "burial" && <li>Direct cremation can save £2,000 to £4,000 compared with a full service</li>}
+                  <li>Every funeral director has to show a Standardised Price List in their premises and on their website (CMA rules)</li>
+                  <li>There is no legal minimum coffin. A simple or eco coffin is usually accepted.</li>
+                  {includeCatering && <li>Catering at home can save £300 to £1,500 compared with a venue</li>}
                 </ul>
               </div>
 
               <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex gap-2">
                 <Info className="h-4 w-4 text-amber-600 flex-shrink-0 mt-0.5" />
                 <p className="text-xs text-amber-700">
-                  Figures based on SunLife Cost of Dying Report 2025 &amp; funeral industry data, updated for 2026. London and South East costs are typically 20–30% higher. Always request a written itemised quote — funeral directors are legally required to provide one.
+                  Figures are estimates informed by the SunLife Cost of Dying Report 2026. Costs in London and the South East are usually higher. Ask each funeral director for a written, itemised quote before you commit.
                 </p>
               </div>
             </div>

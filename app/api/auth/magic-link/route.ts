@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
 
     const { subject, html, text } = magicLinkEmail(link.toString());
     const sent = await sendEmail(email, subject, html, text);
-    if (!sent) return NextResponse.json({ error: "We couldn't send the email. Please try again." }, { status: 502 });
+    if (!sent) return NextResponse.json({ error: "We could not send the email. Please try again." }, { status: 502 });
 
     return NextResponse.json({ ok: true });
   } catch (e) {

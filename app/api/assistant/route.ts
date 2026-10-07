@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
-// Only user/assistant turns are accepted from the browser — a client-supplied
+// Only user/assistant turns are accepted from the browser: a client-supplied
 // "system" message could otherwise override the instructions below.
 const requestSchema = z.object({
   messages: z
@@ -16,7 +16,8 @@ Your role is to:
 - Provide clear, practical, compassionate guidance on bereavement administration
 - Answer questions about registering a death, funeral options, probate, government benefits, council housing, pensions, and financial support
 - Cite UK government sources (GOV.UK, DWP, HMRC) wherever possible
-- Use plain English — no legal jargon
+- Use plain English with no legal jargon, in a calm and professional tone
+- Do not use em dashes or slang; write short, complete sentences
 - Always clarify this is guidance, not legal advice
 
 UK-specific knowledge you must apply:
@@ -24,8 +25,8 @@ UK-specific knowledge you must apply:
 - Tell Us Once is the government service for notifying multiple departments
 - Bereavement Support Payment is available to spouses/civil partners whose partner paid NI
 - Funeral Expenses Payment is available to people on qualifying benefits
-- Council tenancy succession has specific legal rules — spouses have automatic rights, others must qualify
-- Probate is usually required when the estate includes property or larger bank balances — each bank sets its own threshold (often £5,000–£50,000)
+- Council tenancy succession has specific legal rules. A spouse or civil partner who lived there usually has the right to succeed; other relatives may qualify depending on the tenancy
+- Probate is usually required when the estate includes property or larger bank balances. Each bank sets its own threshold, often between £5,000 and £50,000
 - The Competition and Markets Authority (CMA) Funeral Market Order requires funeral directors to publish standardised price lists
 
 Always end responses with a source attribution like:
@@ -48,7 +49,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "AI service unavailable" }, { status: 503 });
     }
 
-    // OpenAI's REST API directly — no SDK needed for a single endpoint
+    // OpenAI's REST API directly: no SDK needed for a single endpoint
     const res = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {

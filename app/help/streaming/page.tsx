@@ -1,12 +1,12 @@
 import { GuidePage } from "@/components/help/guide-page";
 
-export const metadata = { title: "Stream the funeral to family abroad — AfterCare UK" };
+export const metadata = { title: "Stream the funeral to family abroad" };
 
 export default function StreamingPage() {
   return (
     <GuidePage
       title="Let family far away join the funeral"
-      intro="When relatives are abroad — in Nigeria, Jamaica, India or anywhere else — they can still watch live and say goodbye."
+      intro="Relatives who live abroad, whether in Nigeria, Jamaica, India or anywhere else, can still watch the service live and say goodbye."
       steps={[
         {
           title: "Ask the crematorium or place of worship first",
@@ -35,11 +35,11 @@ export default function StreamingPage() {
           body: "Send the link in the family WhatsApp group the day before, and name one person abroad to help others join. Share the order of service as a photo or PDF.",
         },
         {
-          title: "Record it for people who can't watch live",
+          title: "Record it for people who cannot watch live",
           body: "Save a copy of the stream or ask the venue for the recording. Some families also hold a second gathering back home.",
         },
       ]}
-      footnote="AfterCare isn't paid by any company or app we mention."
+      footnote="AfterCare is not paid by any company or app we mention."
     />
   );
 }

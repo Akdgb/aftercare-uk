@@ -113,6 +113,29 @@ input[type="radio"] {
   color: #3b554e;
 }
 
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.5em 0 1.25em;
+  font-size: 0.95em;
+  display: block;
+  overflow-x: auto;
+}
+
+.prose th,
+.prose td {
+  text-align: left;
+  padding: 0.5em 0.75em;
+  border-bottom: 1px solid #e7e2d8;
+  color: #3b554e;
+  vertical-align: top;
+}
+
+.prose th {
+  font-weight: 600;
+  color: #182a26;
+}
+
 .prose strong {
   font-weight: 600;
   color: #182a26;

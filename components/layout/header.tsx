@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import { CircleHelp, ListChecks, UserRound, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Logo } from "@/components/layout/logo";
+import { recordNavigation } from "@/components/layout/back-link";
 import { cn } from "@/lib/utils";
 
 // Four tabs, app-style: everything is reachable in one tap from anywhere.
@@ -22,6 +23,8 @@ const TABS = [
 export function Header() {
   const pathname = usePathname();
   const [signedIn, setSignedIn] = useState(false);
+
+  useEffect(() => recordNavigation(pathname), [pathname]);
 
   useEffect(() => {
     fetch("/api/auth/me")

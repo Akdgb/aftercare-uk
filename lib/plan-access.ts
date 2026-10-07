@@ -15,7 +15,7 @@ export async function requirePlanAccess(planId: string): Promise<Access> {
   }
   const found = await getPlanForUser(planId, session);
   if (!found) {
-    // Same response whether the plan doesn't exist or isn't shared with them
+    // Same response whether the plan does not exist or is not shared with them
     return { ok: false, response: NextResponse.json({ error: "Not found" }, { status: 404 }) };
   }
   return {

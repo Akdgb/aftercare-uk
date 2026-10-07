@@ -1,8 +1,10 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, ArrowRight, Check, Loader2 } from "lucide-react";
-import { FAITHS, HOMES, LOCATIONS, MONEY, RELATIONSHIPS, type Choice } from "@/lib/intake-options";
+import { FAITH_CHOICES, HOMES, LOCATIONS, MONEY, RELATIONSHIPS, type Choice } from "@/lib/intake-options";
+import { BURIAL_PLACES } from "@/lib/cultures";
+import { BackgroundPicker } from "@/components/plan/background-picker";
 import { cn } from "@/lib/utils";
 import { LOCAL_KEYS, writeLocal } from "@/lib/use-local-storage";
 import type { FaithOption, IntakeFormData } from "@/types";
@@ -27,19 +29,66 @@ const initialData: IntakeFormData = {
   needsFinancialHelp: "unsure",
 };
 
-const TOTAL = 6;
+const TOTAL = 7;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+type Draft = { step: number; data: IntakeFormData; answered: (keyof IntakeFormData)[] };
+
+function readDraft(): Draft | null {
+  try {
+    const raw = localStorage.getItem(LOCAL_KEYS.intakeDraft);
+    const d = raw ? (JSON.parse(raw) as Draft) : null;
+    return d && typeof d.step === "number" && d.data ? { ...d, data: { ...initialData, ...d.data } } : null;
+  } catch {
+    return null;
+  }
+}
+
+const noopSubscribe = () => () => {};
+
 export default function IntakePage() {
+  // Answers in progress are kept on the device, so following a link and coming
+  // back returns the person to the same question. Rendered on the client only.
+  const isClient = useSyncExternalStore(noopSubscribe, () => true, () => false);
+  if (!isClient) {
+    return (
+      <div className="min-h-[70vh] flex items-center justify-center">
+        <Loader2 className="h-7 w-7 animate-spin text-ink-400" />
+      </div>
+    );
+  }
+  return <Intake draft={readDraft()} />;
+}
+
+function Intake({ draft }: { draft: Draft | null }) {
   const router = useRouter();
   const [isSignedIn, setIsSignedIn] = useState(false);
   // Step 0 is the optional "keep your plan safe" email screen
-  const [step, setStep] = useState(0);
-  const [data, setData] = useState<IntakeFormData>(initialData);
+  const [step, setStep] = useState(draft?.step ?? 0);
+  const [data, setData] = useState<IntakeFormData>(draft?.data ?? initialData);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   // Only show a tick on answers the person actually chose (fields have defaults)
-  const [answered, setAnswered] = useState<Set<keyof IntakeFormData>>(new Set());
+  const [answered, setAnswered] = useState<Set<keyof IntakeFormData>>(new Set(draft?.answered ?? []));
+
+  // Save progress after every change
+  useEffect(() => {
+    if (submitting) return;
+    writeLocal(LOCAL_KEYS.intakeDraft, JSON.stringify({ step, data, answered: [...answered] }));
+  }, [step, data, answered, submitting]);
+
+  // The browser back button moves back one question instead of leaving
+  useEffect(() => {
+    window.history.replaceState({ ...window.history.state, intakeStep: step }, "");
+    const onPop = (e: PopStateEvent) => {
+      const s = e.state?.intakeStep;
+      if (typeof s === "number") setStep(s);
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+    // Only on mount: later steps are pushed by go()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const picked = (key: keyof IntakeFormData) => (answered.has(key) ? String(data[key]) : "");
 
   useEffect(() => {
@@ -57,11 +106,22 @@ export default function IntakePage() {
   const go = (next: number) => {
     setError(null);
     setStep(next);
+    if (next > step) window.history.pushState({ ...window.history.state, intakeStep: next, intakePushed: true }, "");
+    else window.history.replaceState({ ...window.history.state, intakeStep: next }, "");
     window.scrollTo({ top: 0 });
+  };
+
+  const startOver = () => {
+    writeLocal(LOCAL_KEYS.intakeDraft, null);
+    setData(initialData);
+    setAnswered(new Set());
+    setError(null);
+    setStep(isSignedIn ? 1 : 0);
   };
 
   const finish = async (final: IntakeFormData) => {
     setSubmitting(true);
+    writeLocal(LOCAL_KEYS.intakeDraft, null);
     // A new set of answers starts a fresh plan on this device
     writeLocal(LOCAL_KEYS.intake, JSON.stringify(final));
     writeLocal(LOCAL_KEYS.statuses, null);
@@ -114,13 +174,20 @@ export default function IntakePage() {
     setError(null);
   };
 
-  // "No religious needs" / "Skip" end the questions straight away
-  const finishWithoutFaith = (value: FaithOption) =>
-    finish({ ...data, faith: value, faiths: [], faithConsent: false });
+  const needsConsent =
+    selectedFaiths.length > 0 || (data.backgrounds?.length ?? 0) > 0 || Boolean(data.backgroundOther?.trim());
+
+  const submitTraditions = () => {
+    if (needsConsent && !data.faithConsent) {
+      return setError("Please tick the box to agree, or remove your choices to continue without them.");
+    }
+    if (!needsConsent) return finish({ ...data, faiths: [], backgrounds: [], backgroundOther: undefined, faithConsent: false });
+    finish(data);
+  };
 
   const submitEmail = () => {
     const email = data.email.trim();
-    if (email && !EMAIL_RE.test(email)) return setError("That email address doesn't look right.");
+    if (email && !EMAIL_RE.test(email)) return setError("Enter an email address in the correct format, like name@example.com");
     go(1);
   };
 
@@ -135,7 +202,7 @@ export default function IntakePage() {
     return (
       <div className="min-h-[70vh] flex flex-col items-center justify-center gap-3 text-ink-600">
         <Loader2 className="h-7 w-7 animate-spin" />
-        <p>Building your plan…</p>
+        <p>Preparing your plan…</p>
       </div>
     );
   }
@@ -147,13 +214,18 @@ export default function IntakePage() {
       {/* Progress + back */}
       <div className="flex items-center gap-3 mb-8">
         <button
-          onClick={() => (step > 1 || (step === 1 && !isSignedIn) ? go(step - 1) : router.push("/"))}
+          onClick={() => {
+            if (!(step > 1 || (step === 1 && !isSignedIn))) return router.push("/");
+            // Use real browser history where we added it, so both back buttons agree
+            if (window.history.state?.intakePushed) window.history.back();
+            else go(step - 1);
+          }}
           className="p-2 -ml-2 rounded-full text-ink-600 hover:bg-stone-100"
           aria-label="Back"
         >
           <ArrowLeft className="h-5 w-5" />
         </button>
-        <div className="flex-1 h-1.5 bg-stone-200 rounded-full overflow-hidden" role="progressbar" aria-valuenow={Math.max(step, 0)} aria-valuemin={1} aria-valuemax={TOTAL}>
+        <div className="flex-1 h-1.5 bg-stone-200 rounded-full overflow-hidden" role="progressbar" aria-label="Progress through the questions" aria-valuenow={Math.max(step, 0)} aria-valuemin={1} aria-valuemax={TOTAL}>
           <div className="h-full bg-ink-700 rounded-full transition-all duration-500" style={{ width: `${(Math.max(step, 0.3) / TOTAL) * 100}%` }} />
         </div>
         <span className="text-sm text-ink-500 tabular-nums">
@@ -170,12 +242,12 @@ export default function IntakePage() {
             }}
           >
             <Title>Keep your plan safe</Title>
-            <p className="text-ink-500 mb-6">Optional — add your email and we&apos;ll save the plan to an account for you.</p>
+            <p className="text-ink-500 mb-6">This step is optional. Add your email address and we will save the plan to an account for you.</p>
             <ul className="space-y-3 mb-6">
               {[
                 ["Gentle reminders", "A short email if a task with a deadline is still open. Turn it off any time."],
-                ["Open it anywhere", "Your phone, a laptop, a relative's computer — your progress follows you."],
-                ["Share the load", "Invite family so everyone can see and tick off tasks."],
+                ["Open it anywhere", "Use your phone, a laptop or a relative's computer. Your progress is the same everywhere."],
+                ["Share the work", "Invite family so everyone can see and tick off tasks."],
               ].map(([title, body]) => (
                 <li key={title} className="flex gap-3">
                   <span className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5">
@@ -199,7 +271,7 @@ export default function IntakePage() {
                 className={inputClass}
               />
             </Field>
-            <p className="text-xs text-ink-500 mt-2">No password. We&apos;ll email you a link to save your plan. We never share your email.</p>
+            <p className="text-xs text-ink-500 mt-2">There is no password. We will email you a link to save your plan. We never share your email address.</p>
             {error && <p className="text-sm text-rose-700 mt-3">{error}</p>}
             <button type="submit" className={primaryClass + " mt-6"} disabled={!data.email.trim()}>
               Continue <ArrowRight className="h-5 w-5" />
@@ -225,7 +297,7 @@ export default function IntakePage() {
             }}
           >
             <Title>Who is this plan for?</Title>
-            <p className="text-ink-500 mb-6">We&apos;re so sorry for your loss. Tell us their name and when they died.</p>
+            <p className="text-ink-500 mb-6">We are sorry for your loss. Tell us their name and the date they died.</p>
             <div className="grid grid-cols-2 gap-3">
               <Field label="First name">
                 <input
@@ -284,10 +356,12 @@ export default function IntakePage() {
 
         {step === 6 && (
           <div>
-            <Title>Any faith or cultural traditions?</Title>
-            <p className="text-ink-500 mb-6">Choose all that apply — we&apos;ll add the steps each one needs. Optional.</p>
+            <Title>Any faith or beliefs?</Title>
+            <p className="text-ink-500 mb-6">
+              Choose all that apply. Faith often affects how quickly the funeral needs to happen. This question is optional.
+            </p>
             <div className="grid grid-cols-2 gap-2.5">
-              {FAITHS.filter((f) => f.value !== "prefer-not-to-say" && f.value !== "none").map((f) => {
+              {FAITH_CHOICES.map((f) => {
                 const on = selectedFaiths.includes(f.value);
                 return (
                   <button
@@ -313,44 +387,26 @@ export default function IntakePage() {
                 );
               })}
             </div>
-
             {selectedFaiths.length > 0 ? (
-              <div className="mt-5 animate-fade-up">
-                <label className="flex items-start gap-3 bg-white border border-stone-200 rounded-2xl p-4 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    className="mt-0.5 h-5 w-5 flex-shrink-0"
-                    checked={data.faithConsent ?? false}
-                    onChange={(e) => setData({ ...data, faithConsent: e.target.checked })}
-                  />
-                  <span className="text-sm text-ink-700 leading-relaxed">
-                    I agree to AfterCare using this to tailor the plan. It&apos;s only seen by me and family I invite,
-                    and I can remove it at any time.{" "}
-                    <a href="/privacy#special-category" target="_blank" className="underline">
-                      Why we ask
-                    </a>
-                  </span>
-                </label>
-                {error && <p className="text-sm text-rose-700 mt-3">{error}</p>}
-                <button
-                  onClick={() =>
-                    data.faithConsent ? finish(data) : setError('Please tick the box, or choose "Skip this question".')
-                  }
-                  className={primaryClass + " mt-4"}
-                >
-                  Show my plan <ArrowRight className="h-5 w-5" />
-                </button>
-              </div>
+              <button onClick={() => go(7)} className={primaryClass + " mt-5"}>
+                Continue <ArrowRight className="h-5 w-5" />
+              </button>
             ) : (
               <div className="grid grid-cols-2 gap-2.5 mt-5">
                 <button
-                  onClick={() => finishWithoutFaith("none")}
+                  onClick={() => {
+                    setData({ ...data, faith: "none", faiths: [] });
+                    go(7);
+                  }}
                   className="px-4 py-3.5 rounded-2xl border-2 border-stone-200 bg-white font-medium text-ink-900 hover:border-ink-300"
                 >
                   No religious needs
                 </button>
                 <button
-                  onClick={() => finishWithoutFaith("prefer-not-to-say")}
+                  onClick={() => {
+                    setData({ ...data, faith: "prefer-not-to-say", faiths: [] });
+                    go(7);
+                  }}
                   className="px-4 py-3.5 rounded-2xl border-2 border-stone-200 bg-white font-medium text-ink-900 hover:border-ink-300"
                 >
                   Skip this question
@@ -359,9 +415,88 @@ export default function IntakePage() {
             )}
           </div>
         )}
+
+        {step === 7 && (
+          <div>
+            <Title>Cultural background</Title>
+            <p className="text-ink-500 mb-6">
+              Many families follow customs from their heritage, such as a nine night, a one-week gathering or burial in
+              another country. Choose any that apply and we will add the steps they usually involve. This question is
+              optional.
+            </p>
+            <BackgroundPicker
+              value={data.backgrounds ?? []}
+              onChange={(backgrounds) => {
+                setData({ ...data, backgrounds, faithConsent: false });
+                setError(null);
+              }}
+              other={data.backgroundOther ?? ""}
+              onOtherChange={(backgroundOther) => setData({ ...data, backgroundOther, faithConsent: false })}
+            />
+
+            <fieldset className="mt-6">
+              <legend className="font-semibold text-ink-900 mb-2">Where will {first} be buried or cremated?</legend>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {BURIAL_PLACES.map((p) => {
+                  const on = data.burialPlace === p.value;
+                  return (
+                    <button
+                      key={p.value}
+                      type="button"
+                      role="radio"
+                      aria-checked={on}
+                      onClick={() => setData({ ...data, burialPlace: on ? undefined : p.value })}
+                      className={cn(
+                        "text-left px-4 py-3 rounded-2xl border-2 text-sm font-medium transition-colors",
+                        on ? "border-ink-700 bg-ink-50 text-ink-900" : "border-stone-200 bg-white text-ink-800 hover:border-ink-300"
+                      )}
+                    >
+                      {p.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </fieldset>
+
+            {needsConsent && (
+              <label className="mt-5 flex items-start gap-3 bg-white border border-stone-200 rounded-2xl p-4 cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="mt-0.5 h-5 w-5 flex-shrink-0"
+                  checked={data.faithConsent ?? false}
+                  onChange={(e) => {
+                    setData({ ...data, faithConsent: e.target.checked });
+                    setError(null);
+                  }}
+                />
+                <span className="text-sm text-ink-700 leading-relaxed">
+                  I agree to AfterCare using my answers about faith and cultural background to tailor the plan. Only I
+                  and family members I invite can see them, and I can remove them at any time.{" "}
+                  <a href="/privacy#special-category" target="_blank" className="underline">
+                    Why we ask
+                  </a>
+                </span>
+              </label>
+            )}
+            {error && <p className="text-sm text-rose-700 mt-3">{error}</p>}
+            <button onClick={submitTraditions} className={primaryClass + " mt-5"}>
+              Show my plan <ArrowRight className="h-5 w-5" />
+            </button>
+          </div>
+        )}
       </div>
 
-      <p className="text-center text-xs text-ink-400 mt-10">Private — nothing is shared unless you choose to.</p>
+      <p className="text-center text-xs text-ink-500 mt-10">
+        Your answers are saved on this device as you go. Nothing is shared unless you choose to.
+        {step > 1 && (
+          <>
+            {" "}
+            <button type="button" onClick={startOver} className="underline underline-offset-2 hover:text-ink-800">
+              Start over
+            </button>
+          </>
+        )}
+      </p>
     </div>
   );
 }

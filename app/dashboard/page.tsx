@@ -9,6 +9,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { generateActionPlan } from "@/lib/action-plan";
 import { LOCAL_KEYS, writeLocal } from "@/lib/use-local-storage";
 import { cn } from "@/lib/utils";
+import { SITE } from "@/lib/site";
 import type { IntakeFormData } from "@/types";
 
 interface PlanSummary {
@@ -104,7 +105,7 @@ export default function DashboardPage() {
           href="/intake"
           className="block text-center bg-white border border-dashed border-stone-300 rounded-2xl p-8 text-ink-600 hover:border-ink-300"
         >
-          No plans yet — <span className="font-medium text-ink-900 underline underline-offset-4">start one</span>
+          No plans yet. <span className="font-medium text-ink-900 underline underline-offset-4">Start one</span>
         </Link>
       ) : (
         <div className="space-y-3">
@@ -174,7 +175,7 @@ function AccountSettings({
       body: JSON.stringify({ remindersEnabled }),
     }).catch(() => null);
     if (res?.ok) onChange({ ...account, remindersEnabled });
-    else setError("Couldn't update your preference. Please try again.");
+    else setError("Could not update your preference. Please try again.");
     setBusy(false);
   };
 
@@ -190,7 +191,7 @@ function AccountSettings({
       // eslint-disable-next-line @next/next/no-location-assign-relative-destination
       window.location.href = "/";
     } else {
-      setError("Couldn't delete your account. Please try again or email privacy@aftercare-uk.co.uk.");
+      setError(`We could not delete your account. Please try again or email ${SITE.privacyEmail}.`);
       setBusy(false);
     }
   };

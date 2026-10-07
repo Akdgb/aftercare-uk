@@ -1,5 +1,5 @@
-import Link from "next/link";
-import { ArrowLeft, ExternalLink } from "lucide-react";
+import { BackLink } from "@/components/layout/back-link";
+import { ExternalLink } from "lucide-react";
 
 export type GuideStep = { title: string; body: React.ReactNode; link?: { href: string; label: string } };
 
@@ -17,9 +17,7 @@ export function GuidePage({
 }) {
   return (
     <div className="max-w-2xl mx-auto px-4 pt-6 pb-10">
-      <Link href="/help" className="inline-flex items-center gap-1.5 text-sm text-ink-600 hover:text-ink-900">
-        <ArrowLeft className="h-4 w-4" /> Help
-      </Link>
+      <BackLink />
       <h1 className="text-3xl font-semibold text-ink-900 mt-3">{title}</h1>
       <div className="text-ink-600 mt-2">{intro}</div>
       <ol className="mt-6 space-y-3">

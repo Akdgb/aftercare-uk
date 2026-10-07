@@ -1,9 +1,9 @@
 import { articles } from "@/lib/guidance-content";
 import { HelpList, type HelpItem } from "./help-list";
 
-export const metadata = { title: "Help — AfterCare UK" };
+export const metadata = { title: "Help" };
 
-// Everything that isn't the plan lives here, as one searchable list.
+// Everything that is not the plan lives here, as one searchable list.
 const TOOLS: HelpItem[] = [
   { href: "/financial-support", title: "Money you could claim", desc: "2-minute check for government payments", kind: "tool", icon: "money" },
   { href: "/cost-estimator", title: "Funeral cost estimate", desc: "See typical prices before you call anyone", kind: "tool", icon: "calc" },
@@ -13,6 +13,7 @@ const TOOLS: HelpItem[] = [
 
 export default function HelpPage() {
   const guides: HelpItem[] = [
+    { href: "/help/support", title: "Someone to talk to", desc: "Free helplines for grief and difficult times", kind: "guide", icon: "book" },
     { href: "/help/streaming", title: "Stream the funeral to family abroad", desc: "WhatsApp, Zoom or a venue webcast", kind: "guide", icon: "book" },
     { href: "/help/memorials", title: "Condolences and online memorials", desc: "Free memorial pages, notices and donations", kind: "guide", icon: "book" },
     { href: "/help/documents", title: "Documents you'll need", desc: "What to gather and where it comes from", kind: "guide", icon: "book" },

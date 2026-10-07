@@ -70,10 +70,8 @@ const QUALIFYING_BENEFITS = [
   "Income Support",
   "Pension Credit",
   "Income-based Jobseeker's Allowance",
-  "Income-related Employment Support Allowance",
+  "Income-related Employment and Support Allowance",
   "Housing Benefit",
-  "Child Tax Credit",
-  "Working Tax Credit",
 ];
 
 export default function FinancialSupportPage() {
@@ -106,11 +104,11 @@ export default function FinancialSupportPage() {
       id: "bsp",
       name: "Bereavement Support Payment",
       description:
-        "A monthly payment to help you adjust to your bereavement. Paid for up to 18 months.",
+        "A first payment followed by up to 18 monthly payments if your husband, wife, civil partner or partner died.",
       eligibility:
-        "You must have been married to or in a civil partnership with the deceased, and they must have paid National Insurance contributions for at least 25 weeks.",
-      amount: "Up to £3,500 in the first year (higher rate) or up to £2,500 (lower rate), plus monthly payments.",
-      how: "Apply within 3 months of bereavement to get the full amount. Apply through DWP.",
+        "You may qualify if you were married, in a civil partnership, or living together with children; the person who died paid National Insurance contributions for at least 25 weeks (or died because of their work); and you were under State Pension age when they died.",
+      amount: "Higher rate: £3,500 first payment, then 18 monthly payments of £350. Lower rate: £2,500 first payment, then 18 monthly payments of £100.",
+      how: "Claim within 3 months of the death to get the full amount. You can claim up to 21 months after the death, but after 12 months you will not get the first payment. Call the DWP Bereavement Service on 0800 151 2012 (Relay UK: 18001 then 0800 731 0469; Welsh language: 0800 731 0453).",
       link: "https://www.gov.uk/bereavement-support-payment",
       eligible: isSpouse && paidNI ? "likely" : isSpouse && data.partnerPaidNI === "unsure" ? "possible" : "unlikely",
     });
@@ -119,11 +117,11 @@ export default function FinancialSupportPage() {
       id: "fep",
       name: "Funeral Expenses Payment",
       description:
-        "A payment from the DWP to help cover funeral costs if you are responsible for arranging the funeral.",
+        "A payment to help with funeral costs if you get certain benefits and are responsible for the funeral. Available in England, Wales and Northern Ireland.",
       eligibility:
-        "You must be receiving certain means-tested benefits and be the person responsible for arranging the funeral.",
-      amount: "Covers burial fees or cremation fees in full, plus up to £1,000 for other expenses.",
-      how: "Apply through the DWP. You must apply within 6 months of the funeral.",
+        "You may qualify if you were the partner, a close relative or close friend of the person who died, or the parent of a baby or child who died, and you or your partner get Universal Credit, Pension Credit, Income Support, income-based Jobseeker's Allowance, income-related Employment and Support Allowance or Housing Benefit.",
+      amount: "Necessary burial or cremation fees, plus up to £1,000 for other funeral costs (£120 if there is a funeral plan).",
+      how: "Claim within 6 months of the funeral. Call the DWP Bereavement Service on 0800 151 2012. In Northern Ireland, apply through the Department for Communities. In Scotland, apply for a Funeral Support Payment from Social Security Scotland instead (0800 182 2222, mygov.scot/funeral-support-payment). It pays burial or cremation costs plus £1,327.75 for other costs (£162.05 with a funeral plan).",
       link: "https://www.gov.uk/funeral-payments",
       eligible: onBenefits && needsFuneralHelp ? "likely" : needsFuneralHelp ? "possible" : "unlikely",
     });
@@ -133,9 +131,9 @@ export default function FinancialSupportPage() {
         id: "guardian",
         name: "Guardian's Allowance",
         description:
-          "A tax-free payment if you are looking after a child whose parents have died.",
-        eligibility: "The child must be under 16 (or under 20 if in approved education). Both parents must usually be deceased.",
-        amount: "£21.75 per week (2024/25 rate).",
+          "A tax-free payment if you are bringing up a child whose parents have died.",
+        eligibility: "You need to be getting Child Benefit for the child. Usually both parents must have died, but in some cases you may be able to get it if only one parent has died.",
+        amount: "£22.95 a week (2026/27 rate).",
         how: "Claim through HMRC using form BG1.",
         link: "https://www.gov.uk/guardians-allowance",
         eligible: "possible",
@@ -146,9 +144,9 @@ export default function FinancialSupportPage() {
       id: "child-benefit",
       name: "Child Benefit",
       description:
-        "If the deceased was the main Child Benefit claimant, you should notify HMRC and update the claim.",
-      eligibility: "Payable for children under 16, or under 20 in approved education.",
-      amount: "£25.60 per week for the first child; £16.95 for additional children (2024/25).",
+        "If the person who died was claiming Child Benefit, tell HMRC. The person now responsible for the child may be able to make a new claim.",
+      eligibility: "Payable for children under 16, or under 20 in approved education or training.",
+      amount: "£27.05 a week for the eldest or only child, and £17.90 a week for each other child (2026/27 rates).",
       how: "Contact the Child Benefit Office to update the claim.",
       link: "https://www.gov.uk/child-benefit",
       eligible: hasKids ? "possible" : "unlikely",
@@ -156,25 +154,25 @@ export default function FinancialSupportPage() {
 
     programs.push({
       id: "council-support",
-      name: "Council Assistance",
+      name: "Council help",
       description:
-        "Many councils have a Discretionary Fund or welfare support that can help with funeral costs for residents who do not qualify for DWP support.",
-      eligibility: "Varies by council. Contact your local authority.",
-      amount: "Varies. Typically between £500 and £1,500.",
-      how: "Contact your local council's housing or welfare benefits department.",
+        "Help from councils varies. Some have local welfare schemes. If no one is able to pay for a funeral, the council must arrange a public health funeral.",
+      eligibility: "Varies by council. Contact your local council to ask.",
+      amount: "Varies by council.",
+      how: "Contact your local council's welfare or bereavement services team.",
       link: "https://www.gov.uk/find-local-council",
       eligible: needsFuneralHelp ? "possible" : "unlikely",
     });
 
     programs.push({
       id: "charity",
-      name: "Charity & Voluntary Sector Support",
+      name: "Free funeral advice: Down to Earth",
       description:
-        "Charities such as the National Lottery Community Fund, Quaker Social Action (Down to Earth), and local community foundations may offer grants for funeral costs.",
-      eligibility: "Varies. Most target people on low incomes who are not eligible for DWP support.",
-      amount: "Varies.",
-      how: "Contact the charity directly. Your local Citizens Advice Bureau can help identify relevant funds.",
-      link: "https://quakersocialaction.org.uk/we-can-help/helping-funerals/down-to-earth",
+        "Down to Earth, run by Quaker Social Action, gives free advice and support to help people arrange an affordable funeral. It does not give money.",
+      eligibility: "Anyone worried about paying for a funeral can contact them.",
+      amount: "Free advice and support (not a grant).",
+      how: "Phone 020 8983 5055 or visit the Quaker Social Action website. Citizens Advice can also help you find other local support.",
+      link: "https://quakersocialaction.org.uk/we-can-help/helping-funerals/down-earth",
       eligible: needsFuneralHelp ? "possible" : "unlikely",
     });
 
@@ -197,7 +195,7 @@ export default function FinancialSupportPage() {
           <div className="max-w-2xl">
             <h1 className="text-3xl sm:text-4xl font-semibold text-ink-900 mb-2">Check what money help you can get</h1>
             <p className="text-ink-500">
-              Answer a few questions to find out which government payments and support programmes you may be entitled to.
+              Answer a few questions to find out which payments and support you may be able to get. This checker mainly covers England and Wales.
             </p>
           </div>
         </div>
@@ -206,16 +204,16 @@ export default function FinancialSupportPage() {
       <div className="max-w-2xl mx-auto px-4 py-10">
         {step < 99 && (
           <div className="space-y-6">
-            {/* Step 0 – Relationship */}
+            {/* Step 0: Relationship */}
             {step >= 0 && (
               <Card>
                 <CardContent className="pt-6">
                   <h3 className="text-base font-semibold text-ink-800 mb-4">
-                    What was your relationship to the deceased?
+                    What was your relationship to the person who died?
                   </h3>
                   <div className="space-y-2">
                     {[
-                      { value: "spouse-partner", label: "Spouse or civil partner" },
+                      { value: "spouse-partner", label: "Husband, wife, civil partner or partner" },
                       { value: "parent", label: "Parent" },
                       { value: "child", label: "Son or daughter" },
                       { value: "sibling", label: "Sibling" },
@@ -235,15 +233,15 @@ export default function FinancialSupportPage() {
               </Card>
             )}
 
-            {/* Step 1 – NI */}
+            {/* Step 1: NI */}
             {step >= 1 && (
               <Card>
                 <CardContent className="pt-6">
                   <h3 className="text-base font-semibold text-ink-800 mb-1">
-                    Did the deceased pay National Insurance contributions?
+                    Did the person who died pay National Insurance contributions?
                   </h3>
                   <p className="text-xs text-ink-500 mb-4">
-                    Most people who worked in the UK will have paid NI. Check their P60 or payslips if unsure.
+                    Most people who worked in the UK will have paid National Insurance. Check their P60 or payslips if you are not sure.
                   </p>
                   <div className="grid grid-cols-3 gap-2">
                     {(["yes", "no", "unsure"] as YNUnsure[]).map((v) => (
@@ -261,12 +259,12 @@ export default function FinancialSupportPage() {
               </Card>
             )}
 
-            {/* Step 2 – Benefits */}
+            {/* Step 2: Benefits */}
             {step >= 2 && (
               <Card>
                 <CardContent className="pt-6">
                   <h3 className="text-base font-semibold text-ink-800 mb-4">
-                    Are you currently receiving any of these benefits?
+                    Do you or your partner get any of these benefits?
                   </h3>
                   <div className="space-y-2 mb-4">
                     {QUALIFYING_BENEFITS.map((b) => (
@@ -320,7 +318,7 @@ export default function FinancialSupportPage() {
               </Card>
             )}
 
-            {/* Step 3 – Funeral cost help */}
+            {/* Step 3: Funeral cost help */}
             {step >= 3 && (
               <Card>
                 <CardContent className="pt-6">
@@ -343,7 +341,7 @@ export default function FinancialSupportPage() {
               </Card>
             )}
 
-            {/* Step 4 – Children */}
+            {/* Step 4: Children */}
             {step >= 4 && (
               <Card>
                 <CardContent className="pt-6">
@@ -370,7 +368,7 @@ export default function FinancialSupportPage() {
             {step >= 5 && (
               <div className="text-center">
                 <Button size="lg" onClick={handleCheck}>
-                  Check My Eligibility
+                  Check what you may be able to get
                   <ArrowRight className="h-4 w-4" />
                 </Button>
               </div>
@@ -389,7 +387,7 @@ export default function FinancialSupportPage() {
               <div className="flex gap-4 mt-4">
                 <div>
                   <p className="text-2xl font-bold">{results.filter((r) => r.eligible === "likely").length}</p>
-                  <p className="text-xs text-ink-300">Likely eligible</p>
+                  <p className="text-xs text-ink-300">You may be able to get this</p>
                 </div>
                 <div>
                   <p className="text-2xl font-bold">{results.filter((r) => r.eligible === "possible").length}</p>
@@ -422,7 +420,7 @@ export default function FinancialSupportPage() {
                       {program.eligible === "possible" && <Info className="h-3.5 w-3.5" />}
                       {program.eligible === "unlikely" && <X className="h-3.5 w-3.5" />}
                       {program.eligible === "likely"
-                        ? "Likely eligible"
+                        ? "You may be able to get this"
                         : program.eligible === "possible"
                         ? "Worth checking"
                         : "Unlikely to apply"}
@@ -456,7 +454,7 @@ export default function FinancialSupportPage() {
                       className="inline-flex items-center gap-1.5 text-sm text-ink-700 font-medium hover:text-ink-900"
                     >
                       <ExternalLink className="h-4 w-4" />
-                      View on GOV.UK
+                      Find out more
                     </a>
                   </div>
                 </CardContent>
@@ -464,7 +462,7 @@ export default function FinancialSupportPage() {
             ))}
 
             <Button variant="outline" onClick={() => { setStep(0); setResults(null); setData(initialState); }}>
-              Start Again
+              Start again
             </Button>
           </div>
         )}

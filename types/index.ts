@@ -6,6 +6,11 @@ export type FaithOption =
   | "sikh"
   | "jewish"
   | "humanist"
+  | "christian-orthodox"
+  | "christian-pentecostal"
+  | "buddhist"
+  | "traditional"
+  /** Older plans only: replaced by the more specific cultural background question. */
   | "african-caribbean"
   | "other"
   | "none"
@@ -16,6 +21,7 @@ export type HousingType =
   | "council"
   | "supported"
   | "unsure";
+export type BurialPlace = "uk" | "abroad" | "both" | "unsure";
 export type YesNoUnsure = "yes" | "no" | "unsure";
 export type DeceasedLocation = "hospital" | "hospice" | "care-home" | "home" | "funeral-director";
 
@@ -41,7 +47,14 @@ export interface IntakeFormData {
   faith: FaithOption;
   /** All faiths/traditions chosen (people often identify with more than one). */
   faiths?: FaithOption[];
+  /** Consent covers faith and cultural background (both special category data). */
   faithConsent?: boolean;
+  /** Cultural backgrounds (ids from lib/cultures.ts). Only kept with consent. */
+  backgrounds?: string[];
+  /** Anything about their background we have not listed, in their own words. */
+  backgroundOther?: string;
+  /** Where they will be buried or cremated, which decides the repatriation steps. */
+  burialPlace?: BurialPlace;
 
   // Housing
   housingType: HousingType;

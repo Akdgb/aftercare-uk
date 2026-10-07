@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Calendar, Clock, ExternalLink } from "lucide-react";
+import { BackLink } from "@/components/layout/back-link";
+import { Calendar, Clock, ExternalLink } from "lucide-react";
 import { articles } from "@/lib/guidance-content";
 
 export function generateStaticParams() {
@@ -12,7 +13,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const article = articles[slug];
   if (!article) return {};
   return {
-    title: `${article.title} – AfterCare Guidance`,
+    title: article.title,
     description: article.title,
   };
 }
@@ -22,26 +23,44 @@ export default async function GuidanceArticlePage({ params }: { params: Promise<
   const article = articles[slug];
   if (!article) notFound();
 
+  // Minimal Markdown: headings, paragraphs, bold, bullet lists and tables.
+  // Consecutive list items and table rows are wrapped so the HTML is valid.
+  const bold = (t: string) => t.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
   const formatContent = (content: string) => {
-    return content
-      .split("\n")
-      .map((line) => {
-        if (line.startsWith("## ")) return `<h2>${line.slice(3)}</h2>`;
-        if (line.startsWith("### ")) return `<h3>${line.slice(4)}</h3>`;
-        if (line.startsWith("- ")) return `<li>${line.slice(2).replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")}</li>`;
-        if (line.startsWith("| ")) {
-          const cells = line
-            .split("|")
-            .filter((c) => c.trim() && !c.match(/^[-\s|]+$/))
-            .map((c) => `<td>${c.trim()}</td>`)
-            .join("");
-          return `<tr>${cells}</tr>`;
-        }
-        if (!line.trim()) return "<br/>";
-        const formatted = line.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
-        return `<p>${formatted}</p>`;
-      })
-      .join("\n");
+    const out: string[] = [];
+    let list: string[] = [];
+    let rows: string[][] = [];
+    const flush = () => {
+      if (list.length) out.push(`<ul>${list.map((i) => `<li>${bold(i)}</li>`).join("")}</ul>`);
+      if (rows.length) {
+        const [head, ...body] = rows;
+        out.push(
+          `<table><thead><tr>${head.map((c) => `<th scope="col">${bold(c)}</th>`).join("")}</tr></thead>` +
+            `<tbody>${body.map((r) => `<tr>${r.map((c) => `<td>${bold(c)}</td>`).join("")}</tr>`).join("")}</tbody></table>`
+        );
+      }
+      list = [];
+      rows = [];
+    };
+    for (const line of content.split("\n")) {
+      if (line.startsWith("- ")) {
+        if (rows.length) flush();
+        list.push(line.slice(2));
+        continue;
+      }
+      if (line.startsWith("|")) {
+        if (list.length) flush();
+        const cells = line.split("|").slice(1, -1).map((c) => c.trim());
+        if (!cells.every((c) => /^:?-+:?$/.test(c))) rows.push(cells);
+        continue;
+      }
+      flush();
+      if (line.startsWith("### ")) out.push(`<h3>${bold(line.slice(4))}</h3>`);
+      else if (line.startsWith("## ")) out.push(`<h2>${bold(line.slice(3))}</h2>`);
+      else if (line.trim()) out.push(`<p>${bold(line)}</p>`);
+    }
+    flush();
+    return out.join("\n");
   };
 
   const related = Object.values(articles)
@@ -52,13 +71,7 @@ export default async function GuidanceArticlePage({ params }: { params: Promise<
     <div className="bg-stone-50 min-h-screen">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         {/* Breadcrumb */}
-        <Link
-          href="/help"
-          className="inline-flex items-center gap-2 text-sm text-ink-500 hover:text-ink-800 mb-8"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back to Help
-        </Link>
+        <BackLink className="mb-8" />
 
         <article className="bg-white rounded-2xl border border-stone-200 shadow-sm p-6 sm:p-10">
           {/* Header */}

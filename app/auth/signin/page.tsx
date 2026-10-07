@@ -74,7 +74,7 @@ function SignInForm() {
               <h1 className="text-lg font-semibold text-ink-800 mb-2">Check your email</h1>
               <p className="text-ink-500 text-sm leading-relaxed">
                 We sent a sign-in link to <strong className="text-ink-700">{email}</strong>.
-                Click it to continue — you can close this tab. The link expires in 20 minutes.
+                Open the link to continue. You can close this tab. The link expires in 20 minutes.
               </p>
               <button
                 onClick={() => setState("idle")}
@@ -90,8 +90,8 @@ function SignInForm() {
               </h1>
               <p className="text-sm text-ink-500 text-center mb-6">
                 {invited
-                  ? "Confirm your email address and we'll send you a link to open the family plan — no password needed."
-                  : "Enter your email and we'll send you a sign-in link — no password needed. New here? This creates your account."}
+                  ? "Confirm your email address and we'll send you a link to open the family plan. No password is needed."
+                  : "Enter your email and we'll send you a sign-in link. No password is needed. If you are new, this creates your account."}
               </p>
 
               {error && (
