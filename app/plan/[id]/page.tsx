@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { CheckCircle2, Loader2, MessageSquare, Send, Trash2, UserPlus, Users, X } from "lucide-react";
@@ -50,6 +50,7 @@ export default function SavedPlanPage() {
   const [plan, setPlan] = useState<PlanResponse | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const saveCounter = useRef(0);
 
   // Bumped when the tab regains focus so family members see each other's changes
   const [version, setVersion] = useState(0);
@@ -89,6 +90,11 @@ export default function SavedPlanPage() {
       setPlan(previous);
       setSaveState("error");
     }
+    // Hide the confirmation after a moment, unless another save started since
+    const thisSave = ++saveCounter.current;
+    setTimeout(() => {
+      if (saveCounter.current === thisSave) setSaveState("idle");
+    }, 2500);
   };
 
   const toggle = (taskId: string, status: TaskStatus) =>
@@ -138,60 +144,52 @@ export default function SavedPlanPage() {
   const nameFor = (email: string) => people.find((p) => p.email === email)?.name ?? email;
 
   return (
-    <PlanView
-      intake={plan.intake_data}
-      statuses={plan.task_statuses}
-      onToggle={toggle}
-      extraFilter={{ label: "Only tasks assigned to me", test: (t) => plan.task_assignees[t.id] === plan.me }}
-      headerActions={
-        <>
-          {saveState === "saving" && (
-            <span className="text-xs text-slate-400 flex items-center gap-1">
-              <Loader2 className="h-3 w-3 animate-spin" /> Saving…
-            </span>
-          )}
-          {saveState === "saved" && (
-            <span className="text-xs text-emerald-600 flex items-center gap-1">
-              <CheckCircle2 className="h-3 w-3" /> Saved
-            </span>
-          )}
-          {saveState === "error" && <span className="text-xs text-red-600">Couldn&apos;t save — please try again</span>}
-          {plan.role === "member" && (
-            <span className="text-xs bg-stone-100 text-slate-600 px-2.5 py-1 rounded-full">Shared with you</span>
-          )}
-        </>
-      }
-      sidebar={
-        <>
-          <FamilyPanel plan={plan} onChange={(members) => setPlan({ ...plan, members })} />
-          {plan.role === "owner" && plan.intake_data.faith && plan.intake_data.faith !== "prefer-not-to-say" && (
-            <RemoveFaith
-              planId={planId}
-              onRemoved={() =>
-                setPlan({ ...plan, intake_data: { ...plan.intake_data, faith: "prefer-not-to-say", faithConsent: false } })
-              }
-            />
-          )}
-          {plan.role === "owner" ? (
-            <DeletePlan planId={planId} onDeleted={() => router.push("/dashboard")} />
-          ) : (
-            <LeavePlan planId={planId} me={plan.me} onLeft={() => router.push("/dashboard")} />
-          )}
-        </>
-      }
-      renderTaskExtras={(task) => (
-        <TaskCollaboration
-          task={task}
-          planId={planId}
-          people={people}
-          assignee={plan.task_assignees[task.id] ?? null}
-          nameFor={nameFor}
-          comments={plan.comments.filter((c) => c.task_id === task.id)}
-          onAssign={(email) => assign(task.id, email)}
-          onComment={(c) => setPlan((p) => (p ? { ...p, comments: [...p.comments, c] } : p))}
-        />
-      )}
-    />
+    <>
+      <SaveToast state={saveState} />
+      <PlanView
+        intake={plan.intake_data}
+        statuses={plan.task_statuses}
+        onToggle={toggle}
+        extraFilter={{ label: "Only tasks assigned to me", test: (t) => plan.task_assignees[t.id] === plan.me }}
+        headerActions={
+          <>
+            {plan.role === "member" && (
+              <span className="text-xs bg-stone-100 text-slate-600 px-2.5 py-1 rounded-full">Shared with you</span>
+            )}
+          </>
+        }
+        sidebar={
+          <>
+            <FamilyPanel plan={plan} onChange={(members) => setPlan({ ...plan, members })} />
+            {plan.role === "owner" && plan.intake_data.faith && plan.intake_data.faith !== "prefer-not-to-say" && (
+              <RemoveFaith
+                planId={planId}
+                onRemoved={() =>
+                  setPlan({ ...plan, intake_data: { ...plan.intake_data, faith: "prefer-not-to-say", faithConsent: false } })
+                }
+              />
+            )}
+            {plan.role === "owner" ? (
+              <DeletePlan planId={planId} onDeleted={() => router.push("/dashboard")} />
+            ) : (
+              <LeavePlan planId={planId} me={plan.me} onLeft={() => router.push("/dashboard")} />
+            )}
+          </>
+        }
+        renderTaskExtras={(task) => (
+          <TaskCollaboration
+            task={task}
+            planId={planId}
+            people={people}
+            assignee={plan.task_assignees[task.id] ?? null}
+            nameFor={nameFor}
+            comments={plan.comments.filter((c) => c.task_id === task.id)}
+            onAssign={(email) => assign(task.id, email)}
+            onComment={(c) => setPlan((p) => (p ? { ...p, comments: [...p.comments, c] } : p))}
+          />
+        )}
+      />
+    </>
   );
 }
 
@@ -497,5 +495,28 @@ function LeavePlan({ planId, me, onLeft }: { planId: string; me: string; onLeft:
     <button onClick={leave} className="w-full text-xs text-slate-400 hover:text-red-600 py-2">
       Leave this plan
     </button>
+  );
+}
+
+/** Fixed in the corner so the confirmation is visible wherever the user has scrolled to. */
+function SaveToast({ state }: { state: "idle" | "saving" | "saved" | "error" }) {
+  return (
+    <div aria-live="polite" className="fixed bottom-4 right-4 z-50 print:hidden">
+      {state === "saving" && (
+        <div className="flex items-center gap-2 bg-white border border-stone-200 shadow-lg rounded-full px-4 py-2 text-sm text-slate-600">
+          <Loader2 className="h-4 w-4 animate-spin" /> Saving…
+        </div>
+      )}
+      {state === "saved" && (
+        <div className="flex items-center gap-2 bg-emerald-600 shadow-lg rounded-full px-4 py-2 text-sm text-white">
+          <CheckCircle2 className="h-4 w-4" /> Saved
+        </div>
+      )}
+      {state === "error" && (
+        <div className="flex items-center gap-2 bg-red-600 shadow-lg rounded-full px-4 py-2 text-sm text-white">
+          Couldn&apos;t save — please try again
+        </div>
+      )}
+    </div>
   );
 }
