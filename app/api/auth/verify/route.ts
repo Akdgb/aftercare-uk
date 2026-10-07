@@ -5,7 +5,7 @@ import { safeNextPath } from "@/lib/security";
 
 export async function GET(req: NextRequest) {
   const token = req.nextUrl.searchParams.get("token");
-  const next = safeNextPath(req.nextUrl.searchParams.get("next"));
+  const next = safeNextPath(req.nextUrl.searchParams.get("next"), "/plan");
 
   if (!token) {
     return NextResponse.redirect(new URL("/auth/signin?error=missing", req.url));

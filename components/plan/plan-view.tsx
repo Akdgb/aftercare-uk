@@ -1,16 +1,11 @@
 "use client";
 import { useMemo, useState } from "react";
-import Link from "next/link";
 import {
-  ArrowRight,
   Building2,
-  Calculator,
   Check,
   ChevronDown,
   ExternalLink,
-  Heart,
   Home,
-  MessageCircleQuestion,
   Phone,
   PoundSterling,
   Printer,
@@ -19,7 +14,6 @@ import {
   User,
   Zap,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { generateActionPlan } from "@/lib/action-plan";
 import { cn, formatDate } from "@/lib/utils";
 import type { ActionPlanTask, IntakeFormData } from "@/types";
@@ -43,7 +37,6 @@ const STAGES: { priority: ActionPlanTask["priority"]; title: string; subtitle: s
   { priority: "future", title: "When you're ready", subtitle: "No rush — come back to these later" },
 ];
 
-const CATEGORIES = Object.keys(CATEGORY_META) as ActionPlanTask["category"][];
 type View = "todo" | "all" | "done";
 
 interface PlanViewProps {
@@ -76,7 +69,6 @@ export function PlanView({
   extraFilter,
 }: PlanViewProps) {
   const [view, setView] = useState<View>("todo");
-  const [category, setCategory] = useState<ActionPlanTask["category"] | "all">("all");
   const [onlyExtra, setOnlyExtra] = useState(false);
   const [openTasks, setOpenTasks] = useState<Set<string>>(new Set());
   const [collapsedStages, setCollapsedStages] = useState<Set<string>>(new Set());
@@ -110,7 +102,6 @@ export function PlanView({
     (t) =>
       (view === "all" ||
         (view === "done" ? t.status === "completed" : t.status !== "completed" || recentlyDone.has(t.id))) &&
-      (category === "all" || t.category === category) &&
       (!onlyExtra || !extraFilter || extraFilter.test(t))
   );
 
@@ -139,13 +130,11 @@ export function PlanView({
     <div className="min-h-screen print:bg-white">
       {/* ── Header ─────────────────────────────────────────────────────── */}
       <div className="bg-gradient-to-b from-white to-stone-50 border-b border-stone-200/70">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-7 print:py-2">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-5 pb-5 sm:pt-8 sm:pb-7 print:py-2">
           <div className="flex items-start justify-between gap-6">
             <div className="min-w-0">
-              <p className="text-sm text-ink-500 mb-1 flex items-center gap-1.5">
-                <Heart className="h-3.5 w-3.5" /> A plan for
-              </p>
-              <h1 className="text-3xl sm:text-4xl font-semibold text-ink-900 break-words">{name || "Your plan"}</h1>
+              
+              <h1 className="text-2xl sm:text-4xl font-semibold text-ink-900 break-words">{name || "Your plan"}</h1>
               {intake.dateOfDeath && (
                 <p className="text-sm text-ink-500 mt-2">
                   Died {formatDate(intake.dateOfDeath)}
@@ -157,23 +146,19 @@ export function PlanView({
                   )}
                 </p>
               )}
-              <p className="text-ink-600 mt-4 max-w-xl print:hidden">{encouragement(done, tasks.length)}</p>
+              <p className="text-sm sm:text-base text-ink-600 mt-3 max-w-xl print:hidden">
+                {encouragement(done, tasks.length)}
+              </p>
             </div>
             <ProgressRing done={done} total={tasks.length} />
           </div>
-          <div className="flex flex-wrap items-center gap-2 mt-5 print:hidden">
-            {headerActions}
-            <Button variant="outline" size="sm" onClick={() => window.print()}>
-              <Printer className="h-4 w-4" /> Print or save as PDF
-            </Button>
-          </div>
+          {headerActions && <div className="flex flex-wrap items-center gap-2 mt-4 print:hidden">{headerActions}</div>}
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 print:py-4">
-        <div className="grid lg:grid-cols-[minmax(0,1fr)_320px] gap-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-8 print:py-4">
+        <div className={cn("grid gap-8", sidebar && "lg:grid-cols-[minmax(0,1fr)_300px]")}>
           <div className="min-w-0 space-y-6">
-            {banner && <div className="print:hidden">{banner}</div>}
 
             {/* ── Up next ──────────────────────────────────────────────── */}
             {nextTask ? (
@@ -225,6 +210,8 @@ export function PlanView({
               </section>
             )}
 
+            {banner && <div className="print:hidden">{banner}</div>}
+
             {/* ── Toolbar ─────────────────────────────────────────────── */}
             <div className="print:hidden space-y-3">
               <div className="flex flex-wrap items-center justify-between gap-3">
@@ -261,23 +248,6 @@ export function PlanView({
                     {extraFilter.label}
                   </label>
                 )}
-              </div>
-              <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1" aria-label="Filter by type">
-                {(["all", ...CATEGORIES] as const).map((c) => (
-                  <button
-                    key={c}
-                    onClick={() => setCategory(c)}
-                    aria-pressed={category === c}
-                    className={cn(
-                      "shrink-0 px-3 py-1.5 text-sm rounded-full border transition-colors",
-                      category === c
-                        ? "bg-ink-700 border-ink-700 text-white"
-                        : "bg-white border-stone-200 text-ink-600 hover:border-ink-300"
-                    )}
-                  >
-                    {c === "all" ? "Everything" : CATEGORY_META[c].label}
-                  </button>
-                ))}
               </div>
             </div>
 
@@ -359,44 +329,18 @@ export function PlanView({
                 );
               })}
             </ol>
+            <button
+              onClick={() => window.print()}
+              className="print:hidden inline-flex items-center gap-2 text-sm text-ink-600 hover:text-ink-900"
+            >
+              <Printer className="h-4 w-4" /> Print or save as PDF
+            </button>
           </div>
 
           {/* ── Side column ───────────────────────────────────────────── */}
-          <aside className="space-y-4 print:hidden">
+          {sidebar && <aside className="space-y-4 print:hidden">
             {sidebar}
-            <div className="rounded-2xl bg-white border border-stone-200/80 p-5">
-              <p className="text-sm font-semibold text-ink-900 mb-3">Helpful tools</p>
-              <div className="space-y-1">
-                {[
-                  { href: "/financial-support", label: "Check what money help you can get", icon: PoundSterling },
-                  { href: "/cost-estimator", label: "Estimate funeral costs", icon: Calculator },
-                  { href: "/resources", label: "Find local services", icon: Building2 },
-                  { href: "/assistant", label: "Ask a question", icon: MessageCircleQuestion },
-                ].map((item) => {
-                  const Icon = item.icon;
-                  return (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className="group flex items-center gap-3 text-sm text-ink-700 hover:text-ink-900 hover:bg-stone-50 px-3 py-2.5 -mx-3 rounded-xl transition-colors"
-                    >
-                      <span className="w-8 h-8 rounded-lg bg-ink-50 flex items-center justify-center shrink-0">
-                        <Icon className="h-4 w-4 text-ink-600" />
-                      </span>
-                      <span className="flex-1">{item.label}</span>
-                      <ArrowRight className="h-4 w-4 text-ink-300 group-hover:text-ink-600 group-hover:translate-x-0.5 transition-all" />
-                    </Link>
-                  );
-                })}
-              </div>
-            </div>
-            <div className="rounded-2xl bg-ink-50 border border-ink-100 p-5">
-              <p className="text-sm font-semibold text-ink-900">Go at your own pace</p>
-              <p className="text-sm text-ink-600 mt-1.5 leading-relaxed">
-                Only the first few tasks have deadlines. Everything else can wait until you&apos;re ready.
-              </p>
-            </div>
-          </aside>
+          </aside>}
         </div>
 
         <p className="hidden print:block text-xs text-ink-500 mt-8">
@@ -427,7 +371,7 @@ function ProgressRing({ done, total }: { done: number; total: number }) {
   const r = 34;
   const c = 2 * Math.PI * r;
   return (
-    <div className="relative w-20 h-20 sm:w-28 sm:h-28 shrink-0" role="img" aria-label={`${done} of ${total} tasks done`}>
+    <div className="relative w-16 h-16 sm:w-28 sm:h-28 shrink-0" role="img" aria-label={`${done} of ${total} tasks done`}>
       <svg viewBox="0 0 80 80" className="w-full h-full -rotate-90">
         <circle cx="40" cy="40" r={r} fill="none" stroke="#e4dfd3" strokeWidth="7" />
         <circle

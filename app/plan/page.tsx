@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Cloud, Loader2 } from "lucide-react";
@@ -65,24 +65,7 @@ export default function LocalPlanPage() {
     );
   }
 
-  if (!intake) {
-    return (
-      <div className="max-w-2xl mx-auto px-4 py-20 text-center">
-        <p className="text-ink-500 mb-6">
-          No plan found on this device. Answer a few questions to create your personalised plan, or sign in to see
-          a plan you&apos;ve already saved.
-        </p>
-        <div className="flex justify-center gap-3">
-          <Link href="/intake">
-            <Button>Create my plan</Button>
-          </Link>
-          <Link href="/auth/signin">
-            <Button variant="outline">Sign in</Button>
-          </Link>
-        </div>
-      </div>
-    );
-  }
+  if (!intake) return <NoLocalPlan />;
 
   return (
     <PlanView
@@ -90,23 +73,59 @@ export default function LocalPlanPage() {
       statuses={statuses}
       onToggle={(taskId, next) => setRawStatuses(JSON.stringify({ ...statuses, [taskId]: next }))}
       banner={
-        <div className="bg-white border border-stone-200/80 rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center gap-4 shadow-[0_1px_2px_rgba(24,42,38,0.04)]">
-          <span className="hidden sm:flex w-11 h-11 rounded-xl bg-amber-50 items-center justify-center flex-shrink-0">
-            <Cloud className="h-5 w-5 text-amber-700" />
-          </span>
-          <div className="flex-1">
-            <p className="text-sm font-semibold text-ink-900">This plan is only saved in this browser</p>
-            <p className="text-sm text-ink-600 mt-0.5">
-              Save it to your account to open it on any device, get gentle reminders, and invite family to share the
-              tasks.
-            </p>
-            {error && <p className="text-sm text-red-700 mt-1">{error}</p>}
-          </div>
-          <Button onClick={save} loading={saving} className="flex-shrink-0">
+        <div className="bg-white border border-stone-200/80 rounded-2xl p-4 flex items-center gap-3">
+          <Cloud className="h-5 w-5 text-amber-700 shrink-0" />
+          <p className="flex-1 text-sm text-ink-700">
+            <span className="font-medium text-ink-900">Only saved on this device.</span> Save it to share with family
+            and open it anywhere.
+            {error && <span className="block text-rose-700 mt-1">{error}</span>}
+          </p>
+          <Button onClick={save} loading={saving} size="sm" className="shrink-0">
             Save &amp; share
           </Button>
         </div>
       }
     />
+  );
+}
+
+/** No plan on this device: open the newest saved plan if signed in, else offer to start. */
+function NoLocalPlan() {
+  const router = useRouter();
+  const [checking, setChecking] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/plans")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        const latest = d?.plans?.[0];
+        if (latest) router.replace(`/plan/${latest.id}`);
+        else setChecking(false);
+      })
+      .catch(() => setChecking(false));
+  }, [router]);
+
+  if (checking) {
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-ink-400" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="max-w-md mx-auto px-5 py-20 text-center">
+      <h1 className="text-3xl font-semibold text-ink-900">No plan yet</h1>
+      <p className="text-ink-600 mt-3">Answer 6 quick questions and we&apos;ll build your checklist.</p>
+      <Link
+        href="/intake"
+        className="mt-8 w-full inline-flex items-center justify-center bg-ink-700 text-white text-lg font-medium py-4 rounded-2xl hover:bg-ink-800"
+      >
+        Start
+      </Link>
+      <Link href="/auth/signin" className="block mt-4 text-sm font-medium text-ink-700 underline underline-offset-4">
+        I already have a saved plan
+      </Link>
+    </div>
   );
 }
