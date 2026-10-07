@@ -70,6 +70,15 @@ describe("generateActionPlan", () => {
     expect(ids).toContain("contact-chevra-kadisha");
   });
 
+  it("always includes the money-saving, streaming and memorial steps, linked to our own guides", () => {
+    for (const data of [base, { ...base, currentLocation: "funeral-director" }] as IntakeFormData[]) {
+      const byId = Object.fromEntries(generateActionPlan(data).map((t) => [t.id, t]));
+      expect(byId["compare-funeral-prices"]).toMatchObject({ priority: "urgent", link: "/help/save-money" });
+      expect(byId["family-far-away"]?.link).toBe("/help/streaming");
+      expect(byId["memorial-page"]?.link).toBe("/help/memorials");
+    }
+  });
+
   it("does not leak the internal legacyId field", () => {
     for (const t of generateActionPlan(base)) expect(t).not.toHaveProperty("legacyId");
   });

@@ -1,6 +1,7 @@
 "use client";
 import { useState, useMemo } from "react";
-import { Info, PoundSterling } from "lucide-react";
+import Link from "next/link";
+import { Info, PiggyBank, PoundSterling } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
@@ -152,6 +153,12 @@ export default function CostEstimatorPage() {
             <p className="text-ink-500">
               Understand the likely cost of a funeral before making any commitments. Figures are typical UK price ranges — always get written quotes.
             </p>
+            <Link
+              href="/help/save-money"
+              className="inline-flex items-center gap-2 mt-4 text-sm font-medium text-ink-800 bg-ink-50 border border-ink-200 px-3.5 py-2 rounded-xl hover:bg-ink-100"
+            >
+              <PiggyBank className="h-4 w-4" /> See simple ways to save
+            </Link>
           </div>
         </div>
       </div>
