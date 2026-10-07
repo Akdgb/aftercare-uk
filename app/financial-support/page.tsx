@@ -55,12 +55,12 @@ function OptionBtn({
       className={cn(
         "flex items-center justify-between px-4 py-3 rounded-xl border-2 text-sm font-medium transition-all w-full text-left",
         selected
-          ? "border-slate-700 bg-slate-50 text-slate-800"
-          : "border-stone-200 bg-white text-slate-600 hover:border-stone-300"
+          ? "border-ink-700 bg-ink-50 text-ink-800"
+          : "border-stone-200 bg-white text-ink-600 hover:border-stone-300"
       )}
     >
       {children}
-      {selected && <Check className="h-4 w-4 text-slate-700" />}
+      {selected && <Check className="h-4 w-4 text-ink-700" />}
     </button>
   );
 }
@@ -192,11 +192,11 @@ export default function FinancialSupportPage() {
   return (
     <div className="bg-stone-50 min-h-screen">
       {/* Header */}
-      <div className="bg-white border-b border-stone-200">
+      <div className="bg-gradient-to-b from-white to-stone-50 border-b border-stone-200/70">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
           <div className="max-w-2xl">
-            <h1 className="text-3xl font-bold text-slate-900 mb-2">Financial Support Checker</h1>
-            <p className="text-slate-500">
+            <h1 className="text-3xl sm:text-4xl font-semibold text-ink-900 mb-2">Check what money help you can get</h1>
+            <p className="text-ink-500">
               Answer a few questions to find out which government payments and support programmes you may be entitled to.
             </p>
           </div>
@@ -210,7 +210,7 @@ export default function FinancialSupportPage() {
             {step >= 0 && (
               <Card>
                 <CardContent className="pt-6">
-                  <h3 className="text-base font-semibold text-slate-800 mb-4">
+                  <h3 className="text-base font-semibold text-ink-800 mb-4">
                     What was your relationship to the deceased?
                   </h3>
                   <div className="space-y-2">
@@ -239,10 +239,10 @@ export default function FinancialSupportPage() {
             {step >= 1 && (
               <Card>
                 <CardContent className="pt-6">
-                  <h3 className="text-base font-semibold text-slate-800 mb-1">
+                  <h3 className="text-base font-semibold text-ink-800 mb-1">
                     Did the deceased pay National Insurance contributions?
                   </h3>
-                  <p className="text-xs text-slate-500 mb-4">
+                  <p className="text-xs text-ink-500 mb-4">
                     Most people who worked in the UK will have paid NI. Check their P60 or payslips if unsure.
                   </p>
                   <div className="grid grid-cols-3 gap-2">
@@ -265,7 +265,7 @@ export default function FinancialSupportPage() {
             {step >= 2 && (
               <Card>
                 <CardContent className="pt-6">
-                  <h3 className="text-base font-semibold text-slate-800 mb-4">
+                  <h3 className="text-base font-semibold text-ink-800 mb-4">
                     Are you currently receiving any of these benefits?
                   </h3>
                   <div className="space-y-2 mb-4">
@@ -275,7 +275,7 @@ export default function FinancialSupportPage() {
                         className={cn(
                           "flex items-center gap-3 px-4 py-3 rounded-xl border-2 cursor-pointer transition-all text-sm",
                           data.whichBenefits.includes(b)
-                            ? "border-slate-700 bg-slate-50"
+                            ? "border-ink-700 bg-ink-50"
                             : "border-stone-200 bg-white hover:border-stone-300"
                         )}
                       >
@@ -285,14 +285,14 @@ export default function FinancialSupportPage() {
                           onChange={() => toggleBenefit(b)}
                           className="rounded border-stone-300"
                         />
-                        <span className="text-slate-700">{b}</span>
+                        <span className="text-ink-700">{b}</span>
                       </label>
                     ))}
                     <label
                       className={cn(
                         "flex items-center gap-3 px-4 py-3 rounded-xl border-2 cursor-pointer transition-all text-sm",
                         data.receivingBenefits === "no"
-                          ? "border-slate-700 bg-slate-50"
+                          ? "border-ink-700 bg-ink-50"
                           : "border-stone-200 bg-white hover:border-stone-300"
                       )}
                     >
@@ -305,7 +305,7 @@ export default function FinancialSupportPage() {
                         }}
                         className="rounded border-stone-300"
                       />
-                      <span className="text-slate-700">None of these</span>
+                      <span className="text-ink-700">None of these</span>
                     </label>
                   </div>
                   {data.whichBenefits.length > 0 && (
@@ -324,7 +324,7 @@ export default function FinancialSupportPage() {
             {step >= 3 && (
               <Card>
                 <CardContent className="pt-6">
-                  <h3 className="text-base font-semibold text-slate-800 mb-4">
+                  <h3 className="text-base font-semibold text-ink-800 mb-4">
                     Do you need help paying for the funeral costs?
                   </h3>
                   <div className="grid grid-cols-3 gap-2">
@@ -347,7 +347,7 @@ export default function FinancialSupportPage() {
             {step >= 4 && (
               <Card>
                 <CardContent className="pt-6">
-                  <h3 className="text-base font-semibold text-slate-800 mb-4">
+                  <h3 className="text-base font-semibold text-ink-800 mb-4">
                     Are there dependent children involved?
                   </h3>
                   <div className="grid grid-cols-3 gap-2">
@@ -381,19 +381,19 @@ export default function FinancialSupportPage() {
         {/* Results */}
         {results && (
           <div className="space-y-6">
-            <div className="bg-slate-700 text-white rounded-2xl p-6">
+            <div className="bg-ink-700 text-white rounded-2xl p-6">
               <h2 className="text-xl font-bold mb-2">Your support overview</h2>
-              <p className="text-slate-300 text-sm">
+              <p className="text-ink-300 text-sm">
                 Based on your answers, here are the support programmes that may be relevant to you.
               </p>
               <div className="flex gap-4 mt-4">
                 <div>
                   <p className="text-2xl font-bold">{results.filter((r) => r.eligible === "likely").length}</p>
-                  <p className="text-xs text-slate-300">Likely eligible</p>
+                  <p className="text-xs text-ink-300">Likely eligible</p>
                 </div>
                 <div>
                   <p className="text-2xl font-bold">{results.filter((r) => r.eligible === "possible").length}</p>
-                  <p className="text-xs text-slate-300">Worth checking</p>
+                  <p className="text-xs text-ink-300">Worth checking</p>
                 </div>
               </div>
             </div>
@@ -415,7 +415,7 @@ export default function FinancialSupportPage() {
                         "flex items-center gap-1.5 text-xs font-medium rounded-full px-2.5 py-1 flex-shrink-0",
                         program.eligible === "likely" && "bg-emerald-50 text-emerald-700 border border-emerald-200",
                         program.eligible === "possible" && "bg-amber-50 text-amber-700 border border-amber-200",
-                        program.eligible === "unlikely" && "bg-stone-100 text-slate-500 border border-stone-200"
+                        program.eligible === "unlikely" && "bg-stone-100 text-ink-500 border border-stone-200"
                       )}
                     >
                       {program.eligible === "likely" && <CheckCircle2 className="h-3.5 w-3.5" />}
@@ -430,22 +430,22 @@ export default function FinancialSupportPage() {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-slate-600 mb-4">{program.description}</p>
+                  <p className="text-sm text-ink-600 mb-4">{program.description}</p>
                   <div className="space-y-3">
                     <div>
-                      <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">Eligibility</p>
-                      <p className="text-sm text-slate-700">{program.eligibility}</p>
+                      <p className="text-xs font-medium text-ink-500 uppercase tracking-wide mb-1">Eligibility</p>
+                      <p className="text-sm text-ink-700">{program.eligibility}</p>
                     </div>
                     <div>
-                      <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">How much</p>
-                      <p className="text-sm text-slate-700 font-medium flex items-center gap-1">
+                      <p className="text-xs font-medium text-ink-500 uppercase tracking-wide mb-1">How much</p>
+                      <p className="text-sm text-ink-700 font-medium flex items-center gap-1">
                         <PoundSterling className="h-3.5 w-3.5 text-emerald-600" />
                         {program.amount}
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">How to apply</p>
-                      <p className="text-sm text-slate-700">{program.how}</p>
+                      <p className="text-xs font-medium text-ink-500 uppercase tracking-wide mb-1">How to apply</p>
+                      <p className="text-sm text-ink-700">{program.how}</p>
                     </div>
                   </div>
                   <div className="mt-4 pt-4 border-t border-stone-100">
@@ -453,7 +453,7 @@ export default function FinancialSupportPage() {
                       href={program.link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 text-sm text-slate-700 font-medium hover:text-slate-900"
+                      className="inline-flex items-center gap-1.5 text-sm text-ink-700 font-medium hover:text-ink-900"
                     >
                       <ExternalLink className="h-4 w-4" />
                       View on GOV.UK

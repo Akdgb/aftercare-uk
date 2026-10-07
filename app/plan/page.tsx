@@ -60,7 +60,7 @@ export default function LocalPlanPage() {
   if (rawIntake === undefined) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-slate-400" />
+        <Loader2 className="h-8 w-8 animate-spin text-ink-400" />
       </div>
     );
   }
@@ -68,7 +68,7 @@ export default function LocalPlanPage() {
   if (!intake) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-20 text-center">
-        <p className="text-slate-500 mb-6">
+        <p className="text-ink-500 mb-6">
           No plan found on this device. Answer a few questions to create your personalised plan, or sign in to see
           a plan you&apos;ve already saved.
         </p>
@@ -90,11 +90,13 @@ export default function LocalPlanPage() {
       statuses={statuses}
       onToggle={(taskId, next) => setRawStatuses(JSON.stringify({ ...statuses, [taskId]: next }))}
       banner={
-        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center gap-4">
-          <Cloud className="h-6 w-6 text-amber-600 flex-shrink-0" />
+        <div className="bg-white border border-stone-200/80 rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center gap-4 shadow-[0_1px_2px_rgba(24,42,38,0.04)]">
+          <span className="hidden sm:flex w-11 h-11 rounded-xl bg-amber-50 items-center justify-center flex-shrink-0">
+            <Cloud className="h-5 w-5 text-amber-700" />
+          </span>
           <div className="flex-1">
-            <p className="text-sm font-semibold text-amber-900">This plan is only saved in this browser</p>
-            <p className="text-sm text-amber-800 mt-0.5">
+            <p className="text-sm font-semibold text-ink-900">This plan is only saved in this browser</p>
+            <p className="text-sm text-ink-600 mt-0.5">
               Save it to your account to open it on any device, get gentle reminders, and invite family to share the
               tasks.
             </p>

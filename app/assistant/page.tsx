@@ -122,28 +122,30 @@ export default function AssistantPage() {
     setLoading(false);
   };
 
+  // Escape first: replies are rendered as HTML, so raw text must never become markup
   const formatContent = (content: string) => {
     return content
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
       .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-      .replace(/\n\n/g, "<br/><br/>")
-      .replace(/\n- /g, "<br/>• ")
-      .replace(/\n\*/g, "<br/>•")
-      .replace(/\n/g, "<br/>")
-      .replace(/\|(.*?)\|/g, (match) => `<span class="font-mono text-xs">${match}</span>`);
+      .replace(/(^|\n)[-*] /g, "$1• ")
+      .replace(/\n/g, "<br/>");
   };
 
   return (
     <div className="bg-stone-50 min-h-screen flex flex-col">
       {/* Header */}
-      <div className="bg-white border-b border-stone-200">
+      <div className="bg-gradient-to-b from-white to-stone-50 border-b border-stone-200/70">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-slate-700 rounded-xl flex items-center justify-center">
+            <div className="w-10 h-10 bg-ink-700 rounded-xl flex items-center justify-center">
               <Bot className="h-5 w-5 text-white" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-slate-900">AI Bereavement Assistant</h1>
-              <p className="text-sm text-slate-500">
+              <h1 className="text-3xl sm:text-4xl font-semibold text-ink-900">Ask a question</h1>
+              <p className="text-sm text-ink-500">
                 Ask questions about what to do, what you&apos;re entitled to, and how things work.
               </p>
             </div>
@@ -158,11 +160,11 @@ export default function AssistantPage() {
             {/* Welcome */}
             <div className="bg-white border border-stone-200 rounded-2xl p-6 mb-6">
               <div className="flex items-start gap-3">
-                <div className="w-8 h-8 bg-slate-700 rounded-full flex items-center justify-center flex-shrink-0">
+                <div className="w-8 h-8 bg-ink-700 rounded-full flex items-center justify-center flex-shrink-0">
                   <Bot className="h-4 w-4 text-white" />
                 </div>
                 <div
-                  className="text-sm text-slate-600 leading-relaxed"
+                  className="text-sm text-ink-600 leading-relaxed"
                   dangerouslySetInnerHTML={{ __html: formatContent(STARTER_CONTENT) }}
                 />
               </div>
@@ -170,7 +172,7 @@ export default function AssistantPage() {
 
             {/* Suggested questions */}
             <div>
-              <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-3">
+              <p className="text-xs font-medium text-ink-500 uppercase tracking-wide mb-3">
                 Suggested questions
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -178,9 +180,9 @@ export default function AssistantPage() {
                   <button
                     key={q}
                     onClick={() => sendMessage(q)}
-                    className="text-left px-4 py-3 bg-white border border-stone-200 rounded-xl text-sm text-slate-700 hover:border-slate-400 hover:shadow-sm transition-all"
+                    className="text-left px-4 py-3 bg-white border border-stone-200 rounded-xl text-sm text-ink-700 hover:border-ink-400 hover:shadow-sm transition-all"
                   >
-                    <MessageCircle className="h-3.5 w-3.5 inline mr-2 text-slate-400" />
+                    <MessageCircle className="h-3.5 w-3.5 inline mr-2 text-ink-400" />
                     {q}
                   </button>
                 ))}
@@ -198,7 +200,7 @@ export default function AssistantPage() {
                 )}
               >
                 {msg.role === "assistant" && (
-                  <div className="w-8 h-8 bg-slate-700 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <div className="w-8 h-8 bg-ink-700 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                     <Bot className="h-4 w-4 text-white" />
                   </div>
                 )}
@@ -206,8 +208,8 @@ export default function AssistantPage() {
                   className={cn(
                     "max-w-2xl rounded-2xl px-4 py-3 text-sm",
                     msg.role === "user"
-                      ? "bg-slate-700 text-white rounded-tr-md"
-                      : "bg-white border border-stone-200 text-slate-700 rounded-tl-md"
+                      ? "bg-ink-700 text-white rounded-tr-md"
+                      : "bg-white border border-stone-200 text-ink-700 rounded-tl-md"
                   )}
                 >
                   <div
@@ -222,7 +224,7 @@ export default function AssistantPage() {
                           href={s}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 text-xs text-slate-500 hover:text-slate-700"
+                          className="inline-flex items-center gap-1 text-xs text-ink-500 hover:text-ink-700"
                         >
                           <ExternalLink className="h-3 w-3" />
                           {s}
@@ -233,7 +235,7 @@ export default function AssistantPage() {
                 </div>
                 {msg.role === "user" && (
                   <div className="w-8 h-8 bg-stone-200 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <User className="h-4 w-4 text-slate-600" />
+                    <User className="h-4 w-4 text-ink-600" />
                   </div>
                 )}
               </div>
@@ -241,11 +243,11 @@ export default function AssistantPage() {
 
             {loading && (
               <div className="flex gap-3 justify-start">
-                <div className="w-8 h-8 bg-slate-700 rounded-full flex items-center justify-center flex-shrink-0">
+                <div className="w-8 h-8 bg-ink-700 rounded-full flex items-center justify-center flex-shrink-0">
                   <Bot className="h-4 w-4 text-white" />
                 </div>
                 <div className="bg-white border border-stone-200 rounded-2xl rounded-tl-md px-4 py-3">
-                  <Loader2 className="h-4 w-4 text-slate-400 animate-spin" />
+                  <Loader2 className="h-4 w-4 text-ink-400 animate-spin" />
                 </div>
               </div>
             )}
@@ -257,7 +259,7 @@ export default function AssistantPage() {
                   <button
                     key={q}
                     onClick={() => sendMessage(q)}
-                    className="text-left px-3 py-2 bg-white border border-stone-200 rounded-xl text-xs text-slate-600 hover:border-slate-400 transition-all"
+                    className="text-left px-3 py-2 bg-white border border-stone-200 rounded-xl text-xs text-ink-600 hover:border-ink-400 transition-all"
                   >
                     {q}
                   </button>
@@ -286,28 +288,28 @@ export default function AssistantPage() {
                 }}
                 placeholder="Ask a question about bereavement, funerals, probate, or financial support..."
                 rows={1}
-                className="w-full resize-none rounded-xl border border-stone-300 bg-white px-4 py-3 pr-12 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400 min-h-[46px] max-h-36"
+                className="w-full resize-none rounded-xl border border-stone-300 bg-white px-4 py-3 pr-12 text-sm text-ink-800 placeholder-ink-400 focus:outline-none focus:ring-2 focus:ring-ink-400 min-h-[46px] max-h-36"
                 style={{ height: "auto" }}
               />
             </div>
             <button
               onClick={() => sendMessage()}
               disabled={!input.trim() || loading}
-              className="w-11 h-11 bg-slate-700 rounded-xl flex items-center justify-center text-white hover:bg-slate-800 disabled:opacity-40 disabled:pointer-events-none transition-colors flex-shrink-0"
+              className="w-11 h-11 bg-ink-700 rounded-xl flex items-center justify-center text-white hover:bg-ink-800 disabled:opacity-40 disabled:pointer-events-none transition-colors flex-shrink-0"
             >
               {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <ArrowUp className="h-4 w-4" />}
             </button>
             {messages.length > 0 && (
               <button
                 onClick={() => setMessages([])}
-                className="w-11 h-11 bg-stone-100 rounded-xl flex items-center justify-center text-slate-500 hover:bg-stone-200 transition-colors flex-shrink-0"
+                className="w-11 h-11 bg-stone-100 rounded-xl flex items-center justify-center text-ink-500 hover:bg-stone-200 transition-colors flex-shrink-0"
                 title="New conversation"
               >
                 <RefreshCw className="h-4 w-4" />
               </button>
             )}
           </div>
-          <p className="text-xs text-slate-400 mt-2">
+          <p className="text-xs text-ink-400 mt-2">
             Guidance only — not legal advice. Always consult a qualified professional for your specific situation.
           </p>
         </div>

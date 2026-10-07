@@ -96,12 +96,12 @@ const OptionCard = ({
     className={cn(
       "w-full text-left px-4 py-3.5 rounded-xl border-2 text-sm font-medium transition-all",
       selected
-        ? "border-slate-700 bg-slate-50 text-slate-800"
-        : "border-stone-200 bg-white text-slate-500 hover:border-stone-300"
+        ? "border-ink-700 bg-ink-50 text-ink-800"
+        : "border-stone-200 bg-white text-ink-500 hover:border-stone-300"
     )}
   >
     <div>{children}</div>
-    {note && <div className="text-xs font-normal mt-0.5 text-slate-400">{note}</div>}
+    {note && <div className="text-xs font-normal mt-0.5 text-ink-400">{note}</div>}
   </button>
 );
 
@@ -145,12 +145,12 @@ export default function CostEstimatorPage() {
 
   return (
     <div className="bg-stone-50 min-h-screen">
-      <div className="bg-white border-b border-stone-200">
+      <div className="bg-gradient-to-b from-white to-stone-50 border-b border-stone-200/70">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
           <div className="max-w-2xl">
-            <h1 className="text-3xl font-bold text-slate-900 mb-2">Funeral Cost Estimator</h1>
-            <p className="text-slate-500">
-              Understand the likely cost of a funeral before making any commitments. Figures are typical UK ranges for 2024.
+            <h1 className="text-3xl sm:text-4xl font-semibold text-ink-900 mb-2">Estimate funeral costs</h1>
+            <p className="text-ink-500">
+              Understand the likely cost of a funeral before making any commitments. Figures are typical UK price ranges — always get written quotes.
             </p>
           </div>
         </div>
@@ -201,7 +201,7 @@ export default function CostEstimatorPage() {
                     {(["small", "medium", "large"] as ServiceSize[]).map((s) => (
                       <OptionCard key={s} selected={serviceSize === s} onClick={() => setServiceSize(s)}>
                         {s === "small" ? "Small" : s === "medium" ? "Medium" : "Large"}
-                        <div className="text-xs text-slate-400 font-normal mt-0.5">
+                        <div className="text-xs text-ink-400 font-normal mt-0.5">
                           {s === "small" ? "Under 20 guests" : s === "medium" ? "20–60 guests" : "60+ guests"}
                         </div>
                       </OptionCard>
@@ -255,7 +255,7 @@ export default function CostEstimatorPage() {
                           onChange={(e) => item.set(e.target.checked)}
                           className="w-4 h-4 rounded border-stone-300"
                         />
-                        <span className="text-sm text-slate-700">{item.label}</span>
+                        <span className="text-sm text-ink-700">{item.label}</span>
                       </label>
                     ))}
                   </div>
@@ -276,20 +276,20 @@ export default function CostEstimatorPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="text-center py-4">
-                    <p className="text-3xl font-bold text-slate-900">
+                    <p className="text-3xl sm:text-4xl font-semibold text-ink-900">
                       {fmt(total[0])} – {fmt(total[1])}
                     </p>
-                    <p className="text-sm text-slate-500 mt-1">Typical UK range for your selections</p>
+                    <p className="text-sm text-ink-500 mt-1">Typical UK range for your selections</p>
                   </div>
 
                   <div className="space-y-2 mt-4">
                     {breakdown.map((item) => (
                       <div key={item.label} className="flex items-center justify-between text-sm">
-                        <span className={cn("text-slate-600", item.optional && "text-slate-400")}>
+                        <span className={cn("text-ink-600", item.optional && "text-ink-400")}>
                           {item.label}
                           {item.optional && " (optional)"}
                         </span>
-                        <span className="font-medium text-slate-800">
+                        <span className="font-medium text-ink-800">
                           {item.range[0] === 0 && item.range[1] === 0
                             ? "Included"
                             : item.range[0] === item.range[1]
@@ -299,8 +299,8 @@ export default function CostEstimatorPage() {
                       </div>
                     ))}
                     <div className="border-t border-stone-200 pt-2 flex items-center justify-between text-sm font-semibold">
-                      <span className="text-slate-800">Total range</span>
-                      <span className="text-slate-900">
+                      <span className="text-ink-800">Total range</span>
+                      <span className="text-ink-900">
                         {fmt(total[0])} – {fmt(total[1])}
                       </span>
                     </div>
@@ -313,7 +313,7 @@ export default function CostEstimatorPage() {
                 <ul className="text-sm text-emerald-700 space-y-1 list-disc pl-4">
                   <li>Get at least 3 quotes from funeral directors</li>
                   {funeralType === "burial" && <li>Direct cremation can save £2,000–£4,000 vs. a full service</li>}
-                  <li>The FCA requires funeral directors to provide clear pricing</li>
+                  <li>By law, funeral directors must publish a standard price list (CMA rules)</li>
                   <li>Consider a simple coffin — most are the same quality internally</li>
                   {includeCatering && <li>DIY catering at home can save £300–£1,500 vs. a venue</li>}
                 </ul>

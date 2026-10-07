@@ -1,17 +1,18 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Heart, LogIn, Menu, X } from "lucide-react";
-import { useState, useEffect } from "react";
+import { LogIn, LogOut, Menu, X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Logo } from "@/components/layout/logo";
 import { cn } from "@/lib/utils";
 
-const nav = [
-  { href: "/dashboard", label: "My Dashboard" },
-  { href: "/family", label: "Family" },
-  { href: "/resources", label: "Local Resources" },
+// Plain-English labels: people arriving here are often exhausted and grieving
+const NAV = [
   { href: "/guidance", label: "Guidance" },
-  { href: "/financial-support", label: "Financial Support" },
-  { href: "/assistant", label: "AI Assistant" },
+  { href: "/financial-support", label: "Money help" },
+  { href: "/resources", label: "Find services" },
+  { href: "/cost-estimator", label: "Funeral costs" },
+  { href: "/assistant", label: "Ask a question" },
 ];
 
 export function Header() {
@@ -20,12 +21,18 @@ export function Header() {
   const [email, setEmail] = useState<string | null>(null);
 
   useEffect(() => {
-    // Check if signed in by hitting a lightweight endpoint
     fetch("/api/auth/me")
-      .then((r) => r.ok ? r.json() : null)
-      .then((d) => d?.email ? setEmail(d.email) : null)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => setEmail(d?.email ?? null))
       .catch(() => null);
   }, [pathname]);
+
+  // Close the mobile menu after navigating
+  const [lastPath, setLastPath] = useState(pathname);
+  if (pathname !== lastPath) {
+    setLastPath(pathname);
+    setOpen(false);
+  }
 
   const signOut = async () => {
     await fetch("/api/auth/signout", { method: "POST" });
@@ -35,27 +42,24 @@ export function Header() {
     window.location.href = "/";
   };
 
-  return (
-    <header className="print:hidden sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-stone-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          <Link href="/" className="flex items-center gap-2.5">
-            <div className="w-8 h-8 bg-slate-700 rounded-lg flex items-center justify-center">
-              <Heart className="h-4 w-4 text-white" strokeWidth={1.5} />
-            </div>
-            <span className="text-slate-800 font-semibold text-lg tracking-tight">AfterCare</span>
-          </Link>
+  const isActive = (href: string) => pathname === href || pathname.startsWith(href + "/");
 
-          <nav className="hidden md:flex items-center gap-1">
-            {nav.map((item) => (
+  return (
+    <header className="print:hidden sticky top-0 z-50 bg-stone-50/85 backdrop-blur-md border-b border-stone-200/70">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16 gap-6">
+          <Logo />
+
+          <nav className="hidden lg:flex items-center gap-1" aria-label="Main">
+            {NAV.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "px-3 py-2 text-sm rounded-md transition-colors",
-                  pathname.startsWith(item.href)
-                    ? "bg-stone-100 text-slate-800 font-medium"
-                    : "text-slate-500 hover:text-slate-800 hover:bg-stone-50"
+                  "px-3 py-2 text-sm rounded-lg transition-colors",
+                  isActive(item.href)
+                    ? "bg-ink-100 text-ink-900 font-medium"
+                    : "text-ink-600 hover:text-ink-900 hover:bg-stone-100"
                 )}
               >
                 {item.label}
@@ -63,31 +67,36 @@ export function Header() {
             ))}
           </nav>
 
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden lg:flex items-center gap-2">
             {email ? (
               <>
-                <span className="text-xs text-slate-400 max-w-[140px] truncate">{email}</span>
+                <Link
+                  href="/dashboard"
+                  className="bg-ink-700 text-white text-sm font-medium px-4 py-2 rounded-xl hover:bg-ink-800 transition-colors"
+                >
+                  My plans
+                </Link>
                 <button
                   onClick={signOut}
-                  className="text-sm text-slate-500 hover:text-slate-800 px-3 py-2 rounded-lg hover:bg-stone-100 transition-colors"
+                  title={`Signed in as ${email}`}
+                  className="text-sm text-ink-600 hover:text-ink-900 px-3 py-2 rounded-lg hover:bg-stone-100 transition-colors flex items-center gap-1.5"
                 >
-                  Sign out
+                  <LogOut className="h-4 w-4" /> Sign out
                 </button>
               </>
             ) : (
               <>
                 <Link
                   href="/auth/signin"
-                  className="text-slate-600 text-sm font-medium px-3 py-2 rounded-lg hover:bg-stone-100 transition-colors flex items-center gap-1.5"
+                  className="text-ink-600 text-sm font-medium px-3 py-2 rounded-lg hover:bg-stone-100 transition-colors flex items-center gap-1.5"
                 >
-                  <LogIn className="h-3.5 w-3.5" />
-                  Sign in
+                  <LogIn className="h-4 w-4" /> Sign in
                 </Link>
                 <Link
                   href="/intake"
-                  className="bg-slate-700 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-slate-800 transition-colors"
+                  className="bg-ink-700 text-white text-sm font-medium px-4 py-2 rounded-xl hover:bg-ink-800 transition-colors"
                 >
-                  Start Your Plan
+                  Start your plan
                 </Link>
               </>
             )}
@@ -95,38 +104,46 @@ export function Header() {
 
           <button
             onClick={() => setOpen(!open)}
-            className="md:hidden p-2 rounded-md text-slate-500 hover:bg-stone-100"
+            className="lg:hidden p-2 -mr-2 rounded-lg text-ink-700 hover:bg-stone-100"
+            aria-expanded={open}
+            aria-label={open ? "Close menu" : "Open menu"}
           >
-            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
         </div>
       </div>
 
       {open && (
-        <div className="md:hidden border-t border-stone-100 bg-white px-4 py-3 space-y-1">
-          {nav.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              onClick={() => setOpen(false)}
-              className={cn(
-                "block px-3 py-2.5 text-sm rounded-md transition-colors",
-                pathname === item.href
-                  ? "bg-stone-100 text-slate-800 font-medium"
-                  : "text-slate-600 hover:bg-stone-50"
-              )}
-            >
-              {item.label}
-            </Link>
-          ))}
-          <div className="pt-2 border-t border-stone-100">
+        <div className="lg:hidden border-t border-stone-200 bg-stone-50 px-4 pt-3 pb-6 h-[calc(100dvh-4rem)] overflow-y-auto animate-fade-up">
+          <Link
+            href={email ? "/dashboard" : "/intake"}
+            className="block w-full text-center bg-ink-700 text-white font-medium py-3.5 rounded-xl mb-4"
+          >
+            {email ? "My plans" : "Start your plan"}
+          </Link>
+          <nav className="space-y-1" aria-label="Main">
+            {[{ href: "/plan", label: "My plan on this device" }, { href: "/family", label: "Family" }, ...NAV].map(
+              (item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    "block px-4 py-3.5 text-base rounded-xl",
+                    isActive(item.href) ? "bg-ink-100 text-ink-900 font-medium" : "text-ink-700 hover:bg-stone-100"
+                  )}
+                >
+                  {item.label}
+                </Link>
+              )
+            )}
+          </nav>
+          <div className="mt-4 pt-4 border-t border-stone-200">
             {email ? (
-              <button onClick={signOut} className="block w-full text-left px-3 py-2.5 text-sm text-slate-600">
-                Sign out ({email})
+              <button onClick={signOut} className="w-full text-left px-4 py-3.5 text-base text-ink-700 rounded-xl hover:bg-stone-100">
+                Sign out <span className="text-ink-400 text-sm">({email})</span>
               </button>
             ) : (
-              <Link href="/auth/signin" onClick={() => setOpen(false)}
-                className="block px-3 py-2.5 text-sm text-slate-600">
+              <Link href="/auth/signin" className="block px-4 py-3.5 text-base text-ink-700 rounded-xl hover:bg-stone-100">
                 Sign in
               </Link>
             )}

@@ -1,238 +1,206 @@
 import Link from "next/link";
 import {
   ArrowRight,
-  CheckCircle2,
+  BookOpen,
+  Calculator,
+  Check,
+  ClipboardList,
   Clock,
   FileText,
-  Heart,
+  Landmark,
+  Lock,
   MapPin,
-  MessageCircle,
+  MessageCircleQuestion,
   PoundSterling,
-  ShieldCheck,
+  Stethoscope,
   Users,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 
-const steps = [
+const FIRST_STEPS = [
   {
-    number: "01",
-    title: "Answer a few questions",
-    description: "Tell us about your situation in under 5 minutes. No account needed to start.",
+    icon: Stethoscope,
+    title: "Get the medical certificate",
+    body: "A doctor confirms the cause of death. In hospital, staff will explain how this works.",
   },
-  {
-    number: "02",
-    title: "Receive your personal plan",
-    description: "Get a step-by-step roadmap tailored to your circumstances and location.",
-  },
-  {
-    number: "03",
-    title: "Take action with confidence",
-    description: "Follow your plan with local resources, guidance, and AI support alongside you.",
-  },
-];
-
-const features = [
   {
     icon: FileText,
-    title: "Personal Action Plan",
-    description:
-      "A prioritised roadmap of what you need to do — right now, this week, and in the weeks ahead.",
-    href: "/plan",
-  },
-  {
-    icon: MapPin,
-    title: "Local Resources",
-    description:
-      "Find your nearest registry office, funeral directors, cemeteries, and crematoriums.",
-    href: "/resources",
-  },
-  {
-    icon: PoundSterling,
-    title: "Financial Support",
-    description:
-      "Check whether you qualify for Funeral Expenses Payment, Bereavement Support Payment, or other help.",
-    href: "/financial-support",
-  },
-  {
-    icon: MessageCircle,
-    title: "AI Assistant",
-    description:
-      "Ask anything — from probate timelines to council housing rights — and get clear, sourced answers.",
-    href: "/assistant",
+    title: "Register the death within 5 days",
+    body: "Book an appointment at a local register office (8 days in Scotland).",
+    href: "/guidance/registering-a-death",
   },
   {
     icon: Users,
-    title: "Family Workspace",
-    description:
-      "Invite family members, assign tasks, and coordinate everything in one shared space.",
-    href: "/family",
-  },
-  {
-    icon: ShieldCheck,
-    title: "Trusted Guidance",
-    description:
-      "Plain-English explanations of every process — registering a death, probate, repatriation, and more.",
-    href: "/guidance",
+    title: "Choose a funeral director",
+    body: "There's no rush to pick the first one. Prices vary a lot, so compare a few.",
+    href: "/cost-estimator",
   },
 ];
 
-const testimonials = [
-  {
-    quote:
-      "I had no idea where to start. AfterCare gave me a clear list of what to do first — it made an impossible situation feel manageable.",
-    name: "Sarah M.",
-    role: "Lost her father",
-  },
-  {
-    quote:
-      "The local resources tool helped me find a funeral director near Mum's home within minutes. I was too exhausted to search myself.",
-    name: "James T.",
-    role: "Lost his mother",
-  },
-  {
-    quote:
-      "I didn't know we qualified for the Funeral Expenses Payment until AfterCare flagged it. That was a genuine relief.",
-    name: "Priya K.",
-    role: "Lost her husband",
-  },
+const HOW = [
+  { icon: ClipboardList, title: "Answer a few gentle questions", body: "About 3 minutes. No account needed." },
+  { icon: Check, title: "Get your step-by-step plan", body: "Only the tasks that apply to you, in the order they matter." },
+  { icon: Users, title: "Work through it together", body: "Tick things off, share tasks with family, and get reminders." },
 ];
 
-const checklistItems = [
-  "Register the death",
-  "Obtain death certificates",
-  "Notify government departments",
-  "Contact banks and pension providers",
-  "Arrange the funeral",
-  "Apply for financial support",
-  "Handle housing and tenancy",
-  "Begin probate if required",
+const TOOLS = [
+  { icon: BookOpen, title: "Plain-English guidance", body: "Registering a death, probate, funerals and more — explained simply.", href: "/guidance" },
+  { icon: PoundSterling, title: "Money help checker", body: "See which government payments you may be able to claim.", href: "/financial-support" },
+  { icon: Calculator, title: "Funeral cost estimator", body: "Get a realistic idea of costs before you speak to anyone.", href: "/cost-estimator" },
+  { icon: MapPin, title: "Find local services", body: "Register offices, funeral directors and crematoriums near you.", href: "/resources" },
+  { icon: Users, title: "Share with family", body: "Invite family by email so everyone knows who's doing what.", href: "/family" },
+  { icon: MessageCircleQuestion, title: "Ask a question", body: "Get a clear answer to the thing you're unsure about.", href: "/assistant" },
 ];
 
 export default function HomePage() {
   return (
-    <div className="bg-stone-50">
-      {/* Hero */}
-      <section className="bg-white border-b border-stone-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28">
-          <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-full px-4 py-1.5 mb-8">
-              <Heart className="h-3.5 w-3.5 text-slate-500" strokeWidth={1.5} />
-              <span className="text-xs text-slate-600 font-medium">Bereavement Support for UK Families</span>
-            </div>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-900 tracking-tight leading-tight">
-              Helping families know{" "}
-              <span className="text-slate-600">what to do next</span>
+    <div className="overflow-hidden">
+      {/* ── Hero ───────────────────────────────────────────────────────── */}
+      <section className="relative">
+        <div
+          className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top_right,#e2ebe7_0%,transparent_55%)]"
+          aria-hidden="true"
+        />
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-14 pb-16 sm:pt-20 sm:pb-24 grid lg:grid-cols-[1.1fr_1fr] gap-12 items-center">
+          <div className="animate-fade-up">
+            <p className="inline-flex items-center gap-2 text-sm text-ink-700 bg-white/80 border border-stone-200 rounded-full px-3 py-1 mb-6">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" /> Free for families across the UK
+            </p>
+            <h1 className="text-4xl sm:text-5xl lg:text-[3.4rem] font-semibold text-ink-900 leading-[1.08]">
+              Know what to do next, one step at a time.
             </h1>
-            <p className="mt-6 text-lg sm:text-xl text-slate-500 leading-relaxed max-w-2xl">
-              Receive a personalised bereavement plan, local guidance, support information, and practical
-              next steps after losing a loved one.
+            <p className="text-lg text-ink-600 mt-6 max-w-xl leading-relaxed">
+              When someone dies there&apos;s suddenly a lot to sort out. AfterCare turns it into a simple, personal
+              checklist — so nothing important is missed, and you can share the load.
             </p>
-            <div className="mt-10 flex flex-col sm:flex-row gap-4">
-              <Link href="/intake">
-                <Button size="lg" className="w-full sm:w-auto">
-                  Start Your Plan
-                  <ArrowRight className="h-4 w-4" />
-                </Button>
+            <div className="flex flex-col sm:flex-row gap-3 mt-8">
+              <Link
+                href="/intake"
+                className="inline-flex items-center justify-center gap-2 bg-ink-700 text-white font-medium px-6 py-3.5 rounded-xl shadow-sm hover:bg-ink-800 transition-colors"
+              >
+                Start your plan <ArrowRight className="h-4 w-4" />
               </Link>
-              <Link href="/guidance">
-                <Button variant="outline" size="lg" className="w-full sm:w-auto">
-                  Browse Guidance
-                </Button>
+              <Link
+                href="/guidance/what-happens-after-someone-dies"
+                className="inline-flex items-center justify-center gap-2 bg-white border border-stone-300 text-ink-800 font-medium px-6 py-3.5 rounded-xl hover:border-ink-300 hover:bg-ink-50 transition-colors"
+              >
+                What happens first?
               </Link>
             </div>
-            <p className="mt-5 text-sm text-slate-400">
-              Free to use. No account required to get started.
-            </p>
+            <ul className="flex flex-wrap gap-x-6 gap-y-2 mt-7 text-sm text-ink-600">
+              {[
+                [Clock, "About 3 minutes"],
+                [Lock, "No sign-up to start"],
+                [Landmark, "Based on GOV.UK guidance"],
+              ].map(([Icon, label]) => {
+                const I = Icon as React.ElementType;
+                return (
+                  <li key={label as string} className="flex items-center gap-1.5">
+                    <I className="h-4 w-4 text-ink-400" /> {label as string}
+                  </li>
+                );
+              })}
+            </ul>
           </div>
+
+          <PlanPreview />
         </div>
       </section>
 
-      {/* What needs doing banner */}
-      <section className="bg-slate-700 text-white py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col lg:flex-row gap-8 items-start lg:items-center">
-            <div className="flex-1">
-              <h2 className="text-lg font-semibold mb-3">After someone dies, there is a lot to manage.</h2>
-              <p className="text-slate-300 text-sm leading-relaxed">
-                AfterCare creates your personalised checklist so nothing is missed during the most difficult time.
-              </p>
+      {/* ── If someone has just died ──────────────────────────────────── */}
+      <section className="bg-white border-y border-stone-200/70">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-8">
+            <div>
+              <p className="text-sm font-medium text-ink-500 mb-1">If someone has just died</p>
+              <h2 className="text-2xl sm:text-3xl font-semibold text-ink-900">The three things to do first</h2>
             </div>
-            <div className="flex-1 grid grid-cols-2 gap-2">
-              {checklistItems.map((item) => (
-                <div key={item} className="flex items-center gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-slate-400 flex-shrink-0" />
-                  <span className="text-sm text-slate-300">{item}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* How it works */}
-      <section className="py-20 bg-white border-b border-stone-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-14">
-            <h2 className="text-3xl font-bold text-slate-900">How AfterCare works</h2>
-            <p className="mt-3 text-slate-500 max-w-xl mx-auto">
-              Less than 5 minutes to a complete, personalised bereavement roadmap.
-            </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {steps.map((step, i) => (
-              <div key={step.number} className="relative">
-                {i < steps.length - 1 && (
-                  <div className="hidden md:block absolute top-6 left-[60%] w-[80%] h-px bg-stone-200" />
-                )}
-                <div className="relative z-10">
-                  <div className="w-12 h-12 bg-slate-700 text-white rounded-xl flex items-center justify-center text-sm font-bold mb-5">
-                    {step.number}
-                  </div>
-                  <h3 className="text-lg font-semibold text-slate-800 mb-2">{step.title}</h3>
-                  <p className="text-slate-500 text-sm leading-relaxed">{step.description}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="text-center mt-12">
-            <Link href="/intake">
-              <Button size="lg">
-                Get Your Personalised Plan
-                <ArrowRight className="h-4 w-4" />
-              </Button>
+            <Link href="/guidance/what-happens-after-someone-dies" className="text-sm font-medium text-ink-700 hover:underline inline-flex items-center gap-1">
+              Read the full guide <ArrowRight className="h-3.5 w-3.5" />
             </Link>
           </div>
+          <ol className="grid md:grid-cols-3 gap-4">
+            {FIRST_STEPS.map((step, i) => {
+              const Icon = step.icon;
+              const body = (
+                <>
+                  <div className="flex items-center gap-3 mb-4">
+                    <span className="w-8 h-8 rounded-full bg-ink-700 text-white text-sm font-semibold flex items-center justify-center">
+                      {i + 1}
+                    </span>
+                    <Icon className="h-5 w-5 text-ink-400" />
+                  </div>
+                  <h3 className="font-semibold text-ink-900">{step.title}</h3>
+                  <p className="text-sm text-ink-600 mt-1.5 leading-relaxed">{step.body}</p>
+                </>
+              );
+              return (
+                <li key={step.title}>
+                  {step.href ? (
+                    <Link href={step.href} className="block h-full rounded-2xl bg-stone-50 border border-stone-200/80 p-6 hover:border-ink-300 hover:bg-ink-50/50 transition-colors">
+                      {body}
+                    </Link>
+                  ) : (
+                    <div className="h-full rounded-2xl bg-stone-50 border border-stone-200/80 p-6">{body}</div>
+                  )}
+                </li>
+              );
+            })}
+          </ol>
         </div>
       </section>
 
-      {/* Features grid */}
-      <section className="py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-14">
-            <h2 className="text-3xl font-bold text-slate-900">Everything you need in one place</h2>
-            <p className="mt-3 text-slate-500 max-w-xl mx-auto">
-              From immediate actions to long-term estate administration — AfterCare covers every step.
-            </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {features.map((feature) => {
-              const Icon = feature.icon;
+      {/* ── How it works ─────────────────────────────────────────────── */}
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <h2 className="text-2xl sm:text-3xl font-semibold text-ink-900 text-center">How AfterCare helps</h2>
+        <div className="grid md:grid-cols-3 gap-8 mt-12">
+          {HOW.map((step, i) => {
+            const Icon = step.icon;
+            return (
+              <div key={step.title} className="text-center">
+                <div className="relative w-14 h-14 mx-auto rounded-2xl bg-white border border-stone-200 shadow-sm flex items-center justify-center">
+                  <Icon className="h-6 w-6 text-ink-700" />
+                  <span className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-ink-700 text-white text-xs font-semibold flex items-center justify-center">
+                    {i + 1}
+                  </span>
+                </div>
+                <h3 className="font-semibold text-ink-900 mt-5">{step.title}</h3>
+                <p className="text-sm text-ink-600 mt-1.5 max-w-xs mx-auto">{step.body}</p>
+              </div>
+            );
+          })}
+        </div>
+        <div className="text-center mt-12">
+          <Link
+            href="/intake"
+            className="inline-flex items-center gap-2 bg-ink-700 text-white font-medium px-6 py-3.5 rounded-xl hover:bg-ink-800 transition-colors"
+          >
+            Create my plan <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
+      </section>
+
+      {/* ── Tools ──────────────────────────────────────────────────────── */}
+      <section className="bg-white border-y border-stone-200/70">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+          <h2 className="text-2xl sm:text-3xl font-semibold text-ink-900">Everything in one calm place</h2>
+          <p className="text-ink-600 mt-2 max-w-2xl">Use the plan on its own, or dip into the tools when you need them.</p>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-10">
+            {TOOLS.map((tool) => {
+              const Icon = tool.icon;
               return (
-                <Link key={feature.href} href={feature.href} className="group">
-                  <Card className="h-full hover:border-slate-300 hover:shadow-md transition-all duration-200">
-                    <CardContent className="pt-6">
-                      <div className="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-slate-700 transition-colors">
-                        <Icon className="h-5 w-5 text-slate-600 group-hover:text-white transition-colors" />
-                      </div>
-                      <h3 className="text-base font-semibold text-slate-800 mb-2">{feature.title}</h3>
-                      <p className="text-sm text-slate-500 leading-relaxed">{feature.description}</p>
-                      <div className="mt-4 flex items-center gap-1 text-slate-600 text-sm font-medium">
-                        Learn more
-                        <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform" />
-                      </div>
-                    </CardContent>
-                  </Card>
+                <Link
+                  key={tool.href}
+                  href={tool.href}
+                  className="group rounded-2xl border border-stone-200/80 bg-stone-50/50 p-6 hover:bg-white hover:border-ink-200 hover:shadow-[0_8px_24px_-12px_rgba(24,42,38,0.18)] transition-all"
+                >
+                  <span className="w-11 h-11 rounded-xl bg-ink-50 group-hover:bg-ink-700 flex items-center justify-center transition-colors">
+                    <Icon className="h-5 w-5 text-ink-700 group-hover:text-white transition-colors" />
+                  </span>
+                  <h3 className="font-semibold text-ink-900 mt-4 flex items-center gap-1.5">
+                    {tool.title}
+                    <ArrowRight className="h-4 w-4 text-ink-300 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
+                  </h3>
+                  <p className="text-sm text-ink-600 mt-1.5 leading-relaxed">{tool.body}</p>
                 </Link>
               );
             })}
@@ -240,71 +208,99 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section className="py-20 bg-white border-y border-stone-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-slate-900 text-center mb-14">
-            Supporting families across the UK
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {testimonials.map((t) => (
-              <Card key={t.name}>
-                <CardContent className="pt-6">
-                  <p className="text-slate-600 text-sm leading-relaxed mb-5 italic">
-                    &ldquo;{t.quote}&rdquo;
-                  </p>
-                  <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-full bg-slate-200 flex items-center justify-center text-sm font-semibold text-slate-600">
-                      {t.name[0]}
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-slate-800">{t.name}</p>
-                      <p className="text-xs text-slate-500">{t.role}</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+      {/* ── Promises (honest, no testimonials until we have real ones) ── */}
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div className="grid md:grid-cols-3 gap-6">
+          {[
+            ["Free to use", "Creating and sharing a plan costs nothing."],
+            ["Private by default", "Your plan is only visible to you and the family you invite. We never sell data."],
+            ["Grounded in official guidance", "Steps link to GOV.UK and other official sources so you can check for yourself."],
+          ].map(([title, body]) => (
+            <div key={title} className="flex gap-3">
+              <Check className="h-5 w-5 text-emerald-600 shrink-0 mt-0.5" />
+              <div>
+                <p className="font-semibold text-ink-900">{title}</p>
+                <p className="text-sm text-ink-600 mt-1">{body}</p>
+              </div>
+            </div>
+          ))}
         </div>
-      </section>
 
-      {/* Trust section */}
-      <section className="py-16 bg-stone-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-            <div className="flex items-center gap-3">
-              <Clock className="h-6 w-6 text-slate-500" />
-              <div>
-                <p className="font-semibold text-slate-800">Ready in 5 minutes</p>
-                <p className="text-sm text-slate-500">Answer a short questionnaire to get your plan</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <ShieldCheck className="h-6 w-6 text-slate-500" />
-              <div>
-                <p className="font-semibold text-slate-800">Safe and private</p>
-                <p className="text-sm text-slate-500">Your information is protected and never sold</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <MapPin className="h-6 w-6 text-slate-500" />
-              <div>
-                <p className="font-semibold text-slate-800">Local to you</p>
-                <p className="text-sm text-slate-500">Resources and guidance specific to your area</p>
-              </div>
-            </div>
-            <div>
-              <Link href="/intake">
-                <Button size="lg">
-                  Start Your Plan
-                  <ArrowRight className="h-4 w-4" />
-                </Button>
-              </Link>
-            </div>
-          </div>
+        <div className="mt-16 rounded-3xl bg-ink-800 text-white px-6 py-12 sm:px-12 text-center relative overflow-hidden">
+          <div className="absolute -left-20 -bottom-24 w-72 h-72 rounded-full bg-white/5" aria-hidden="true" />
+          <h2 className="text-2xl sm:text-3xl font-semibold relative">You don&apos;t have to work it all out alone.</h2>
+          <p className="text-ink-100/90 mt-3 max-w-lg mx-auto relative">
+            Answer a few questions and we&apos;ll show you exactly what to do, and when.
+          </p>
+          <Link
+            href="/intake"
+            className="relative inline-flex items-center gap-2 bg-white text-ink-900 font-medium px-6 py-3.5 rounded-xl mt-8 hover:bg-ink-50 transition-colors"
+          >
+            Start your plan <ArrowRight className="h-4 w-4" />
+          </Link>
         </div>
       </section>
+    </div>
+  );
+}
+
+/** Decorative preview of the plan screen, so people see what they'll get. */
+function PlanPreview() {
+  const rows: [string, string, boolean][] = [
+    ["Register the death", "bg-rose-50 text-rose-700", true],
+    ["Contact a funeral director", "bg-rose-50 text-rose-700", true],
+    ["Use the Tell Us Once service", "bg-sky-50 text-sky-700", false],
+    ["Notify the bank", "bg-emerald-50 text-emerald-700", false],
+  ];
+  return (
+    <div className="relative hidden sm:block" aria-hidden="true">
+      <div className="absolute -inset-6 bg-ink-100/60 rounded-[2rem] rotate-2" />
+      <div className="relative bg-white rounded-3xl border border-stone-200 shadow-[0_24px_60px_-24px_rgba(24,42,38,0.35)] p-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-xs text-ink-500">A plan for</p>
+            <p className="font-display text-xl font-semibold text-ink-900">Margaret Okafor</p>
+          </div>
+          <div className="relative w-14 h-14">
+            <svg viewBox="0 0 40 40" className="w-full h-full -rotate-90">
+              <circle cx="20" cy="20" r="16" fill="none" stroke="#e4dfd3" strokeWidth="4" />
+              <circle cx="20" cy="20" r="16" fill="none" stroke="#2c4640" strokeWidth="4" strokeLinecap="round" strokeDasharray="100.5" strokeDashoffset="70" />
+            </svg>
+            <span className="absolute inset-0 flex items-center justify-center text-xs font-semibold text-ink-800">7/23</span>
+          </div>
+        </div>
+        <div className="mt-5 rounded-2xl bg-ink-800 text-white p-4">
+          <p className="text-[10px] uppercase tracking-wider text-ink-200">Up next</p>
+          <p className="font-display font-semibold mt-1">Use the Tell Us Once service</p>
+          <span className="inline-flex items-center gap-1 mt-3 text-xs bg-white text-ink-900 px-3 py-1.5 rounded-lg">
+            <Check className="h-3 w-3" /> I&apos;ve done this
+          </span>
+        </div>
+        <p className="text-sm font-semibold text-ink-900 mt-5 mb-2">First few days</p>
+        <ul className="divide-y divide-stone-100">
+          {rows.map(([title, chip, done]) => (
+            <li key={title} className="flex items-center gap-3 py-2.5">
+              <span
+                className={
+                  done
+                    ? "w-5 h-5 rounded-full bg-emerald-600 flex items-center justify-center"
+                    : "w-5 h-5 rounded-full border-2 border-stone-300"
+                }
+              >
+                {done && <Check className="h-3 w-3 text-white" strokeWidth={3} />}
+              </span>
+              <span className={done ? "text-sm text-ink-400 line-through" : "text-sm text-ink-800"}>{title}</span>
+              <span className={`ml-auto w-10 h-4 rounded-full ${chip}`} />
+            </li>
+          ))}
+        </ul>
+        <div className="flex items-center gap-2 mt-4 pt-4 border-t border-stone-100">
+          {["bg-blue-500", "bg-emerald-500", "bg-amber-500"].map((c) => (
+            <span key={c} className={`w-6 h-6 rounded-full ${c} border-2 border-white -ml-1 first:ml-0`} />
+          ))}
+          <span className="text-xs text-ink-500 ml-1">Shared with 2 family members</span>
+        </div>
+      </div>
     </div>
   );
 }

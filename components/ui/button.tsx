@@ -10,14 +10,14 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = "primary", size = "md", loading, children, disabled, ...props }, ref) => {
     const base =
-      "inline-flex items-center justify-center font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none";
+      "inline-flex items-center justify-center font-medium rounded-xl transition-all duration-150 active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none";
 
     const variants = {
-      primary: "bg-slate-700 text-white hover:bg-slate-800 focus:ring-slate-500",
-      secondary: "bg-stone-100 text-slate-800 hover:bg-stone-200 focus:ring-stone-300",
-      outline: "border border-slate-300 text-slate-700 hover:bg-stone-50 focus:ring-slate-300",
-      ghost: "text-slate-600 hover:bg-stone-100 focus:ring-slate-300",
-      link: "text-slate-700 underline-offset-4 hover:underline p-0 h-auto font-normal",
+      primary: "bg-ink-700 text-white shadow-sm hover:bg-ink-800 hover:shadow focus-visible:ring-ink-500",
+      secondary: "bg-stone-100 text-ink-800 hover:bg-stone-200 focus:ring-stone-300",
+      outline: "border border-stone-300 bg-white text-ink-700 hover:border-ink-300 hover:bg-ink-50 focus-visible:ring-ink-300",
+      ghost: "text-ink-600 hover:bg-stone-100 focus:ring-ink-300",
+      link: "text-ink-700 underline-offset-4 hover:underline p-0 h-auto font-normal",
     };
 
     const sizes = {

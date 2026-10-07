@@ -112,7 +112,7 @@ export default function SavedPlanPage() {
     return (
       <div className="min-h-[60vh] flex items-center justify-center px-4">
         <div className="text-center max-w-md">
-          <p className="text-slate-600 mb-6">{loadError}</p>
+          <p className="text-ink-600 mb-6">{loadError}</p>
           <div className="flex justify-center gap-3">
             <Link href="/dashboard">
               <Button variant="outline">My dashboard</Button>
@@ -130,8 +130,8 @@ export default function SavedPlanPage() {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin text-slate-400 mx-auto mb-3" />
-          <p className="text-slate-500 text-sm">Loading your plan...</p>
+          <Loader2 className="h-8 w-8 animate-spin text-ink-400 mx-auto mb-3" />
+          <p className="text-ink-500 text-sm">Loading your plan...</p>
         </div>
       </div>
     );
@@ -154,7 +154,7 @@ export default function SavedPlanPage() {
         headerActions={
           <>
             {plan.role === "member" && (
-              <span className="text-xs bg-stone-100 text-slate-600 px-2.5 py-1 rounded-full">Shared with you</span>
+              <span className="text-xs bg-stone-100 text-ink-600 px-2.5 py-1 rounded-full">Shared with you</span>
             )}
           </>
         }
@@ -176,6 +176,24 @@ export default function SavedPlanPage() {
             )}
           </>
         }
+        renderTaskMeta={(task) => {
+          const who = plan.task_assignees[task.id];
+          const notes = plan.comments.filter((c) => c.task_id === task.id).length;
+          return (
+            <>
+              {who && (
+                <span className="inline-flex items-center gap-1.5 text-xs text-ink-600">
+                  <Avatar email={who} small /> {who === plan.me ? "You" : nameFor(who)}
+                </span>
+              )}
+              {notes > 0 && (
+                <span className="inline-flex items-center gap-1 text-xs text-ink-500">
+                  <MessageSquare className="h-3 w-3" /> {notes}
+                </span>
+              )}
+            </>
+          );
+        }}
         renderTaskExtras={(task) => (
           <TaskCollaboration
             task={task}
@@ -239,32 +257,32 @@ function FamilyPanel({ plan, onChange }: { plan: PlanResponse; onChange: (member
   };
 
   return (
-    <div id="family" className="bg-white rounded-xl border border-stone-200 p-4 scroll-mt-24">
+    <div id="family" className="bg-white rounded-2xl border border-stone-200/80 p-5 scroll-mt-24">
       <div className="flex items-center gap-2 mb-1">
-        <Users className="h-4 w-4 text-slate-500" />
-        <p className="text-sm font-medium text-slate-700">Family</p>
+        <Users className="h-4 w-4 text-ink-500" />
+        <p className="text-sm font-medium text-ink-700">Family</p>
       </div>
-      <p className="text-xs text-slate-500 mb-3">
+      <p className="text-xs text-ink-500 mb-3">
         Share the load — invited people can tick off tasks, take tasks on, and leave notes.
       </p>
 
       <ul className="space-y-2 mb-3">
         <li className="flex items-center gap-2 text-sm">
           <Avatar email={plan.ownerEmail ?? "?"} />
-          <span className="truncate text-slate-700">{plan.role === "owner" ? "You" : plan.ownerEmail}</span>
-          <span className="ml-auto text-xs text-slate-400">Owner</span>
+          <span className="truncate text-ink-700">{plan.role === "owner" ? "You" : plan.ownerEmail}</span>
+          <span className="ml-auto text-xs text-ink-400">Owner</span>
         </li>
         {plan.members.map((m) => (
           <li key={m.email} className="flex items-center gap-2 text-sm">
             <Avatar email={m.email} />
             <div className="min-w-0">
-              <p className="truncate text-slate-700">{m.name}</p>
-              <p className="truncate text-xs text-slate-400">{m.email}</p>
+              <p className="truncate text-ink-700">{m.name}</p>
+              <p className="truncate text-xs text-ink-400">{m.email}</p>
             </div>
             {isOwner && (
               <button
                 onClick={() => remove(m.email)}
-                className="ml-auto p-1 text-slate-400 hover:text-red-600 rounded"
+                className="ml-auto p-1 text-ink-400 hover:text-red-600 rounded"
                 aria-label={`Remove ${m.name}`}
               >
                 <X className="h-3.5 w-3.5" />
@@ -309,13 +327,14 @@ function FamilyPanel({ plan, onChange }: { plan: PlanResponse; onChange: (member
   );
 }
 
-function Avatar({ email }: { email: string }) {
+function Avatar({ email, small = false }: { email: string; small?: boolean }) {
   const colors = ["bg-blue-500", "bg-emerald-500", "bg-purple-500", "bg-amber-500", "bg-rose-500", "bg-teal-500"];
   const hash = [...email].reduce((a, c) => a + c.charCodeAt(0), 0);
   return (
     <span
       className={cn(
-        "w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold text-white flex-shrink-0",
+        "rounded-full flex items-center justify-center font-semibold text-white flex-shrink-0",
+        small ? "w-4 h-4 text-[9px]" : "w-7 h-7 text-xs",
         colors[hash % colors.length]
       )}
     >
@@ -369,12 +388,12 @@ function TaskCollaboration({
   return (
     <div className="mt-3 pt-3 border-t border-stone-100">
       <div className="flex flex-wrap items-center gap-3">
-        <label className="flex items-center gap-1.5 text-xs text-slate-500">
+        <label className="flex items-center gap-1.5 text-xs text-ink-500">
           Who&apos;s doing this?
           <select
             value={assignee ?? ""}
             onChange={(e) => onAssign(e.target.value || null)}
-            className="text-xs border border-stone-200 rounded-md px-2 py-1 bg-white text-slate-700"
+            className="text-xs border border-stone-200 rounded-md px-2 py-1 bg-white text-ink-700"
           >
             <option value="">Nobody yet</option>
             {people.map((p) => (
@@ -386,7 +405,7 @@ function TaskCollaboration({
         </label>
         <button
           onClick={() => setOpen((o) => !o)}
-          className="inline-flex items-center gap-1 text-xs text-slate-500 hover:text-slate-800"
+          className="inline-flex items-center gap-1 text-xs text-ink-500 hover:text-ink-800"
           aria-expanded={open}
         >
           <MessageSquare className="h-3.5 w-3.5" />
@@ -398,7 +417,7 @@ function TaskCollaboration({
         <div className="mt-3 space-y-2">
           {comments.map((c) => (
             <div key={c.id} className="bg-stone-50 rounded-lg px-3 py-2">
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-ink-400">
                 {nameFor(c.author_email)} ·{" "}
                 {new Date(c.created_at).toLocaleString("en-GB", {
                   day: "numeric",
@@ -407,7 +426,7 @@ function TaskCollaboration({
                   minute: "2-digit",
                 })}
               </p>
-              <p className="text-sm text-slate-700 whitespace-pre-wrap">{c.body}</p>
+              <p className="text-sm text-ink-700 whitespace-pre-wrap">{c.body}</p>
             </div>
           ))}
           <div className="flex gap-2">
@@ -417,7 +436,7 @@ function TaskCollaboration({
               onKeyDown={(e) => e.key === "Enter" && post()}
               maxLength={2000}
               placeholder="e.g. Called the bank, they need a certified copy"
-              className="flex-1 text-sm border border-stone-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-slate-300"
+              className="flex-1 text-sm border border-stone-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ink-300"
             />
             <Button size="sm" onClick={post} loading={busy} disabled={!text.trim()} aria-label="Post note">
               <Send className="h-3.5 w-3.5" />
@@ -448,7 +467,7 @@ function RemoveFaith({ planId, onRemoved }: { planId: string; onRemoved: () => v
     <button
       onClick={remove}
       disabled={busy}
-      className="w-full text-xs text-slate-400 hover:text-slate-700 py-2"
+      className="w-full text-xs text-ink-400 hover:text-ink-700 py-2"
     >
       Remove faith details from this plan
     </button>
@@ -474,7 +493,7 @@ function DeletePlan({ planId, onDeleted }: { planId: string; onDeleted: () => vo
     <button
       onClick={del}
       disabled={busy}
-      className="w-full flex items-center justify-center gap-2 text-xs text-slate-400 hover:text-red-600 py-2"
+      className="w-full flex items-center justify-center gap-2 text-xs text-ink-400 hover:text-red-600 py-2"
     >
       <Trash2 className="h-3.5 w-3.5" /> Delete this plan
     </button>
@@ -492,7 +511,7 @@ function LeavePlan({ planId, me, onLeft }: { planId: string; me: string; onLeft:
     }
   };
   return (
-    <button onClick={leave} className="w-full text-xs text-slate-400 hover:text-red-600 py-2">
+    <button onClick={leave} className="w-full text-xs text-ink-400 hover:text-red-600 py-2">
       Leave this plan
     </button>
   );
@@ -503,7 +522,7 @@ function SaveToast({ state }: { state: "idle" | "saving" | "saved" | "error" }) 
   return (
     <div aria-live="polite" className="fixed bottom-4 right-4 z-50 print:hidden">
       {state === "saving" && (
-        <div className="flex items-center gap-2 bg-white border border-stone-200 shadow-lg rounded-full px-4 py-2 text-sm text-slate-600">
+        <div className="flex items-center gap-2 bg-white border border-stone-200 shadow-lg rounded-full px-4 py-2 text-sm text-ink-600">
           <Loader2 className="h-4 w-4 animate-spin" /> Saving…
         </div>
       )}

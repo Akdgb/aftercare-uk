@@ -1,14 +1,15 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, ArrowRight, Check, Heart } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { LOCAL_KEYS, writeLocal } from "@/lib/use-local-storage";
 import type { IntakeFormData, FuneralPreference, FaithOption, HousingType, YesNoUnsure, DeceasedLocation } from "@/types";
 
-const TOTAL_STEPS = 6;
+const STEP_NAMES = ["About them", "About you", "The funeral", "Faith", "Their home", "Money"];
+const TOTAL_STEPS = STEP_NAMES.length;
 
 const initialData: IntakeFormData = {
   deceasedFirstName: "",
@@ -43,15 +44,23 @@ function OptionCard({
       type="button"
       onClick={onClick}
       className={cn(
-        "w-full text-left px-4 py-3.5 rounded-xl border-2 text-sm font-medium transition-all",
+        "w-full text-left px-4 py-3.5 rounded-xl border-2 text-sm font-medium transition-all active:scale-[0.99]",
         selected
-          ? "border-slate-700 bg-slate-50 text-slate-800"
-          : "border-stone-200 bg-white text-slate-600 hover:border-stone-300 hover:bg-stone-50"
+          ? "border-ink-700 bg-ink-50 text-ink-900"
+          : "border-stone-200 bg-white text-ink-700 hover:border-ink-200 hover:bg-stone-50"
       )}
+      aria-pressed={selected}
     >
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-3">
         {children}
-        {selected && <Check className="h-4 w-4 text-slate-700 flex-shrink-0" />}
+        <span
+          className={cn(
+            "w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors",
+            selected ? "border-ink-700 bg-ink-700" : "border-stone-300"
+          )}
+        >
+          {selected && <Check className="h-3 w-3 text-white animate-pop" strokeWidth={3} />}
+        </span>
       </div>
     </button>
   );
@@ -100,7 +109,10 @@ export default function IntakePage() {
 
   const handleNext = () => {
     if (!validateStep()) return;
-    if (step < TOTAL_STEPS) setStep((s) => s + 1);
+    if (step < TOTAL_STEPS) {
+      setStep((s) => s + 1);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
     else handleSubmit();
   };
 
@@ -130,45 +142,40 @@ export default function IntakePage() {
     router.push("/plan");
   };
 
-  const progress = (step / TOTAL_STEPS) * 100;
 
   return (
-    <div className="min-h-screen bg-stone-50 py-10">
+    <div className="min-h-screen py-10 sm:py-14">
       <div className="max-w-xl mx-auto px-4">
         {/* Progress */}
         <div className="mb-8">
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2">
-              <Heart className="h-4 w-4 text-slate-500" strokeWidth={1.5} />
-              <span className="text-sm text-slate-500">Step {step} of {TOTAL_STEPS}</span>
-            </div>
-            <span className="text-sm font-medium text-slate-700">{Math.round(progress)}% complete</span>
-          </div>
-          <div className="h-1.5 bg-stone-200 rounded-full overflow-hidden">
-            <div
-              className="h-full bg-slate-700 rounded-full transition-all duration-500"
-              style={{ width: `${progress}%` }}
-            />
-          </div>
-          <div className="flex gap-1 mt-2">
-            {Array.from({ length: TOTAL_STEPS }).map((_, i) => (
-              <div
-                key={i}
-                className={cn(
-                  "flex-1 h-0.5 rounded-full transition-colors",
-                  i < step ? "bg-slate-700" : "bg-stone-200"
-                )}
-              />
+          <p className="text-sm text-ink-500 mb-3">
+            Step {step} of {TOTAL_STEPS} · <span className="text-ink-700 font-medium">{STEP_NAMES[step - 1]}</span>
+          </p>
+          <ol className="flex gap-1.5" aria-label="Progress">
+            {STEP_NAMES.map((label, i) => (
+              <li key={label} className="flex-1" aria-current={i + 1 === step ? "step" : undefined}>
+                <span
+                  className={cn(
+                    "block h-1.5 rounded-full transition-colors duration-500",
+                    i + 1 < step ? "bg-ink-700" : i + 1 === step ? "bg-ink-400" : "bg-stone-200"
+                  )}
+                />
+                <span className="sr-only">{label}</span>
+              </li>
             ))}
-          </div>
+          </ol>
         </div>
 
         {/* Card */}
-        <div className="bg-white rounded-2xl border border-stone-200 shadow-sm p-6 sm:p-8">
+        <div className="bg-white rounded-3xl border border-stone-200/80 shadow-[0_12px_40px_-20px_rgba(24,42,38,0.25)] p-6 sm:p-9">
           {step === 1 && (
             <div className="animate-fade-up">
-              <h2 className="text-xl font-semibold text-slate-800 mb-1">About the person who has passed</h2>
-              <p className="text-sm text-slate-500 mb-6">
+              <p className="text-sm text-ink-500 mb-4">
+                Take your time. If you&apos;re not sure about something, choose your best guess — you can always
+                create a new plan later.
+              </p>
+              <h2 className="text-2xl font-semibold text-ink-900 mb-1">About the person who has died</h2>
+              <p className="text-sm text-ink-500 mb-6">
                 We use this to personalise your plan. This information stays private.
               </p>
               <div className="space-y-4">
@@ -203,7 +210,7 @@ export default function IntakePage() {
                   placeholder="e.g. Manchester"
                 />
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                  <label className="block text-sm font-medium text-ink-700 mb-2">
                     Where is the deceased currently?
                   </label>
                   <div className="grid grid-cols-1 gap-2">
@@ -231,13 +238,13 @@ export default function IntakePage() {
 
           {step === 2 && (
             <div className="animate-fade-up">
-              <h2 className="text-xl font-semibold text-slate-800 mb-1">About you</h2>
-              <p className="text-sm text-slate-500 mb-6">
+              <h2 className="text-2xl font-semibold text-ink-900 mb-1">About you</h2>
+              <p className="text-sm text-ink-500 mb-6">
                 We use your location to find nearby services and send your plan.
               </p>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                  <label className="block text-sm font-medium text-ink-700 mb-2">
                     Your relationship to the deceased
                   </label>
                   <div className="grid grid-cols-2 gap-2">
@@ -286,8 +293,8 @@ export default function IntakePage() {
 
           {step === 3 && (
             <div className="animate-fade-up">
-              <h2 className="text-xl font-semibold text-slate-800 mb-1">Funeral preferences</h2>
-              <p className="text-sm text-slate-500 mb-6">
+              <h2 className="text-2xl font-semibold text-ink-900 mb-1">Funeral preferences</h2>
+              <p className="text-sm text-ink-500 mb-6">
                 It&apos;s fine if you&apos;re not sure yet. We can guide you through both options.
               </p>
               <div className="space-y-3">
@@ -303,17 +310,17 @@ export default function IntakePage() {
                     className={cn(
                       "w-full text-left px-4 py-4 rounded-xl border-2 transition-all",
                       data.funeralPreference === opt.value
-                        ? "border-slate-700 bg-slate-50"
+                        ? "border-ink-700 bg-ink-50"
                         : "border-stone-200 bg-white hover:border-stone-300"
                     )}
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div>
-                        <p className="text-sm font-medium text-slate-800">{opt.label}</p>
-                        <p className="text-xs text-slate-500 mt-0.5">{opt.desc}</p>
+                        <p className="text-sm font-medium text-ink-800">{opt.label}</p>
+                        <p className="text-xs text-ink-500 mt-0.5">{opt.desc}</p>
                       </div>
                       {data.funeralPreference === opt.value && (
-                        <Check className="h-4 w-4 text-slate-700 mt-0.5 flex-shrink-0" />
+                        <Check className="h-4 w-4 text-ink-700 mt-0.5 flex-shrink-0" />
                       )}
                     </div>
                   </button>
@@ -324,8 +331,8 @@ export default function IntakePage() {
 
           {step === 4 && (
             <div className="animate-fade-up">
-              <h2 className="text-xl font-semibold text-slate-800 mb-1">Faith &amp; cultural requirements</h2>
-              <p className="text-sm text-slate-500 mb-6">
+              <h2 className="text-2xl font-semibold text-ink-900 mb-1">Faith &amp; cultural requirements</h2>
+              <p className="text-sm text-ink-500 mb-6">
                 Optional. This helps us include faith-specific steps — for example, some traditions
                 hold the funeral within 24 hours.
               </p>
@@ -363,7 +370,7 @@ export default function IntakePage() {
                     checked={data.faithConsent ?? false}
                     onChange={(e) => update("faithConsent", e.target.checked)}
                   />
-                  <span className="text-sm text-slate-600 leading-relaxed">
+                  <span className="text-sm text-ink-600 leading-relaxed">
                     I agree to AfterCare using this answer to tailor the plan. If I save the plan, it is stored
                     securely and seen only by me and family members I invite. I can remove it at any time.{" "}
                     <a href="/privacy#special-category" target="_blank" className="underline">
@@ -378,8 +385,8 @@ export default function IntakePage() {
 
           {step === 5 && (
             <div className="animate-fade-up">
-              <h2 className="text-xl font-semibold text-slate-800 mb-1">Housing situation</h2>
-              <p className="text-sm text-slate-500 mb-6">
+              <h2 className="text-2xl font-semibold text-ink-900 mb-1">Housing situation</h2>
+              <p className="text-sm text-ink-500 mb-6">
                 This helps us include the right guidance about property and tenancy rights.
               </p>
               <div className="space-y-2">
@@ -401,17 +408,17 @@ export default function IntakePage() {
                     className={cn(
                       "w-full text-left px-4 py-4 rounded-xl border-2 transition-all",
                       data.housingType === opt.value
-                        ? "border-slate-700 bg-slate-50"
+                        ? "border-ink-700 bg-ink-50"
                         : "border-stone-200 bg-white hover:border-stone-300"
                     )}
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div>
-                        <p className="text-sm font-medium text-slate-800">{opt.label}</p>
-                        <p className="text-xs text-slate-500 mt-0.5" dangerouslySetInnerHTML={{ __html: opt.desc }} />
+                        <p className="text-sm font-medium text-ink-800">{opt.label}</p>
+                        <p className="text-xs text-ink-500 mt-0.5" dangerouslySetInnerHTML={{ __html: opt.desc }} />
                       </div>
                       {data.housingType === opt.value && (
-                        <Check className="h-4 w-4 text-slate-700 mt-0.5 flex-shrink-0" />
+                        <Check className="h-4 w-4 text-ink-700 mt-0.5 flex-shrink-0" />
                       )}
                     </div>
                   </button>
@@ -422,14 +429,14 @@ export default function IntakePage() {
 
           {step === 6 && (
             <div className="animate-fade-up">
-              <h2 className="text-xl font-semibold text-slate-800 mb-1">Benefits &amp; financial support</h2>
-              <p className="text-sm text-slate-500 mb-6">
+              <h2 className="text-2xl font-semibold text-ink-900 mb-1">Benefits &amp; financial support</h2>
+              <p className="text-sm text-ink-500 mb-6">
                 This helps us check what financial support may be available to you.
               </p>
 
               <div className="space-y-6">
                 <div>
-                  <p className="text-sm font-medium text-slate-700 mb-2">
+                  <p className="text-sm font-medium text-ink-700 mb-2">
                     Was the deceased receiving any benefits?
                   </p>
                   <div className="grid grid-cols-3 gap-2">
@@ -451,7 +458,7 @@ export default function IntakePage() {
                 </div>
 
                 <div>
-                  <p className="text-sm font-medium text-slate-700 mb-2">
+                  <p className="text-sm font-medium text-ink-700 mb-2">
                     Do you need help paying for funeral costs?
                   </p>
                   <div className="grid grid-cols-3 gap-2">
@@ -472,16 +479,16 @@ export default function IntakePage() {
                   </div>
                 </div>
 
-                <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-3">
-                  <p className="text-xs text-slate-600 leading-relaxed">
+                <div className="bg-ink-50 border border-ink-200 rounded-xl p-4 space-y-3">
+                  <p className="text-xs text-ink-600 leading-relaxed">
                     <strong className="font-semibold">You&apos;re almost done.</strong> We&apos;ll save your plan automatically and email you a private link so you can return to it at any time.
                   </p>
-                  <div className="border-t border-slate-200 pt-3">
-                    <p className="text-xs text-slate-500 leading-relaxed">
+                  <div className="border-t border-ink-200 pt-3">
+                    <p className="text-xs text-ink-500 leading-relaxed">
                       By creating your plan you agree to AfterCare storing your information to generate and maintain your bereavement plan.
                       We will not sell your data or share it with third parties for marketing.
                       You can request deletion at any time.{" "}
-                      <a href="/privacy" target="_blank" className="text-slate-700 underline font-medium">
+                      <a href="/privacy" target="_blank" className="text-ink-700 underline font-medium">
                         Read our Privacy Policy
                       </a>
                       .
@@ -510,7 +517,7 @@ export default function IntakePage() {
           </div>
         </div>
 
-        <p className="text-center text-xs text-slate-400 mt-5">
+        <p className="text-center text-xs text-ink-400 mt-5">
           Your information is protected and never shared with third parties.
         </p>
       </div>

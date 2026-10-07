@@ -84,11 +84,11 @@ export default function GuidancePage() {
 
   return (
     <div className="bg-stone-50 min-h-screen">
-      <div className="bg-white border-b border-stone-200">
+      <div className="bg-gradient-to-b from-white to-stone-50 border-b border-stone-200/70">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
           <div className="max-w-2xl">
-            <h1 className="text-3xl font-bold text-slate-900 mb-2">Guidance Hub</h1>
-            <p className="text-slate-500">
+            <h1 className="text-3xl sm:text-4xl font-semibold text-ink-900 mb-2">Guidance</h1>
+            <p className="text-ink-500">
               Plain-English explanations of every process — written to inform, not confuse.
             </p>
           </div>
@@ -99,15 +99,15 @@ export default function GuidancePage() {
         {/* Featured */}
         {featured.map((article) => (
           <Link key={article.slug} href={`/guidance/${article.slug}`} className="block mb-8">
-            <div className="bg-slate-700 rounded-2xl p-8 text-white hover:bg-slate-800 transition-colors">
+            <div className="bg-ink-700 rounded-2xl p-8 text-white hover:bg-ink-800 transition-colors">
               <div className="flex items-center gap-2 mb-3">
-                <BookOpen className="h-4 w-4 text-slate-300" />
-                <span className="text-sm text-slate-300">{article.category}</span>
+                <BookOpen className="h-4 w-4 text-ink-300" />
+                <span className="text-sm text-ink-300">{article.category}</span>
               </div>
               <h2 className="text-2xl font-bold mb-3">{article.title}</h2>
-              <p className="text-slate-300 max-w-xl leading-relaxed">{article.summary}</p>
+              <p className="text-ink-300 max-w-xl leading-relaxed">{article.summary}</p>
               <div className="flex items-center gap-4 mt-5">
-                <span className="flex items-center gap-1 text-sm text-slate-400">
+                <span className="flex items-center gap-1 text-sm text-ink-400">
                   <Clock className="h-3.5 w-3.5" />
                   {article.readTime} min read
                 </span>
@@ -128,24 +128,24 @@ export default function GuidancePage() {
             if (!catArticles.length) return null;
             return (
               <div key={category} className="mb-10">
-                <h2 className="text-lg font-semibold text-slate-800 mb-4 border-b border-stone-200 pb-2">
+                <h2 className="text-lg font-semibold text-ink-800 mb-4 border-b border-stone-200 pb-2">
                   {category}
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {catArticles.map((article) => (
                     <Link key={article.slug} href={`/guidance/${article.slug}`} className="group">
-                      <Card className="h-full hover:shadow-md hover:border-slate-300 transition-all">
+                      <Card className="h-full hover:shadow-md hover:border-ink-300 transition-all">
                         <CardContent className="p-5">
-                          <h3 className="text-sm font-semibold text-slate-800 mb-2 group-hover:text-slate-600 transition-colors">
+                          <h3 className="text-sm font-semibold text-ink-800 mb-2 group-hover:text-ink-600 transition-colors">
                             {article.title}
                           </h3>
-                          <p className="text-xs text-slate-500 leading-relaxed mb-4">{article.summary}</p>
+                          <p className="text-xs text-ink-500 leading-relaxed mb-4">{article.summary}</p>
                           <div className="flex items-center justify-between">
-                            <span className="flex items-center gap-1 text-xs text-slate-400">
+                            <span className="flex items-center gap-1 text-xs text-ink-400">
                               <Clock className="h-3 w-3" />
                               {article.readTime} min
                             </span>
-                            <span className="flex items-center gap-1 text-xs text-slate-600 font-medium">
+                            <span className="flex items-center gap-1 text-xs text-ink-600 font-medium">
                               Read
                               <ArrowRight className="h-3 w-3 group-hover:translate-x-0.5 transition-transform" />
                             </span>

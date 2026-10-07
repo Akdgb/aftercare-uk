@@ -1,15 +1,79 @@
 @import "tailwindcss";
 
+/*
+ * Brand palette. "ink" is a calm evergreen-grey used for text, buttons and
+ * accents; "stone" is overridden with warmer creams for page backgrounds.
+ * Text shades 400+ meet WCAG AA contrast on white and on the cream background.
+ */
+@theme {
+  --color-ink-50: #f2f6f4;
+  --color-ink-100: #e2ebe7;
+  --color-ink-200: #c5d5ce;
+  --color-ink-300: #9db6ad;
+  --color-ink-400: #587469;
+  --color-ink-500: #4b675f;
+  --color-ink-600: #3b554e;
+  --color-ink-700: #2c4640;
+  --color-ink-800: #223833;
+  --color-ink-900: #182a26;
+  --color-ink-950: #0e1a17;
+
+  --color-stone-50: #f8f6f1;
+  --color-stone-100: #f1eee6;
+  --color-stone-200: #e4dfd3;
+  --color-stone-300: #d3ccbc;
+
+  --radius-xl: 0.875rem;
+  --radius-2xl: 1.25rem;
+}
+
+@theme inline {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-fraunces), Georgia, serif;
+}
+
 :root {
-  --background: #fafaf9;
-  --foreground: #1c1917;
+  --background: #f8f6f1;
+  --foreground: #182a26;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+}
+
+/* In a layer so utility classes such as font-sans can still override it */
+@layer base {
+  h1,
+  h2 {
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
+  }
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+  accent-color: #2c4640;
+}
+
+::selection {
+  background: #c5d5ce;
+}
+
+:focus-visible {
+  outline: 2px solid #2c4640;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 * {
@@ -19,13 +83,13 @@ body {
 .prose p {
   margin-bottom: 1em;
   line-height: 1.75;
-  color: #44403c;
+  color: #3b554e;
 }
 
 .prose h2 {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #1c1917;
+  color: #182a26;
   margin-top: 1.5em;
   margin-bottom: 0.5em;
 }
@@ -33,7 +97,7 @@ body {
 .prose h3 {
   font-size: 1.1rem;
   font-weight: 600;
-  color: #1c1917;
+  color: #182a26;
   margin-top: 1.25em;
   margin-bottom: 0.4em;
 }
@@ -46,12 +110,12 @@ body {
 
 .prose ul li {
   margin-bottom: 0.3em;
-  color: #44403c;
+  color: #3b554e;
 }
 
 .prose strong {
   font-weight: 600;
-  color: #1c1917;
+  color: #182a26;
 }
 
 @keyframes fadeInUp {
@@ -67,4 +131,14 @@ body {
 
 .animate-fade-up {
   animation: fadeInUp 0.4s ease-out forwards;
+}
+
+@keyframes popIn {
+  0% { transform: scale(0.6); opacity: 0; }
+  60% { transform: scale(1.12); opacity: 1; }
+  100% { transform: scale(1); }
+}
+
+.animate-pop {
+  animation: popIn 0.35s ease-out;
 }

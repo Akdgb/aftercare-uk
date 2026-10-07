@@ -21,7 +21,7 @@ const RESOURCE_META: Record<
   { label: string; icon: React.ElementType; color: string; bg: string }
 > = {
   "registry-office": { label: "Registry Office", icon: Building2, color: "text-blue-600", bg: "bg-blue-50" },
-  council: { label: "Council", icon: Building2, color: "text-slate-600", bg: "bg-slate-100" },
+  council: { label: "Council", icon: Building2, color: "text-ink-600", bg: "bg-ink-100" },
   cemetery: { label: "Cemetery", icon: Trees, color: "text-emerald-600", bg: "bg-emerald-50" },
   crematorium: { label: "Crematorium", icon: Flame, color: "text-amber-600", bg: "bg-amber-50" },
   "funeral-director": { label: "Funeral Director", icon: Heart, color: "text-rose-600", bg: "bg-rose-50" },
@@ -100,11 +100,11 @@ export default function ResourcesPage() {
   return (
     <div className="bg-stone-50 min-h-screen">
       {/* Header */}
-      <div className="bg-white border-b border-stone-200">
+      <div className="bg-gradient-to-b from-white to-stone-50 border-b border-stone-200/70">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
           <div className="max-w-2xl">
-            <h1 className="text-3xl font-bold text-slate-900 mb-2">Local Resources</h1>
-            <p className="text-slate-500">
+            <h1 className="text-3xl sm:text-4xl font-semibold text-ink-900 mb-2">Find local services</h1>
+            <p className="text-ink-500">
               Find registry offices, funeral directors, cemeteries, crematoriums, and faith organisations near you.
             </p>
           </div>
@@ -117,12 +117,12 @@ export default function ResourcesPage() {
               value={postcode}
               onChange={(e) => setPostcode(e.target.value.toUpperCase())}
               onKeyDown={(e) => e.key === "Enter" && doSearch()}
-              className="flex-1 rounded-lg border border-stone-300 bg-white px-4 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400"
+              className="flex-1 rounded-lg border border-stone-300 bg-white px-4 py-2.5 text-sm text-ink-800 placeholder-ink-400 focus:outline-none focus:ring-2 focus:ring-ink-400"
             />
             <button
               onClick={doSearch}
               disabled={loading || !postcode.trim()}
-              className="bg-slate-700 text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-800 disabled:opacity-50 disabled:pointer-events-none transition-colors flex items-center gap-2 whitespace-nowrap"
+              className="bg-ink-700 text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-ink-800 disabled:opacity-50 disabled:pointer-events-none transition-colors flex items-center gap-2 whitespace-nowrap"
             >
               {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <MapPin className="h-4 w-4" />}
               {loading ? "Searching..." : "Find Services"}
@@ -135,8 +135,8 @@ export default function ResourcesPage() {
             </div>
           )}
           {searched && !loading && district && (
-            <p className="text-xs text-slate-400 mt-2">
-              Showing real-time results near <strong className="text-slate-600">{district}</strong> from OpenStreetMap.
+            <p className="text-xs text-ink-400 mt-2">
+              Showing real-time results near <strong className="text-ink-600">{district}</strong> from OpenStreetMap.
             </p>
           )}
         </div>
@@ -146,19 +146,19 @@ export default function ResourcesPage() {
         {/* Before search */}
         {!searched && !loading && (
           <div className="text-center py-16">
-            <div className="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-5">
-              <MapPin className="h-8 w-8 text-slate-400" />
+            <div className="w-16 h-16 bg-ink-100 rounded-2xl flex items-center justify-center mx-auto mb-5">
+              <MapPin className="h-8 w-8 text-ink-400" />
             </div>
-            <h2 className="text-lg font-semibold text-slate-700 mb-2">Enter your postcode above</h2>
-            <p className="text-slate-400 text-sm max-w-sm mx-auto">
+            <h2 className="text-lg font-semibold text-ink-700 mb-2">Enter your postcode above</h2>
+            <p className="text-ink-400 text-sm max-w-sm mx-auto">
               We search live data to find the nearest funeral directors, cemeteries, crematoriums, and faith organisations to you.
             </p>
           </div>
         )}
 
         {loading && (
-          <div className="flex flex-col items-center py-16 gap-3 text-slate-500">
-            <Loader2 className="h-8 w-8 animate-spin text-slate-400" />
+          <div className="flex flex-col items-center py-16 gap-3 text-ink-500">
+            <Loader2 className="h-8 w-8 animate-spin text-ink-400" />
             <p className="text-sm">Searching local services near {postcode}...</p>
           </div>
         )}
@@ -168,13 +168,13 @@ export default function ResourcesPage() {
             {/* Filters */}
             <div className="flex flex-col sm:flex-row gap-4 mb-6">
               <div className="relative flex-1 max-w-sm">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-ink-400 pointer-events-none" />
                 <input
                   type="text"
                   placeholder="Filter by name or address..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="w-full pl-9 pr-4 py-2.5 rounded-lg border border-stone-300 bg-white text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400"
+                  className="w-full pl-9 pr-4 py-2.5 rounded-lg border border-stone-300 bg-white text-sm text-ink-800 placeholder-ink-400 focus:outline-none focus:ring-2 focus:ring-ink-400"
                 />
               </div>
               <div className="flex gap-2 flex-wrap">
@@ -188,12 +188,12 @@ export default function ResourcesPage() {
                       className={cn(
                         "px-3 py-1.5 rounded-lg text-sm font-medium transition-colors border",
                         activeType === type
-                          ? "bg-slate-700 text-white border-slate-700"
-                          : "bg-white text-slate-600 border-stone-200 hover:bg-stone-50"
+                          ? "bg-ink-700 text-white border-ink-700"
+                          : "bg-white text-ink-600 border-stone-200 hover:bg-stone-50"
                       )}
                     >
                       {type === "all" ? "All" : RESOURCE_META[type]?.label}
-                      <span className={cn("ml-1.5 text-xs", activeType === type ? "text-slate-300" : "text-slate-400")}>
+                      <span className={cn("ml-1.5 text-xs", activeType === type ? "text-ink-300" : "text-ink-400")}>
                         {count}
                       </span>
                     </button>
@@ -202,8 +202,8 @@ export default function ResourcesPage() {
               </div>
             </div>
 
-            <p className="text-sm text-slate-500 mb-5">
-              <strong className="text-slate-700">{filtered.length}</strong> result{filtered.length !== 1 ? "s" : ""} found
+            <p className="text-sm text-ink-500 mb-5">
+              <strong className="text-ink-700">{filtered.length}</strong> result{filtered.length !== 1 ? "s" : ""} found
               {search && ` matching "${search}"`}
             </p>
 
@@ -216,11 +216,11 @@ export default function ResourcesPage() {
                   <Card key={resource.id} className="hover:shadow-md transition-shadow">
                     <CardContent className="p-5">
                       <div className="flex items-start gap-3 mb-3">
-                        <div className={cn("w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0", meta?.bg ?? "bg-slate-100")}>
-                          <Icon className={cn("h-4 w-4", meta?.color ?? "text-slate-500")} />
+                        <div className={cn("w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0", meta?.bg ?? "bg-ink-100")}>
+                          <Icon className={cn("h-4 w-4", meta?.color ?? "text-ink-500")} />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-semibold text-slate-800 leading-snug">{resource.name}</p>
+                          <p className="text-sm font-semibold text-ink-800 leading-snug">{resource.name}</p>
                           <span className={cn(
                             "inline-block mt-1 text-xs font-medium px-2 py-0.5 rounded-full",
                             meta?.bg, meta?.color
@@ -228,18 +228,18 @@ export default function ResourcesPage() {
                             {meta?.label ?? resource.type}
                           </span>
                         </div>
-                        <span className="text-xs text-slate-400 flex-shrink-0">{resource.distance}</span>
+                        <span className="text-xs text-ink-400 flex-shrink-0">{resource.distance}</span>
                       </div>
 
                       <div className="space-y-1.5">
                         <div className="flex items-start gap-2">
-                          <MapPin className="h-3.5 w-3.5 text-slate-400 mt-0.5 flex-shrink-0" />
-                          <p className="text-xs text-slate-600 leading-snug">{resource.address}</p>
+                          <MapPin className="h-3.5 w-3.5 text-ink-400 mt-0.5 flex-shrink-0" />
+                          <p className="text-xs text-ink-600 leading-snug">{resource.address}</p>
                         </div>
                         {resource.phone && (
                           <div className="flex items-center gap-2">
-                            <Phone className="h-3.5 w-3.5 text-slate-400 flex-shrink-0" />
-                            <a href={`tel:${resource.phone}`} className="text-xs text-slate-600 hover:text-slate-800">
+                            <Phone className="h-3.5 w-3.5 text-ink-400 flex-shrink-0" />
+                            <a href={`tel:${resource.phone}`} className="text-xs text-ink-600 hover:text-ink-800">
                               {resource.phone}
                             </a>
                           </div>
@@ -252,7 +252,7 @@ export default function ResourcesPage() {
                             href={resource.website}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 text-xs text-slate-600 hover:text-slate-800 font-medium"
+                            className="inline-flex items-center gap-1 text-xs text-ink-600 hover:text-ink-800 font-medium"
                           >
                             <ExternalLink className="h-3.5 w-3.5" />
                             Website
@@ -262,7 +262,7 @@ export default function ResourcesPage() {
                           href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(resource.name + " " + resource.address)}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 text-xs text-slate-600 hover:text-slate-800 font-medium"
+                          className="inline-flex items-center gap-1 text-xs text-ink-600 hover:text-ink-800 font-medium"
                         >
                           <MapPin className="h-3.5 w-3.5" />
                           Directions
@@ -275,8 +275,8 @@ export default function ResourcesPage() {
             </div>
 
             {filtered.length === 0 && (
-              <div className="text-center py-12 text-slate-500">
-                <MapPin className="h-8 w-8 mx-auto mb-3 text-slate-300" />
+              <div className="text-center py-12 text-ink-500">
+                <MapPin className="h-8 w-8 mx-auto mb-3 text-ink-300" />
                 <p>No results found. Try adjusting your filters or searching a different postcode.</p>
               </div>
             )}

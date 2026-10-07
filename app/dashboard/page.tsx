@@ -164,8 +164,8 @@ export default function DashboardPage() {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin text-slate-400 mx-auto mb-3" />
-          <p className="text-slate-500 text-sm">Loading your dashboard...</p>
+          <Loader2 className="h-8 w-8 animate-spin text-ink-400 mx-auto mb-3" />
+          <p className="text-ink-500 text-sm">Loading your dashboard...</p>
         </div>
       </div>
     );
@@ -176,17 +176,16 @@ export default function DashboardPage() {
 
   return (
     <div className="bg-stone-50 min-h-screen">
-      <div className="bg-white border-b border-stone-200">
+      <div className="bg-gradient-to-b from-white to-stone-50 border-b border-stone-200/70">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-sm text-slate-500 mb-1">Dashboard</p>
-              <h1 className="text-2xl font-bold text-slate-900">My Dashboard</h1>
-              {account && <p className="text-sm text-slate-500 mt-1">Signed in as {account.email}</p>}
+                            <h1 className="text-3xl sm:text-4xl font-semibold text-ink-900">My plans</h1>
+              {account && <p className="text-sm text-ink-500 mt-1">Signed in as {account.email}</p>}
             </div>
             <button
               onClick={refresh}
-              className="p-2 rounded-lg text-slate-400 hover:bg-stone-100 transition-colors"
+              className="p-2 rounded-lg text-ink-400 hover:bg-stone-100 transition-colors"
               aria-label="Refresh"
             >
               <RefreshCw className={cn("h-4 w-4", refreshing && "animate-spin")} />
@@ -203,8 +202,8 @@ export default function DashboardPage() {
                   className={cn(
                     "flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors whitespace-nowrap",
                     tab === t.id
-                      ? "border-slate-700 text-slate-800"
-                      : "border-transparent text-slate-500 hover:text-slate-700"
+                      ? "border-ink-700 text-ink-800"
+                      : "border-transparent text-ink-500 hover:text-ink-700"
                   )}
                 >
                   <Icon className="h-4 w-4" />
@@ -222,9 +221,9 @@ export default function DashboardPage() {
             {owned.length === 0 && (
               <Card>
                 <CardContent className="py-12 text-center">
-                  <FileText className="h-8 w-8 text-slate-300 mx-auto mb-3" />
-                  <p className="text-slate-600 font-medium mb-1">No plans yet</p>
-                  <p className="text-slate-400 text-sm mb-6">
+                  <FileText className="h-8 w-8 text-ink-300 mx-auto mb-3" />
+                  <p className="text-ink-600 font-medium mb-1">No plans yet</p>
+                  <p className="text-ink-400 text-sm mb-6">
                     Answer a few questions to generate your personalised bereavement plan.
                   </p>
                   <Link href="/intake">
@@ -242,7 +241,7 @@ export default function DashboardPage() {
 
             {shared.length > 0 && (
               <>
-                <h2 className="text-sm font-semibold text-slate-700 flex items-center gap-2 pt-2">
+                <h2 className="text-sm font-semibold text-ink-700 flex items-center gap-2 pt-2">
                   <Users className="h-4 w-4" /> Shared with you
                 </h2>
                 {shared.map((plan) => (
@@ -252,27 +251,27 @@ export default function DashboardPage() {
             )}
 
             {owned.length > 0 && (
-              <Link href="/intake" className="inline-flex items-center gap-1 text-sm text-slate-600 hover:text-slate-800">
+              <Link href="/intake" className="inline-flex items-center gap-1 text-sm text-ink-600 hover:text-ink-800">
                 + Create another plan
               </Link>
             )}
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-2">
               {[
-                { href: "/resources", icon: Building2, label: "Local Resources", desc: "Register offices, funeral directors" },
-                { href: "/financial-support", icon: PoundSterling, label: "Financial Support", desc: "Check your eligibility" },
-                { href: "/assistant", icon: MessageCircle, label: "AI Assistant", desc: "Ask any question" },
+                { href: "/resources", icon: Building2, label: "Find local services", desc: "Register offices, funeral directors" },
+                { href: "/financial-support", icon: PoundSterling, label: "Money help", desc: "See what you could claim" },
+                { href: "/assistant", icon: MessageCircle, label: "Ask a question", desc: "Get a clear answer" },
               ].map((item) => {
                 const Icon = item.icon;
                 return (
                   <Link key={item.href} href={item.href} className="group">
-                    <Card className="h-full hover:shadow-md hover:border-slate-300 transition-all">
+                    <Card className="h-full hover:shadow-md hover:border-ink-300 transition-all">
                       <CardContent className="p-4">
-                        <div className="w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center mb-3 group-hover:bg-slate-700 transition-colors">
-                          <Icon className="h-4 w-4 text-slate-600 group-hover:text-white transition-colors" />
+                        <div className="w-8 h-8 bg-ink-100 rounded-lg flex items-center justify-center mb-3 group-hover:bg-ink-700 transition-colors">
+                          <Icon className="h-4 w-4 text-ink-600 group-hover:text-white transition-colors" />
                         </div>
-                        <p className="text-sm font-medium text-slate-800">{item.label}</p>
-                        <p className="text-xs text-slate-500 mt-0.5">{item.desc}</p>
+                        <p className="text-sm font-medium text-ink-800">{item.label}</p>
+                        <p className="text-xs text-ink-500 mt-0.5">{item.desc}</p>
                       </CardContent>
                     </Card>
                   </Link>
@@ -284,22 +283,22 @@ export default function DashboardPage() {
 
         {tab === "documents" && (
           <div className="max-w-3xl space-y-3">
-            <p className="text-sm text-slate-500 mb-4">
+            <p className="text-sm text-ink-500 mb-4">
               The paperwork you&apos;re most likely to need, where it comes from, and what it&apos;s for. Keep originals
               together in one folder — most organisations will ask for a certified copy of the death certificate.
             </p>
             {DOCUMENTS.map((doc) => (
               <div key={doc.label} className="bg-white border border-stone-200 rounded-xl p-4 flex items-start gap-4">
-                <div className="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <FileText className="h-5 w-5 text-slate-500" />
+                <div className="w-10 h-10 bg-ink-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <FileText className="h-5 w-5 text-ink-500" />
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-slate-800">{doc.label}</p>
-                  <p className="text-xs text-slate-500 mt-1">
-                    <span className="font-medium text-slate-600">Where from:</span> {doc.from}
+                  <p className="text-sm font-medium text-ink-800">{doc.label}</p>
+                  <p className="text-xs text-ink-500 mt-1">
+                    <span className="font-medium text-ink-600">Where from:</span> {doc.from}
                   </p>
-                  <p className="text-xs text-slate-500 mt-0.5">
-                    <span className="font-medium text-slate-600">Needed for:</span> {doc.needed}
+                  <p className="text-xs text-ink-500 mt-0.5">
+                    <span className="font-medium text-ink-600">Needed for:</span> {doc.needed}
                   </p>
                 </div>
               </div>
@@ -309,24 +308,24 @@ export default function DashboardPage() {
 
         {tab === "guidance" && (
           <div className="max-w-2xl space-y-3">
-            <p className="text-sm text-slate-500 mb-4">
+            <p className="text-sm text-ink-500 mb-4">
               Key articles for your situation. Browse all topics in the{" "}
-              <Link href="/guidance" className="text-slate-700 font-medium hover:underline">
+              <Link href="/guidance" className="text-ink-700 font-medium hover:underline">
                 Guidance Hub
               </Link>
               .
             </p>
             {ARTICLES.map((article) => (
               <Link key={article.href} href={article.href} className="group block">
-                <div className="bg-white border border-stone-200 rounded-xl p-4 hover:shadow-md hover:border-slate-300 transition-all flex items-center gap-4">
-                  <div className="w-9 h-9 bg-slate-100 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-slate-700 transition-colors">
-                    <BookOpen className="h-4 w-4 text-slate-500 group-hover:text-white transition-colors" />
+                <div className="bg-white border border-stone-200 rounded-xl p-4 hover:shadow-md hover:border-ink-300 transition-all flex items-center gap-4">
+                  <div className="w-9 h-9 bg-ink-100 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-ink-700 transition-colors">
+                    <BookOpen className="h-4 w-4 text-ink-500 group-hover:text-white transition-colors" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-slate-800">{article.title}</p>
-                    <span className="text-xs text-slate-400">{article.category}</span>
+                    <p className="text-sm font-medium text-ink-800">{article.title}</p>
+                    <span className="text-xs text-ink-400">{article.category}</span>
                   </div>
-                  <ChevronRight className="h-4 w-4 text-slate-400 group-hover:text-slate-600" />
+                  <ChevronRight className="h-4 w-4 text-ink-400 group-hover:text-ink-600" />
                 </div>
               </Link>
             ))}
@@ -353,7 +352,7 @@ function PlanCard({ plan }: { plan: PlanSummary }) {
           <div>
             <CardTitle>{name || "Unnamed plan"}</CardTitle>
             {plan.intake_data.dateOfDeath && (
-              <p className="text-sm text-slate-500 mt-1">Passed {formatDate(plan.intake_data.dateOfDeath)}</p>
+              <p className="text-sm text-ink-500 mt-1">Died {formatDate(plan.intake_data.dateOfDeath)}</p>
             )}
           </div>
           <Link href={`/plan/${plan.id}`}>
@@ -365,38 +364,38 @@ function PlanCard({ plan }: { plan: PlanSummary }) {
       </CardHeader>
       <CardContent>
         <div className="flex justify-between text-sm mb-1.5">
-          <span className="text-slate-600">Progress</span>
-          <span className="font-semibold text-slate-800">{pct}%</span>
+          <span className="text-ink-600">Progress</span>
+          <span className="font-semibold text-ink-800">{pct}%</span>
         </div>
         <Progress value={completed} max={tasks.length} />
         <div className="flex gap-5 mt-3 mb-4">
           {[
-            { label: "Total", value: tasks.length, color: "text-slate-800" },
+            { label: "Total", value: tasks.length, color: "text-ink-800" },
             { label: "Done", value: completed, color: "text-emerald-600" },
-            { label: "Urgent left", value: urgent.length, color: "text-red-500" },
+            { label: "Urgent left", value: urgent.length, color: "text-rose-600" },
           ].map((s) => (
             <div key={s.label} className="text-center">
               <p className={cn("text-xl font-bold", s.color)}>{s.value}</p>
-              <p className="text-xs text-slate-400">{s.label}</p>
+              <p className="text-xs text-ink-400">{s.label}</p>
             </div>
           ))}
         </div>
 
         {urgent.length > 0 && (
-          <div className="bg-red-50 border border-red-200 rounded-xl p-4">
+          <div className="bg-rose-50/70 border border-rose-100 rounded-xl p-4">
             <div className="flex items-center gap-2 mb-2">
-              <AlertCircle className="h-4 w-4 text-red-600" />
-              <p className="text-sm font-semibold text-red-800">
-                {urgent.length} urgent task{urgent.length > 1 ? "s" : ""} outstanding
+              <AlertCircle className="h-4 w-4 text-rose-700" />
+              <p className="text-sm font-semibold text-rose-900">
+                {urgent.length} thing{urgent.length > 1 ? "s" : ""} still to do in the first few days
               </p>
             </div>
             {urgent.slice(0, 3).map((t) => (
               <div key={t.id} className="flex items-start gap-2 mb-1.5">
-                <div className="w-1.5 h-1.5 rounded-full bg-red-400 mt-1.5 flex-shrink-0" />
-                <p className="text-sm text-red-700">{t.title}</p>
+                <div className="w-1.5 h-1.5 rounded-full bg-rose-400 mt-1.5 flex-shrink-0" />
+                <p className="text-sm text-rose-800">{t.title}</p>
               </div>
             ))}
-            {urgent.length > 3 && <p className="text-xs text-red-400 ml-3.5">+{urgent.length - 3} more</p>}
+            {urgent.length > 3 && <p className="text-xs text-rose-600 ml-3.5">+{urgent.length - 3} more</p>}
           </div>
         )}
 
@@ -407,7 +406,7 @@ function PlanCard({ plan }: { plan: PlanSummary }) {
           </div>
         )}
 
-        <p className="text-xs text-slate-400 mt-3">Last updated {formatDate(plan.updated_at)}</p>
+        <p className="text-xs text-ink-400 mt-3">Last updated {formatDate(plan.updated_at)}</p>
       </CardContent>
     </Card>
   );
@@ -459,8 +458,8 @@ function AccountSettings({
       <Card>
         <CardContent className="p-5 flex items-start justify-between gap-4">
           <div>
-            <p className="text-sm font-medium text-slate-800">Reminder emails</p>
-            <p className="text-xs text-slate-500 mt-1">
+            <p className="text-sm font-medium text-ink-800">Reminder emails</p>
+            <p className="text-xs text-ink-500 mt-1">
               At most one gentle email a week while urgent or this-week tasks are still open, for up to 90 days.
             </p>
           </div>
@@ -471,7 +470,7 @@ function AccountSettings({
             disabled={busy}
             className={cn(
               "relative w-11 h-6 rounded-full transition-colors flex-shrink-0",
-              account.remindersEnabled ? "bg-slate-700" : "bg-stone-300"
+              account.remindersEnabled ? "bg-ink-700" : "bg-stone-300"
             )}
           >
             <span
@@ -487,8 +486,8 @@ function AccountSettings({
 
       <Card>
         <CardContent className="p-5">
-          <p className="text-sm font-medium text-slate-800">Your data</p>
-          <p className="text-xs text-slate-500 mt-1 mb-4">
+          <p className="text-sm font-medium text-ink-800">Your data</p>
+          <p className="text-xs text-ink-500 mt-1 mb-4">
             Plans are kept for 3 years and then deleted automatically. You can delete individual plans from inside each
             plan, or delete everything now. See our{" "}
             <Link href="/privacy" className="underline">
@@ -496,13 +495,13 @@ function AccountSettings({
             </Link>
             .
           </p>
-          <Button variant="outline" size="sm" onClick={deleteAccount} disabled={busy} className="text-red-700 border-red-200 hover:bg-red-50">
+          <Button variant="outline" size="sm" onClick={deleteAccount} disabled={busy} className="text-rose-800 border-red-200 hover:bg-red-50">
             Delete my account and all data
           </Button>
         </CardContent>
       </Card>
 
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && <p className="text-sm text-rose-700">{error}</p>}
     </div>
   );
 }

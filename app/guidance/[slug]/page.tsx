@@ -54,7 +54,7 @@ export default async function GuidanceArticlePage({ params }: { params: Promise<
         {/* Breadcrumb */}
         <Link
           href="/guidance"
-          className="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-slate-800 mb-8"
+          className="inline-flex items-center gap-2 text-sm text-ink-500 hover:text-ink-800 mb-8"
         >
           <ArrowLeft className="h-4 w-4" />
           Back to Guidance Hub
@@ -64,12 +64,12 @@ export default async function GuidanceArticlePage({ params }: { params: Promise<
           {/* Header */}
           <div className="mb-8 pb-8 border-b border-stone-100">
             <div className="flex items-center gap-2 mb-4">
-              <span className="bg-slate-100 text-slate-600 text-xs font-medium px-2.5 py-1 rounded-full">
+              <span className="bg-ink-100 text-ink-600 text-xs font-medium px-2.5 py-1 rounded-full">
                 {article.category}
               </span>
             </div>
-            <h1 className="text-3xl font-bold text-slate-900 mb-4 leading-tight">{article.title}</h1>
-            <div className="flex items-center gap-4 text-sm text-slate-400">
+            <h1 className="text-3xl font-bold text-ink-900 mb-4 leading-tight">{article.title}</h1>
+            <div className="flex items-center gap-4 text-sm text-ink-400">
               <span className="flex items-center gap-1.5">
                 <Clock className="h-4 w-4" />
                 {article.readTime} min read
@@ -89,15 +89,15 @@ export default async function GuidanceArticlePage({ params }: { params: Promise<
 
           {/* Gov.UK banner */}
           <div className="mt-10 p-5 bg-stone-50 border border-stone-200 rounded-xl">
-            <p className="text-sm font-semibold text-slate-700 mb-2">Official government guidance</p>
-            <p className="text-sm text-slate-600 mb-3">
+            <p className="text-sm font-semibold text-ink-700 mb-2">Official government guidance</p>
+            <p className="text-sm text-ink-600 mb-3">
               For the most up-to-date official information, always check GOV.UK.
             </p>
             <a
               href="https://www.gov.uk"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-sm text-slate-700 font-medium hover:text-slate-900"
+              className="inline-flex items-center gap-1.5 text-sm text-ink-700 font-medium hover:text-ink-900"
             >
               <ExternalLink className="h-4 w-4" />
               Visit GOV.UK
@@ -108,18 +108,18 @@ export default async function GuidanceArticlePage({ params }: { params: Promise<
         {/* Related articles */}
         {related.length > 0 && (
           <div className="mt-10">
-            <h2 className="text-lg font-semibold text-slate-800 mb-4">Related guidance</h2>
+            <h2 className="text-lg font-semibold text-ink-800 mb-4">Related guidance</h2>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {related.map((rel) => (
                 <Link
                   key={rel.slug}
                   href={`/guidance/${rel.slug}`}
-                  className="bg-white border border-stone-200 rounded-xl p-4 hover:shadow-md hover:border-slate-300 transition-all group"
+                  className="bg-white border border-stone-200 rounded-xl p-4 hover:shadow-md hover:border-ink-300 transition-all group"
                 >
-                  <p className="text-sm font-medium text-slate-800 group-hover:text-slate-600 mb-1">
+                  <p className="text-sm font-medium text-ink-800 group-hover:text-ink-600 mb-1">
                     {rel.title}
                   </p>
-                  <span className="text-xs text-slate-400">{rel.readTime} min read</span>
+                  <span className="text-xs text-ink-400">{rel.readTime} min read</span>
                 </Link>
               ))}
             </div>
