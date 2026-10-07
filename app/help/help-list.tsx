@@ -1,7 +1,8 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { BookOpen, Calculator, ChevronRight, MapPin, MessageCircleQuestion, PoundSterling, Search } from "lucide-react";
+import { BookOpen, Calculator, ChevronRight, MapPin, MessageCircleQuestion, PiggyBank, PoundSterling, Search } from "lucide-react";
+import { ShareButton } from "@/components/share/share-button";
 
 export type HelpItem = {
   href: string;
@@ -33,6 +34,22 @@ export function HelpList({ tools, guides }: { tools: HelpItem[]; guides: HelpIte
           aria-label="Search help"
         />
       </div>
+
+      {!q.trim() && (
+        <Link
+          href="/help/save-money"
+          className="mt-6 flex items-center gap-4 rounded-2xl bg-ink-800 text-white p-5 hover:bg-ink-900 active:scale-[0.99] transition-all"
+        >
+          <span className="w-12 h-12 rounded-xl bg-white/15 flex items-center justify-center shrink-0">
+            <PiggyBank className="h-6 w-6" />
+          </span>
+          <span className="flex-1 min-w-0">
+            <span className="block text-lg font-semibold leading-snug">Save money on the funeral</span>
+            <span className="block text-sm text-ink-100/90">Simple choices that can save thousands</span>
+          </span>
+          <ChevronRight className="h-5 w-5 text-white/70 shrink-0" />
+        </Link>
+      )}
 
       {shownTools.length > 0 && (
         <div className="grid grid-cols-2 gap-3 mt-6">
@@ -74,6 +91,8 @@ export function HelpList({ tools, guides }: { tools: HelpItem[]; guides: HelpIte
           </ul>
         </>
       )}
+
+      {!q.trim() && <ShareButton className="mt-8" />}
 
       {shownTools.length + shownGuides.length === 0 && (
         <div className="text-center mt-10">

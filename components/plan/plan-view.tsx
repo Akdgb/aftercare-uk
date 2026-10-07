@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import {
   ArrowRight,
+  BookOpen,
   Building2,
   Check,
   ChevronDown,
@@ -215,14 +216,20 @@ export function PlanView({
                   {(nextTask.link || nextTask.phone) && (
                     <div className="flex flex-wrap items-center gap-x-5 gap-y-2 mt-4 text-sm">
                       {nextTask.link && (
-                        <a
+                        <TaskLink
                           href={nextTask.link}
-                          target="_blank"
-                          rel="noopener noreferrer"
                           className="inline-flex items-center gap-1.5 font-medium text-white underline underline-offset-4 decoration-white/40 hover:decoration-white"
                         >
-                          How to do it <ExternalLink className="h-3.5 w-3.5" />
-                        </a>
+                          {isInternal(nextTask.link) ? (
+                            <>
+                              <BookOpen className="h-3.5 w-3.5" /> Read our guide
+                            </>
+                          ) : (
+                            <>
+                              How to do it <ExternalLink className="h-3.5 w-3.5" />
+                            </>
+                          )}
+                        </TaskLink>
                       )}
                       {nextTask.phone && (
                         <a
@@ -516,16 +523,14 @@ function TaskRow({
         {(task.link || task.phone) && (
           <div className="flex flex-wrap items-center gap-2 mt-3">
             {task.link && (
-              <a
+              <TaskLink
                 href={task.link}
-                target="_blank"
-                rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 text-sm font-medium text-ink-700 bg-white border border-stone-200 hover:border-ink-300 px-3 py-1.5 rounded-lg"
               >
-                <ExternalLink className="h-3.5 w-3.5" />
-                <span className="print:hidden">Official guidance</span>
+                {isInternal(task.link) ? <BookOpen className="h-3.5 w-3.5" /> : <ExternalLink className="h-3.5 w-3.5" />}
+                <span className="print:hidden">{isInternal(task.link) ? "Read our guide" : "Official guidance"}</span>
                 <span className="hidden print:inline">{task.link}</span>
-              </a>
+              </TaskLink>
             )}
             {task.phone && (
               <a
@@ -540,5 +545,23 @@ function TaskRow({
         {extras && <div className="print:hidden">{extras}</div>}
       </div>
     </li>
+  );
+}
+
+const isInternal = (href: string) => href.startsWith("/");
+
+/** Our own guides open in the app; official sites open in a new tab. */
+function TaskLink({ href, className, children }: { href: string; className: string; children: React.ReactNode }) {
+  if (isInternal(href)) {
+    return (
+      <Link href={href} className={className}>
+        {children}
+      </Link>
+    );
+  }
+  return (
+    <a href={href} target="_blank" rel="noopener noreferrer" className={className}>
+      {children}
+    </a>
   );
 }

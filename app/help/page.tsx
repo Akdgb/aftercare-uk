@@ -13,6 +13,8 @@ const TOOLS: HelpItem[] = [
 
 export default function HelpPage() {
   const guides: HelpItem[] = [
+    { href: "/help/streaming", title: "Stream the funeral to family abroad", desc: "WhatsApp, Zoom or a venue webcast", kind: "guide", icon: "book" },
+    { href: "/help/memorials", title: "Condolences and online memorials", desc: "Free memorial pages, notices and donations", kind: "guide", icon: "book" },
     { href: "/help/documents", title: "Documents you'll need", desc: "What to gather and where it comes from", kind: "guide", icon: "book" },
     ...Object.values(articles).map((a): HelpItem => ({
     href: `/guidance/${a.slug}`,

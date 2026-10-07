@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ChevronRight, Loader2, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ShareButton } from "@/components/share/share-button";
 import { Card, CardContent } from "@/components/ui/card";
 import { generateActionPlan } from "@/lib/action-plan";
 import { LOCAL_KEYS, writeLocal } from "@/lib/use-local-storage";
@@ -224,6 +225,8 @@ function AccountSettings({
           </button>
         </CardContent>
       </Card>
+
+      <ShareButton />
 
       <button
         onClick={async () => {

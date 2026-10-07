@@ -70,6 +70,21 @@ function buildTasks(data: IntakeFormData) {
   }
 
   tasks.push(
+    makeTask(
+      "compare-funeral-prices",
+      {
+        title: "Compare funeral prices before you agree",
+        description:
+          "Prices for the same funeral can differ by thousands of pounds. Get two or three quotes in writing and see our simple ways to save — you can change funeral director even after they've collected the body.",
+        category: "financial",
+        priority: "urgent",
+        link: "/help/save-money",
+      },
+      { legacy: false }
+    )
+  );
+
+  tasks.push(
     makeTask("register-death", {
       title: "Register the death",
       description: `You must register ${data.deceasedFirstName}'s death within 5 days in England, Wales, and Northern Ireland (8 days in Scotland). Visit your local register office.`,
@@ -311,6 +326,30 @@ function buildTasks(data: IntakeFormData) {
         priority: "future",
         link: "https://www.cruse.org.uk/get-support/",
         phone: "0808 808 1677",
+      },
+      { legacy: false }
+    ),
+    makeTask(
+      "family-far-away",
+      {
+        title: "Help family far away join the funeral",
+        description:
+          "Relatives abroad can watch live. Ask the venue about a webcast, or stream it yourselves on WhatsApp, Zoom or YouTube.",
+        category: "personal",
+        priority: "this-week",
+        link: "/help/streaming",
+      },
+      { legacy: false }
+    ),
+    makeTask(
+      "memorial-page",
+      {
+        title: "Set up a place for condolences and memories",
+        description:
+          "An online memorial or funeral notice lets people share messages and photos, find the funeral details, or give to a charity in their name.",
+        category: "personal",
+        priority: "future",
+        link: "/help/memorials",
       },
       { legacy: false }
     )
