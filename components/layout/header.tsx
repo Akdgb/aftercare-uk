@@ -1,138 +1,91 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Heart, LogIn, Menu, X } from "lucide-react";
-import { useState, useEffect } from "react";
+import { CircleHelp, ListChecks, UserRound, Users } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Logo } from "@/components/layout/logo";
 import { cn } from "@/lib/utils";
 
-const nav = [
-  { href: "/dashboard", label: "My Dashboard" },
-  { href: "/family", label: "Family" },
-  { href: "/resources", label: "Local Resources" },
-  { href: "/guidance", label: "Guidance" },
-  { href: "/financial-support", label: "Financial Support" },
-  { href: "/assistant", label: "AI Assistant" },
+// Four tabs, app-style: everything is reachable in one tap from anywhere.
+const TABS = [
+  { href: "/plan", label: "Plan", icon: ListChecks, match: ["/plan", "/intake"] },
+  {
+    href: "/help",
+    label: "Help",
+    icon: CircleHelp,
+    match: ["/help", "/guidance", "/financial-support", "/cost-estimator", "/resources", "/assistant"],
+  },
+  { href: "/family", label: "Family", icon: Users, match: ["/family"] },
+  { href: "/dashboard", label: "Account", icon: UserRound, match: ["/dashboard", "/auth", "/privacy"] },
 ];
 
 export function Header() {
   const pathname = usePathname();
-  const [open, setOpen] = useState(false);
-  const [email, setEmail] = useState<string | null>(null);
+  const [signedIn, setSignedIn] = useState(false);
 
   useEffect(() => {
-    // Check if signed in by hitting a lightweight endpoint
     fetch("/api/auth/me")
-      .then((r) => r.ok ? r.json() : null)
-      .then((d) => d?.email ? setEmail(d.email) : null)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => setSignedIn(Boolean(d?.email)))
       .catch(() => null);
   }, [pathname]);
 
-  const signOut = async () => {
-    await fetch("/api/auth/signout", { method: "POST" });
-    setEmail(null);
-    // Full reload on purpose: drops all in-memory data from the old session
-    // eslint-disable-next-line @next/next/no-location-assign-relative-destination
-    window.location.href = "/";
-  };
+  // The landing screen is a single full-screen start page with no navigation
+  if (pathname === "/") return null;
+
+  const active = (match: string[]) => match.some((m) => pathname === m || pathname.startsWith(m + "/"));
+  const tabs = TABS.map((t) => (t.label === "Account" && !signedIn ? { ...t, href: "/auth/signin" } : t));
 
   return (
-    <header className="print:hidden sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-stone-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          <Link href="/" className="flex items-center gap-2.5">
-            <div className="w-8 h-8 bg-slate-700 rounded-lg flex items-center justify-center">
-              <Heart className="h-4 w-4 text-white" strokeWidth={1.5} />
-            </div>
-            <span className="text-slate-800 font-semibold text-lg tracking-tight">AfterCare</span>
-          </Link>
-
-          <nav className="hidden md:flex items-center gap-1">
-            {nav.map((item) => (
+    <>
+      {/* Top bar */}
+      <header className="print:hidden sticky top-0 z-40 bg-stone-50/90 backdrop-blur-md border-b border-stone-200/70">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-6">
+          <Logo />
+          <nav className="hidden md:flex items-center gap-1 p-1 bg-stone-100 rounded-xl" aria-label="Main">
+            {tabs.map((t) => (
               <Link
-                key={item.href}
-                href={item.href}
+                key={t.label}
+                href={t.href}
                 className={cn(
-                  "px-3 py-2 text-sm rounded-md transition-colors",
-                  pathname.startsWith(item.href)
-                    ? "bg-stone-100 text-slate-800 font-medium"
-                    : "text-slate-500 hover:text-slate-800 hover:bg-stone-50"
+                  "flex items-center gap-2 px-4 py-1.5 text-sm rounded-lg transition-all",
+                  active(t.match) ? "bg-white text-ink-900 font-medium shadow-sm" : "text-ink-600 hover:text-ink-900"
                 )}
               >
-                {item.label}
+                <t.icon className="h-4 w-4" /> {t.label}
               </Link>
             ))}
           </nav>
-
-          <div className="hidden md:flex items-center gap-3">
-            {email ? (
-              <>
-                <span className="text-xs text-slate-400 max-w-[140px] truncate">{email}</span>
-                <button
-                  onClick={signOut}
-                  className="text-sm text-slate-500 hover:text-slate-800 px-3 py-2 rounded-lg hover:bg-stone-100 transition-colors"
-                >
-                  Sign out
-                </button>
-              </>
-            ) : (
-              <>
-                <Link
-                  href="/auth/signin"
-                  className="text-slate-600 text-sm font-medium px-3 py-2 rounded-lg hover:bg-stone-100 transition-colors flex items-center gap-1.5"
-                >
-                  <LogIn className="h-3.5 w-3.5" />
-                  Sign in
-                </Link>
-                <Link
-                  href="/intake"
-                  className="bg-slate-700 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-slate-800 transition-colors"
-                >
-                  Start Your Plan
-                </Link>
-              </>
-            )}
-          </div>
-
-          <button
-            onClick={() => setOpen(!open)}
-            className="md:hidden p-2 rounded-md text-slate-500 hover:bg-stone-100"
-          >
-            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </button>
         </div>
-      </div>
+      </header>
 
-      {open && (
-        <div className="md:hidden border-t border-stone-100 bg-white px-4 py-3 space-y-1">
-          {nav.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              onClick={() => setOpen(false)}
-              className={cn(
-                "block px-3 py-2.5 text-sm rounded-md transition-colors",
-                pathname === item.href
-                  ? "bg-stone-100 text-slate-800 font-medium"
-                  : "text-slate-600 hover:bg-stone-50"
-              )}
-            >
-              {item.label}
-            </Link>
-          ))}
-          <div className="pt-2 border-t border-stone-100">
-            {email ? (
-              <button onClick={signOut} className="block w-full text-left px-3 py-2.5 text-sm text-slate-600">
-                Sign out ({email})
-              </button>
-            ) : (
-              <Link href="/auth/signin" onClick={() => setOpen(false)}
-                className="block px-3 py-2.5 text-sm text-slate-600">
-                Sign in
+      {/* Bottom tab bar on phones */}
+      <nav
+        className="print:hidden md:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-md border-t border-stone-200 pb-[env(safe-area-inset-bottom)]"
+        aria-label="Main"
+      >
+        <div className="grid grid-cols-4">
+          {tabs.map((t) => {
+            const on = active(t.match);
+            return (
+              <Link
+                key={t.label}
+                href={t.href}
+                className={cn(
+                  "flex flex-col items-center gap-1 py-2 text-[11px] font-medium",
+                  on ? "text-ink-900" : "text-ink-400"
+                )}
+                aria-current={on ? "page" : undefined}
+              >
+                <span className={cn("px-4 py-1 rounded-full transition-colors", on && "bg-ink-100")}>
+                  <t.icon className="h-5 w-5" />
+                </span>
+                {t.label}
               </Link>
-            )}
-          </div>
+            );
+          })}
         </div>
-      )}
-    </header>
+      </nav>
+    </>
   );
 }

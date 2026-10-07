@@ -5,9 +5,9 @@ const text = (max: number) => z.string().trim().max(max);
 /** Server-side validation for intake data before it is stored in a saved plan. */
 const baseIntakeSchema = z.object({
   deceasedFirstName: text(100).min(1),
-  deceasedLastName: text(100).min(1),
+  deceasedLastName: text(100),
   dateOfDeath: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-  locationOfDeath: text(200).min(1),
+  locationOfDeath: text(200),
   currentLocation: z.enum(["hospital", "hospice", "care-home", "home", "funeral-director"]),
   relationship: text(60).min(1),
   postcode: text(10),

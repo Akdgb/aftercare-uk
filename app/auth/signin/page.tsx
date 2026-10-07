@@ -10,7 +10,7 @@ export default function SignInPage() {
     <Suspense
       fallback={
         <div className="min-h-[60vh] flex items-center justify-center">
-          <Loader2 className="h-6 w-6 animate-spin text-slate-400" />
+          <Loader2 className="h-6 w-6 animate-spin text-ink-400" />
         </div>
       }
     >
@@ -59,10 +59,10 @@ function SignInForm() {
       <div className="w-full max-w-sm">
         {/* Logo */}
         <div className="flex items-center gap-2.5 justify-center mb-8">
-          <div className="w-9 h-9 bg-slate-700 rounded-xl flex items-center justify-center">
+          <div className="w-9 h-9 bg-ink-700 rounded-xl flex items-center justify-center">
             <Heart className="h-5 w-5 text-white" strokeWidth={1.5} />
           </div>
-          <span className="text-slate-800 font-semibold text-xl">AfterCare</span>
+          <span className="text-ink-800 font-semibold text-xl">AfterCare</span>
         </div>
 
         <div className="bg-white rounded-2xl border border-stone-200 shadow-sm p-8">
@@ -71,24 +71,24 @@ function SignInForm() {
               <div className="w-12 h-12 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-4">
                 <CheckCircle2 className="h-6 w-6 text-emerald-600" />
               </div>
-              <h1 className="text-lg font-semibold text-slate-800 mb-2">Check your email</h1>
-              <p className="text-slate-500 text-sm leading-relaxed">
-                We sent a sign-in link to <strong className="text-slate-700">{email}</strong>.
+              <h1 className="text-lg font-semibold text-ink-800 mb-2">Check your email</h1>
+              <p className="text-ink-500 text-sm leading-relaxed">
+                We sent a sign-in link to <strong className="text-ink-700">{email}</strong>.
                 Click it to continue — you can close this tab. The link expires in 20 minutes.
               </p>
               <button
                 onClick={() => setState("idle")}
-                className="mt-5 text-sm text-slate-500 hover:text-slate-700"
+                className="mt-5 text-sm text-ink-500 hover:text-ink-700"
               >
                 Use a different email
               </button>
             </div>
           ) : (
             <>
-              <h1 className="text-xl font-semibold text-slate-800 mb-1 text-center">
+              <h1 className="text-xl font-semibold text-ink-800 mb-1 text-center">
                 {invited ? "You've been invited to a plan" : "Sign in to AfterCare"}
               </h1>
-              <p className="text-sm text-slate-500 text-center mb-6">
+              <p className="text-sm text-ink-500 text-center mb-6">
                 {invited
                   ? "Confirm your email address and we'll send you a link to open the family plan — no password needed."
                   : "Enter your email and we'll send you a sign-in link — no password needed. New here? This creates your account."}
@@ -106,14 +106,14 @@ function SignInForm() {
 
               <div className="space-y-3">
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-ink-400 pointer-events-none" />
                   <input
                     type="email"
                     placeholder="your@email.com"
                     value={email}
                     onChange={(e) => { setEmail(e.target.value); setErr(""); }}
                     onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
-                    className="w-full pl-9 pr-4 py-3 rounded-xl border border-stone-300 bg-white text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400"
+                    className="w-full pl-9 pr-4 py-3 rounded-xl border border-stone-300 bg-white text-sm text-ink-800 placeholder-ink-400 focus:outline-none focus:ring-2 focus:ring-ink-400"
                     autoFocus
                   />
                 </div>
@@ -124,9 +124,9 @@ function SignInForm() {
                 </Button>
               </div>
 
-              <p className="text-center text-xs text-slate-400 mt-5">
+              <p className="text-center text-xs text-ink-400 mt-5">
                 No account?{" "}
-                <Link href="/intake" className="text-slate-600 font-medium hover:underline">
+                <Link href="/intake" className="text-ink-600 font-medium hover:underline">
                   Start by creating a plan
                 </Link>
               </p>
