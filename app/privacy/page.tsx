@@ -129,8 +129,14 @@ export default function PrivacyPage() {
                 <li><strong>Neon Inc.</strong> (database hosting): stores your account and saved plans</li>
                 <li><strong>OpenAI LLC</strong> (AI assistant): messages sent to the AI are processed in the USA under EU/UK Standard Contractual Clauses</li>
                 <li><strong>Resend Inc.</strong> (email delivery): email addresses are processed to send sign-in links, family invitations, your plan link and reminders</li>
-                <li><strong>Vercel Inc.</strong> (website hosting): your requests are processed on Vercel servers</li>
+                <li><strong>Vercel Inc.</strong> (website hosting): your requests are processed on Vercel servers in London</li>
+                <li><strong>postcodes.io</strong> (postcode lookup): if you search for services near you, the postcode you type is sent to postcodes.io to find its location. Nothing else is sent.</li>
+                <li><strong>OpenStreetMap, through the Overpass API</strong> (local services): the approximate location of that postcode is used to find nearby register offices, funeral directors and crematoriums. No personal details are sent.</li>
               </ul>
+              <p>
+                We do not use analytics, advertising, tracking pixels or session recording tools. The website&apos;s fonts
+                are stored on our own hosting, so your browser does not contact Google or any other font service.
+              </p>
               <p><strong>We do not sell your data.</strong> We do not share your data with funeral directors, insurers, or any other commercial partners without your explicit consent.</p>
             </div>
           </section>
@@ -179,6 +185,21 @@ export default function PrivacyPage() {
             <h2 className="text-lg font-semibold text-ink-800 mb-3">8. Cookies</h2>
             <div className="prose text-sm text-ink-600">
               <p>AfterCare uses only technically necessary cookies and browser localStorage to maintain your session and save your plan state. We do not use advertising cookies or third-party tracking cookies.</p>
+            </div>
+          </section>
+
+          <section className="p-6 sm:p-8" id="children">
+            <h2 className="text-lg font-semibold text-ink-800 mb-3">Children</h2>
+            <div className="prose text-sm text-ink-600">
+              <p>
+                AfterCare is designed for adults dealing with the practical tasks after a death. You need to be 13 or
+                over to create an account, and we ask for your age before you sign in. If you are under 13, we do not
+                create an account or keep the email address you entered, and we point you to free support services
+                for young people, such as Childline and Child Bereavement UK.
+              </p>
+              <p>
+                If you think a child under 13 has given us their details, email us and we will delete them.
+              </p>
             </div>
           </section>
 

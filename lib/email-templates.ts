@@ -1,3 +1,4 @@
+import { SITE } from "@/lib/site";
 import { escapeHtml } from "@/lib/security";
 
 interface Email {
@@ -24,7 +25,7 @@ function layout(body: string, footerExtra = ""): string {
         <tr>
           <td style="background:#f5f5f4;border-top:1px solid #e7e5e4;padding:20px 36px;">
             <p style="margin:0;color:#a8a29e;font-size:12px;line-height:1.6;">
-              AfterCare UK: bereavement guidance for UK families.<br>
+              AfterCare UK: bereavement guidance for UK families. You are receiving this because you, or a family member, used AfterCare UK. Contact us at ${escapeHtml(SITE.contactEmail)}.<br>
               The information in this email is for guidance only and does not constitute legal or financial advice.
               ${footerExtra}
             </p>

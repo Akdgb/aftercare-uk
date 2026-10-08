@@ -54,8 +54,12 @@ function formatName(tags: Record<string, string>, fallbackType: string) {
 
 export async function POST(req: NextRequest) {
   try {
-    const { postcode } = await req.json();
-    if (!postcode) return NextResponse.json({ error: "Postcode required" }, { status: 400 });
+    const body = await req.json().catch(() => ({}));
+    const postcode = typeof body?.postcode === "string" ? body.postcode.trim() : "";
+    // UK postcodes only; anything else is rejected before it reaches a third party
+    if (!/^[A-Za-z]{1,2}\d[A-Za-z\d]?\s*\d[A-Za-z]{2}$/.test(postcode)) {
+      return NextResponse.json({ error: "Please enter a full UK postcode, like SE1 7EH." }, { status: 400 });
+    }
 
     // 1. Geocode the postcode
     const geoRes = await fetch(

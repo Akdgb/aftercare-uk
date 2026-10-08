@@ -5,6 +5,7 @@ import { ArrowLeft, ArrowRight, Check, Loader2 } from "lucide-react";
 import { FAITH_CHOICES, HOMES, LOCATIONS, MONEY, RELATIONSHIPS, type Choice } from "@/lib/intake-options";
 import { BURIAL_PLACES } from "@/lib/cultures";
 import { BackgroundPicker } from "@/components/plan/background-picker";
+import { AgeQuestion, ALLOWED_AGE_BANDS, useAgeBand } from "@/components/auth/age-question";
 import { cn } from "@/lib/utils";
 import { LOCAL_KEYS, writeLocal } from "@/lib/use-local-storage";
 import type { FaithOption, IntakeFormData } from "@/types";
@@ -68,6 +69,7 @@ function Intake({ draft }: { draft: Draft | null }) {
   const [data, setData] = useState<IntakeFormData>(draft?.data ?? initialData);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [ageBand, setAgeBand] = useAgeBand();
   // Only show a tick on answers the person actually chose (fields have defaults)
   const [answered, setAnswered] = useState<Set<keyof IntakeFormData>>(new Set(draft?.answered ?? []));
 
@@ -126,13 +128,13 @@ function Intake({ draft }: { draft: Draft | null }) {
     writeLocal(LOCAL_KEYS.intake, JSON.stringify(final));
     writeLocal(LOCAL_KEYS.statuses, null);
     writeLocal(LOCAL_KEYS.linkSentTo, null);
-    if (!isSignedIn && EMAIL_RE.test(final.email.trim())) {
+    if (!isSignedIn && EMAIL_RE.test(final.email.trim()) && ageBand && ALLOWED_AGE_BANDS.includes(ageBand)) {
       // Email a sign-in link; clicking it saves this plan to their account
       const email = final.email.trim();
       const res = await fetch("/api/auth/magic-link", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, next: "/dashboard" }),
+        body: JSON.stringify({ email, next: "/dashboard", ageBand }),
       }).catch(() => null);
       if (res?.ok) {
         writeLocal(LOCAL_KEYS.pendingSave, "1");
@@ -188,6 +190,12 @@ function Intake({ draft }: { draft: Draft | null }) {
   const submitEmail = () => {
     const email = data.email.trim();
     if (email && !EMAIL_RE.test(email)) return setError("Enter an email address in the correct format, like name@example.com");
+    if (email && !ageBand) return setError("Please tell us your age to continue.");
+    if (email && !ALLOWED_AGE_BANDS.includes(ageBand as never)) {
+      // Under 13: no account, so the email address is not kept
+      setData({ ...data, email: "" });
+      return go(1);
+    }
     go(1);
   };
 
@@ -271,7 +279,13 @@ function Intake({ draft }: { draft: Draft | null }) {
                 className={inputClass}
               />
             </Field>
-            <p className="text-xs text-ink-500 mt-2">There is no password. We will email you a link to save your plan. We never share your email address.</p>
+            {data.email.trim() && (
+              <div className="mt-4">
+                <AgeQuestion value={ageBand} onChange={(v) => { setAgeBand(v); setError(null); }} />
+              </div>
+            )}
+            <p className="text-xs text-ink-500 mt-2">There is no password. We will email you a link to save your plan. We never share your email address. See our{" "}
+              <a href="/privacy" target="_blank" className="underline">privacy policy</a>.</p>
             {error && <p className="text-sm text-rose-700 mt-3">{error}</p>}
             <button type="submit" className={primaryClass + " mt-6"} disabled={!data.email.trim()}>
               Continue <ArrowRight className="h-5 w-5" />

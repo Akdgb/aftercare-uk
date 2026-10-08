@@ -49,6 +49,8 @@ export const LOCAL_KEYS = {
   /** Answers in progress, so leaving the questions and coming back resumes them. */
   intakeDraft: "aftercare_intake_draft",
   statuses: "aftercare_task_statuses",
+  /** Answer to the neutral age question asked before creating an account. */
+  ageBand: "aftercare_age_band",
   /** Set when a signed-out user asks to save their local plan; the dashboard saves it after sign-in. */
   pendingSave: "aftercare_pending_save",
   /** Email a save link was sent to during the questions (shown on the plan until used). */

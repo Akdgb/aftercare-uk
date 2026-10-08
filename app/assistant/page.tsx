@@ -22,7 +22,7 @@ const SUGGESTED_QUESTIONS = [
   "What happens to a pension when someone dies?",
 ];
 
-const STARTER_CONTENT = `I am your AfterCare bereavement assistant. I can help you with questions about:\n\n- **Registering a death** and the documents you need\n- **Funeral options**: burial, cremation and costs\n- **Probate** and dealing with an estate\n- **Government support**: DWP benefits and Tell Us Once\n- **Council housing** and taking over a tenancy\n- **Pensions, banks and insurance**: who to tell\n- **Local services** near you\n\nPlease note: I give general guidance based on UK government information. Most of it applies to England and Wales, and rules can differ in Scotland and Northern Ireland. For legal or financial advice about your situation, please speak to a qualified professional.`;
+const STARTER_CONTENT = `I am an AI assistant, not a person. My answers are generated automatically and can be wrong, so please check important details with the official source. I can help you with questions about:\n\n- **Registering a death** and the documents you need\n- **Funeral options**: burial, cremation and costs\n- **Probate** and dealing with an estate\n- **Government support**: DWP benefits and Tell Us Once\n- **Council housing** and taking over a tenancy\n- **Pensions, banks and insurance**: who to tell\n- **Local services** near you\n\nPlease note: I give general guidance based on UK government information. Most of it applies to England and Wales, and rules can differ in Scotland and Northern Ireland. For legal or financial advice about your situation, please speak to a qualified professional.`;
 
 async function getAssistantResponse(messages: Message[]): Promise<{ content: string; sources: string[] }> {
   try {
@@ -312,7 +312,7 @@ export default function AssistantPage() {
             )}
           </div>
           <p className="text-xs text-ink-400 mt-2">
-            This is general guidance, not legal advice. For your own situation, speak to a qualified professional.
+            AI assistant: answers are generated automatically and can be wrong. Do not share personal details such as names, addresses or account numbers. This is general guidance, not legal advice.
           </p>
         </div>
       </div>

@@ -12,6 +12,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Please enter a valid email address." }, { status: 400 });
     }
 
+    // Accounts are for people aged 13 or over (see the privacy policy). The
+    // question is asked neutrally in the browser; this enforces the answer.
+    if (body.ageBand !== "13-17" && body.ageBand !== "18-plus") {
+      return NextResponse.json({ error: "Please tell us your age to continue." }, { status: 400 });
+    }
+
     if (await isRateLimited(email)) {
       return NextResponse.json(
         { error: "Too many sign-in links requested. Please wait a few minutes and check your inbox." },
