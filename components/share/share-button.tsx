@@ -4,7 +4,7 @@ import { Check, Share2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const SHARE_TEXT =
-  "AfterCare UK is a free step-by-step checklist for everything to do after someone dies — registering the death, funeral costs, money you can claim and who to tell.";
+  "AfterCare UK is a free step-by-step checklist for everything that needs doing after someone dies, including registering the death, funeral costs, money you can claim and who to tell.";
 
 /** Opens the phone's share sheet (WhatsApp, Messages…) or copies the link on desktop. */
 export function ShareButton({ className }: { className?: string }) {

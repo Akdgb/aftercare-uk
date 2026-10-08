@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
+import { SITE } from "@/lib/site";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy – AfterCare UK",
+  title: "Privacy policy",
   description: "How AfterCare UK collects, uses, and protects your personal data under UK GDPR.",
 };
 
@@ -31,7 +32,7 @@ export default function PrivacyPage() {
             <div className="prose text-sm text-ink-600">
               <p>AfterCare UK is a bereavement guidance platform operated as a sole trader / limited company based in England.</p>
               <p><strong>Data Controller:</strong> AfterCare UK</p>
-              <p><strong>Contact:</strong> <a href="mailto:privacy@aftercare-uk.co.uk" className="text-ink-700 underline">privacy@aftercare-uk.co.uk</a></p>
+              <p><strong>Contact:</strong> <a href={`mailto:${SITE.privacyEmail}`} className="text-ink-700 underline">{SITE.privacyEmail}</a></p>
               <p>We are required to register with the Information Commissioner&apos;s Office (ICO) as a data controller. Our ICO registration number will be listed here once obtained.</p>
             </div>
           </section>
@@ -43,12 +44,12 @@ export default function PrivacyPage() {
               <ul>
                 <li><strong>Your contact details:</strong> email address and postcode</li>
                 <li><strong>Your relationship</strong> to the deceased</li>
-                <li><strong>Plan preferences:</strong> funeral type, housing situation, financial support needs, and — only if you consent — faith/cultural requirements</li>
+                <li><strong>Plan preferences:</strong> funeral type, housing situation, financial support needs and, only if you consent, faith and cultural background</li>
                 <li><strong>Usage data:</strong> which tasks you have completed, when you last accessed your plan</li>
                 <li><strong>Family workspace:</strong> the names and email addresses of people you invite to a plan, who has taken on which task, and notes left on tasks</li>
                 <li><strong>AI chat messages:</strong> questions you ask the AI assistant</li>
               </ul>
-              <p>We also receive information about the deceased person. Under UK law, GDPR does not apply to deceased individuals — however, we treat all bereavement data with the same care and confidentiality as personal data.</p>
+              <p>We also receive information about the deceased person. Under UK law, GDPR does not apply to people who have died. However, we treat all bereavement data with the same care and confidentiality as personal data.</p>
             </div>
           </section>
 
@@ -67,7 +68,7 @@ export default function PrivacyPage() {
                     ["Generate your personalised bereavement plan", "Legitimate interests (necessary to provide the service you requested)"],
                     ["Save your plan and allow you to return to it", "Legitimate interests / Contract"],
                     ["Send you your plan link by email", "Legitimate interests / Contract"],
-                    ["Use your faith answer to add faith-specific steps (optional)", "Explicit consent — UK GDPR Article 9(2)(a)"],
+                    ["Use your faith and cultural background answers to add tailored steps (optional)", "Explicit consent (UK GDPR Article 9(2)(a))"],
                     ["Let invited family members see and update a shared plan", "Legitimate interests (you asked us to share it)"],
                     ["Send occasional task reminder emails (at most weekly; turn off any time)", "Legitimate interests"],
                     ["Improve the service and fix errors", "Legitimate interests"],
@@ -84,21 +85,23 @@ export default function PrivacyPage() {
           </section>
 
           <section className="p-6 sm:p-8" id="special-category">
-            <h2 className="text-lg font-semibold text-ink-800 mb-3">Faith and belief (special category data)</h2>
+            <h2 className="text-lg font-semibold text-ink-800 mb-3">Faith and cultural background (special category data)</h2>
             <div className="prose text-sm text-ink-600">
               <p>
-                The question about faith is optional. Some traditions have specific requirements — for example,
-                burial within 24 hours — so the answer lets us add the right steps to your plan.
+                The questions about faith and cultural background are optional. Some traditions affect what needs to
+                happen, for example burial within 24 hours, a nine night or burial in another country, so your answers
+                let us add the right steps to your plan.
               </p>
               <p>
-                Religious and philosophical beliefs are &ldquo;special category&rdquo; data under UK GDPR. We only
-                keep your answer if you tick the consent box (UK GDPR Article 9(2)(a), explicit consent). If you
-                choose &ldquo;Prefer not to say&rdquo; or don&apos;t tick the box, we don&apos;t store it.
+                Religious beliefs and racial or ethnic origin are &ldquo;special category&rdquo; data under UK GDPR. We
+                only keep these answers if you tick the consent box (UK GDPR Article 9(2)(a), explicit consent). If you
+                skip the questions or do not tick the box, we do not store them. Where the burial will take place is not
+                special category data and is kept with the rest of the plan.
               </p>
               <p>
-                You can withdraw consent at any time with &ldquo;Remove faith details from this plan&rdquo; on your
-                saved plan, by deleting the plan, or by emailing us. The answer is visible only to you and family
-                members you invite to the plan.
+                You can withdraw consent at any time by choosing &ldquo;Remove faith and background details from this
+                plan&rdquo; on your saved plan, by changing your answers, by deleting the plan or by emailing us. The
+                answers are visible only to you and family members you invite to the plan.
               </p>
             </div>
           </section>
@@ -108,13 +111,13 @@ export default function PrivacyPage() {
             <div className="prose text-sm text-ink-600">
               <ul>
                 <li><strong>Saved plans:</strong> 3 years from the date of creation, then automatically deleted</li>
-                <li><strong>Your account:</strong> until you delete it from your dashboard (Account tab) — this removes all plans you own</li>
+                <li><strong>Your account:</strong> until you delete it from your dashboard (Account tab). This removes all plans you own.</li>
                 <li><strong>Family members and task notes:</strong> deleted with the plan, or when the owner removes that person</li>
                 <li><strong>Sign-in links:</strong> expire after 20 minutes and are deleted after 1 day</li>
                 <li><strong>AI chat messages:</strong> not stored by AfterCare; they are sent to OpenAI to generate a reply</li>
                 <li><strong>Server logs:</strong> 90 days</li>
               </ul>
-              <p>You can request deletion of your data at any time — see section 7.</p>
+              <p>You can request deletion of your data at any time. See section 7.</p>
             </div>
           </section>
 
@@ -123,11 +126,17 @@ export default function PrivacyPage() {
             <div className="prose text-sm text-ink-600">
               <p>We use the following third-party processors. All are contractually required to process your data only on our instructions and in compliance with UK GDPR:</p>
               <ul>
-                <li><strong>Neon Inc.</strong> (database hosting) — stores your account and saved plans</li>
-                <li><strong>OpenAI LLC</strong> (AI assistant) — messages sent to the AI are processed in the USA under EU/UK Standard Contractual Clauses</li>
-                <li><strong>Resend Inc.</strong> (email delivery) — email addresses are processed to send sign-in links, family invitations, your plan link and reminders</li>
-                <li><strong>Vercel Inc.</strong> (website hosting) — your requests are processed on Vercel servers</li>
+                <li><strong>Neon Inc.</strong> (database hosting): stores your account and saved plans</li>
+                <li><strong>OpenAI LLC</strong> (AI assistant): messages sent to the AI are processed in the USA under EU/UK Standard Contractual Clauses</li>
+                <li><strong>Resend Inc.</strong> (email delivery): email addresses are processed to send sign-in links, family invitations, your plan link and reminders</li>
+                <li><strong>Vercel Inc.</strong> (website hosting): your requests are processed on Vercel servers in London</li>
+                <li><strong>postcodes.io</strong> (postcode lookup): if you search for services near you, the postcode you type is sent to postcodes.io to find its location. Nothing else is sent.</li>
+                <li><strong>OpenStreetMap, through the Overpass API</strong> (local services): the approximate location of that postcode is used to find nearby register offices, funeral directors and crematoriums. No personal details are sent.</li>
               </ul>
+              <p>
+                We do not use analytics, advertising, tracking pixels or session recording tools. The website&apos;s fonts
+                are stored on our own hosting, so your browser does not contact Google or any other font service.
+              </p>
               <p><strong>We do not sell your data.</strong> We do not share your data with funeral directors, insurers, or any other commercial partners without your explicit consent.</p>
             </div>
           </section>
@@ -151,7 +160,7 @@ export default function PrivacyPage() {
               <p>Under UK GDPR you have the following rights:</p>
               <ul>
                 <li><strong>Right of access:</strong> request a copy of the data we hold about you</li>
-                <li><strong>Right to erasure:</strong> delete individual plans, or your whole account, yourself from the dashboard — or ask us to</li>
+                <li><strong>Right to erasure:</strong> delete individual plans, or your whole account, yourself from the Account page, or ask us to do it</li>
                 <li><strong>Right to rectification:</strong> correct inaccurate data</li>
                 <li><strong>Right to portability:</strong> receive your data in a machine-readable format</li>
                 <li><strong>Right to object:</strong> object to processing based on legitimate interests</li>
@@ -159,8 +168,8 @@ export default function PrivacyPage() {
               </ul>
               <p>
                 To exercise any of these rights, email{" "}
-                <a href="mailto:privacy@aftercare-uk.co.uk" className="text-ink-700 underline">
-                  privacy@aftercare-uk.co.uk
+                <a href={`mailto:${SITE.privacyEmail}`} className="text-ink-700 underline">
+                  {SITE.privacyEmail}
                 </a>. We will respond within 30 days.
               </p>
               <p>
@@ -179,12 +188,27 @@ export default function PrivacyPage() {
             </div>
           </section>
 
+          <section className="p-6 sm:p-8" id="children">
+            <h2 className="text-lg font-semibold text-ink-800 mb-3">Children</h2>
+            <div className="prose text-sm text-ink-600">
+              <p>
+                AfterCare is designed for adults dealing with the practical tasks after a death. You need to be 13 or
+                over to create an account, and we ask for your age before you sign in. If you are under 13, we do not
+                create an account or keep the email address you entered, and we point you to free support services
+                for young people, such as Childline and Child Bereavement UK.
+              </p>
+              <p>
+                If you think a child under 13 has given us their details, email us and we will delete them.
+              </p>
+            </div>
+          </section>
+
           <section className="p-6 sm:p-8" id="terms">
             <h2 className="text-lg font-semibold text-ink-800 mb-3">9. Terms of Use</h2>
             <div className="prose text-sm text-ink-600">
               <p>
                 AfterCare provides guidance information only. Nothing on this platform constitutes legal, financial, or medical advice.
-                You should always consult a qualified professional — such as a solicitor, financial adviser, or GP — for advice specific to your situation.
+                You should always consult a qualified professional, such as a solicitor, financial adviser or GP, for advice specific to your situation.
               </p>
               <p>
                 The platform is provided free of charge for personal, non-commercial use. We reserve the right to withdraw or modify any feature at any time.
@@ -201,8 +225,8 @@ export default function PrivacyPage() {
               <p>
                 We are committed to making AfterCare accessible to all users, including those with disabilities. If you experience any accessibility issues,
                 please contact us at{" "}
-                <a href="mailto:hello@aftercare-uk.co.uk" className="text-ink-700 underline">
-                  hello@aftercare-uk.co.uk
+                <a href={`mailto:${SITE.contactEmail}`} className="text-ink-700 underline">
+                  {SITE.contactEmail}
                 </a>{" "}
                 and we will do our best to help.
               </p>

@@ -14,7 +14,7 @@ import {
   PoundSterling,
   Printer,
   Scale,
-  Sparkles,
+  Heart,
   User,
   Zap,
 } from "lucide-react";
@@ -35,10 +35,10 @@ const CATEGORY_META: Record<ActionPlanTask["category"], { label: string; icon: R
 
 // Stages read like GOV.UK's "step by step" guides: when, and why
 const STAGES: { priority: ActionPlanTask["priority"]; title: string; subtitle: string }[] = [
-  { priority: "urgent", title: "First few days", subtitle: "Things with legal deadlines, or that can't wait" },
+  { priority: "urgent", title: "First few days", subtitle: "Things with legal deadlines, or that cannot wait" },
   { priority: "this-week", title: "This week", subtitle: "Tell the organisations that need to know" },
   { priority: "this-month", title: "This month", subtitle: "Money, property and the estate" },
-  { priority: "future", title: "When you're ready", subtitle: "No rush — come back to these later" },
+  { priority: "future", title: "When you're ready", subtitle: "There is no rush. Come back to these later." },
 ];
 
 type View = "todo" | "all" | "done";
@@ -261,11 +261,11 @@ export function PlanView({
               </section>
             ) : (
               <section className="print:hidden rounded-2xl bg-emerald-50 border border-emerald-200 p-6 sm:p-7 text-center">
-                <Sparkles className="h-8 w-8 text-emerald-600 mx-auto mb-3" />
+                <Heart className="h-8 w-8 text-emerald-600 mx-auto mb-3" />
                 <h2 className="text-xl font-semibold text-emerald-900">Everything on this plan is done</h2>
                 <p className="text-emerald-800 mt-2 max-w-md mx-auto">
-                  That&apos;s a huge amount to have worked through. Please look after yourself — support is there if
-                  you need it.
+                  You have worked through a great deal. Please look after yourself, and remember that support is
+                  available if you need it.
                 </p>
               </section>
             )}
@@ -418,12 +418,12 @@ function sortByStage<T extends ActionPlanTask>(tasks: T[]): T[] {
 
 function encouragement(done: number, total: number): string {
   if (total === 0) return "";
-  if (done === 0) return "There's a lot here, but you don't have to do it all at once. Start with the first step below.";
+  if (done === 0) return "There is a lot here, but you do not have to do it all at once. Start with the first step below.";
   if (done === total) return "Every task is done. Take care of yourself.";
   const pct = done / total;
   if (pct < 0.34) return "You've made a start. One step at a time.";
   if (pct < 0.75) return "You're making real progress. The hardest deadlines are usually the first few.";
-  return "Nearly there — just a few things left.";
+  return "Nearly there. Only a few tasks are left.";
 }
 
 function ProgressRing({ done, total }: { done: number; total: number }) {

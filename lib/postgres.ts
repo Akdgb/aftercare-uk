@@ -1,7 +1,7 @@
 import postgres from "postgres";
 
 // One shared connection pool per server instance. Kept on globalThis so
-// Next.js hot reloads in development don't open a new pool on every edit.
+// Next.js hot reloads in development do not open a new pool on every edit.
 const globalForDb = globalThis as unknown as { __aftercareDb?: postgres.Sql };
 
 /**

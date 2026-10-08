@@ -3,7 +3,9 @@ import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft, Check, Loader2 } from "lucide-react";
-import { FAITHS, HOMES, LOCATIONS, MONEY, RELATIONSHIPS, type Choice } from "@/lib/intake-options";
+import { FAITH_CHOICES, HOMES, LOCATIONS, MONEY, RELATIONSHIPS, type Choice } from "@/lib/intake-options";
+import { BURIAL_PLACES } from "@/lib/cultures";
+import { BackgroundPicker } from "@/components/plan/background-picker";
 import { getFaiths } from "@/lib/faith";
 import { LOCAL_KEYS, useLocalStorage, writeLocal } from "@/lib/use-local-storage";
 import { cn } from "@/lib/utils";
@@ -46,7 +48,7 @@ function EditAnswers() {
         if (plan.role !== "owner") setRemoteError("Only the person who created this plan can change its answers.");
         else setRemote(plan.intake_data);
       })
-      .catch(() => setRemoteError("We couldn't load this plan."));
+      .catch(() => setRemoteError("We could not load this plan."));
   }, [isLocal, planParam]);
 
   let stored: IntakeFormData | null = remote;
@@ -81,28 +83,34 @@ function EditAnswers() {
     );
   }
 
-  const faiths = getFaiths(data);
+  // "African / Caribbean traditions" was replaced by the specific background question
+  const hadLegacyTradition = getFaiths(data).includes("african-caribbean");
+  const faiths: FaithOption[] = getFaiths(data).filter((f) => f !== "african-caribbean");
+  const backgrounds = data.backgrounds ?? [];
+  const sensitive = faiths.length > 0 || backgrounds.length > 0 || Boolean(data.backgroundOther?.trim());
   const set = (patch: Partial<IntakeFormData>) => {
     setData({ ...data, ...patch });
     setError(null);
   };
   const toggleFaith = (f: FaithOption) => {
     const next = faiths.includes(f) ? faiths.filter((x) => x !== f) : [...faiths, f];
-    // Changing faith answers needs fresh consent
-    set({ faiths: next, faith: next[0] ?? "prefer-not-to-say", faithConsent: next.length ? data.faithConsent : false });
+    // Changing these answers needs fresh consent
+    set({ faiths: next, faith: next[0] ?? "prefer-not-to-say", faithConsent: false });
   };
 
   const save = async () => {
     if (!data.deceasedFirstName.trim()) return setError("Please enter their first name.");
     if (!data.dateOfDeath) return setError("Please enter the date they died.");
-    if (faiths.length > 0 && !data.faithConsent) {
-      return setError("Please tick the consent box for faith or cultural traditions, or untick them.");
+    if (sensitive && !data.faithConsent) {
+      return setError("Please tick the box to agree to us using your faith and background answers, or remove them.");
     }
     const final: IntakeFormData = {
       ...data,
       faiths,
       faith: faiths[0] ?? (data.faith === "none" ? "none" : "prefer-not-to-say"),
-      faithConsent: faiths.length > 0 && Boolean(data.faithConsent),
+      backgrounds: sensitive ? backgrounds : [],
+      backgroundOther: sensitive ? data.backgroundOther?.trim() || undefined : undefined,
+      faithConsent: sensitive && Boolean(data.faithConsent),
     };
     setSaving(true);
     if (isLocal) {
@@ -118,7 +126,7 @@ function EditAnswers() {
     if (res?.ok) router.push(backHref);
     else {
       setSaving(false);
-      setError("We couldn't save your changes. Please try again.");
+      setError("We could not save your changes. Please try again.");
     }
   };
 
@@ -162,9 +170,9 @@ function EditAnswers() {
         <Pills options={MONEY} value={data.needsFinancialHelp} onChange={(v) => set({ needsFinancialHelp: v })} />
       </Section>
 
-      <Section title="Faith or cultural traditions" hint="Choose all that apply, or none.">
+      <Section title="Faith or beliefs" hint="Choose all that apply, or none.">
         <div className="flex flex-wrap gap-2">
-          {FAITHS.filter((f) => f.value !== "none" && f.value !== "prefer-not-to-say").map((f) => {
+          {FAITH_CHOICES.map((f) => {
             const on = faiths.includes(f.value);
             return (
               <button
@@ -183,20 +191,60 @@ function EditAnswers() {
             );
           })}
         </div>
-        {faiths.length > 0 && (
-          <label className="mt-3 flex items-start gap-3 bg-stone-50 border border-stone-200 rounded-xl p-3 cursor-pointer">
-            <input
-              type="checkbox"
-              className="mt-0.5 h-5 w-5 shrink-0"
-              checked={Boolean(data.faithConsent)}
-              onChange={(e) => set({ faithConsent: e.target.checked })}
-            />
-            <span className="text-sm text-ink-700">
-              I agree to AfterCare using this to tailor the plan. Only seen by me and family I invite.
-            </span>
-          </label>
-        )}
       </Section>
+
+      <Section title="Cultural background" hint="Choose any that apply. We add the customs they usually involve.">
+        {hadLegacyTradition && (
+          <p className="text-sm text-ink-700 bg-amber-50 border border-amber-200 rounded-xl p-3 mb-3">
+            You previously chose &ldquo;African or Caribbean traditions&rdquo;. Please choose the specific background
+            below so the plan can include the right customs.
+          </p>
+        )}
+        <BackgroundPicker
+          value={backgrounds}
+          onChange={(next) => set({ backgrounds: next, faithConsent: false })}
+          other={data.backgroundOther ?? ""}
+          onOtherChange={(text) => set({ backgroundOther: text, faithConsent: false })}
+        />
+      </Section>
+
+      <Section title="Where they will be buried or cremated">
+        <div className="flex flex-wrap gap-2" role="radiogroup">
+          {BURIAL_PLACES.map((p) => {
+            const on = data.burialPlace === p.value;
+            return (
+              <button
+                key={p.value}
+                type="button"
+                role="radio"
+                aria-checked={on}
+                onClick={() => set({ burialPlace: on ? undefined : p.value })}
+                className={cn(
+                  "px-3.5 py-2 rounded-full border text-sm font-medium transition-colors text-left",
+                  on ? "bg-ink-700 border-ink-700 text-white" : "bg-white border-stone-300 text-ink-800 hover:border-ink-300"
+                )}
+              >
+                {p.label}
+              </button>
+            );
+          })}
+        </div>
+      </Section>
+
+      {sensitive && (
+        <label className="mt-6 flex items-start gap-3 bg-white border border-stone-200 rounded-2xl p-4 cursor-pointer">
+          <input
+            type="checkbox"
+            className="mt-0.5 h-5 w-5 shrink-0"
+            checked={Boolean(data.faithConsent)}
+            onChange={(e) => set({ faithConsent: e.target.checked })}
+          />
+          <span className="text-sm text-ink-700">
+            I agree to AfterCare using my answers about faith and cultural background to tailor the plan. Only I and
+            family members I invite can see them.
+          </span>
+        </label>
+      )}
 
       {/* Sticky save bar sits above the phone tab bar */}
       <div className="fixed inset-x-0 bottom-[4.5rem] md:bottom-0 z-30 bg-stone-50/95 backdrop-blur border-t border-stone-200">

@@ -13,60 +13,68 @@ export const articles: Record<string, Article> = {
     title: "What happens after someone dies?",
     category: "Getting started",
     readTime: 5,
-    lastUpdated: "January 2025",
+    lastUpdated: "October 2026",
     content: `
+This guide is mainly for England and Wales. Some steps are different in Scotland and Northern Ireland, and we point these out where they matter.
+
 ## The first hours
 
-When a person dies, a doctor must confirm the death and issue a Medical Certificate of Cause of Death (MCCD). This is the document you will need to register the death.
+When a person dies, a doctor or nurse needs to confirm the death.
 
-If the death was unexpected, the coroner may need to be involved before the MCCD is issued. The coroner's office will contact you if this is the case.
+**If the death happened at home**, call the person's GP or, outside surgery hours, call 111. If the death was sudden or unexpected, call 999.
 
-**If the death happened at home**, call a GP or, if outside surgery hours, call 111. If emergency services were involved, they will arrange for a doctor to attend.
+**If the death happened in hospital or a hospice**, the staff will explain what happens next.
 
-**If the death happened in hospital**, the ward staff will guide you through the next steps and tell you where to collect the MCCD.
+## The medical certificate
+
+Since 9 September 2024 in England and Wales, a medical examiner reviews the cause of death. The doctor's Medical Certificate of Cause of Death (MCCD) is then sent to the register office electronically. You do not need to collect it.
+
+The register office or the medical examiner's office will contact you when the certificate is ready. You can then book an appointment to register the death.
+
+If the death was unexpected or the cause is not clear, the doctor may refer it to the coroner. The coroner's office will contact you and the register office will tell you when you can register.
+
+In Scotland and Northern Ireland the process is slightly different, but the doctor's certificate is still sent to the registrar or you will be told what to do.
 
 ## What needs to happen in the first few days
 
-### 1. Collect the MCCD
+### 1. Contact a funeral director
 
-Ask the doctor, hospital, or hospice for the Medical Certificate of Cause of Death. Without this, you cannot register the death.
+A funeral director can bring the person who died into their care and look after them until the funeral. You do not have to use the first funeral director you contact. Every funeral director has to show a Standardised Price List, so you can compare prices. Ask for a written, itemised quote.
 
-### 2. Contact a funeral director
+### 2. Register the death
 
-A funeral director can collect the deceased and look after them until the funeral. You are under no obligation to use the first director you contact — get quotes and ask for an itemised price list.
+In England, Wales and Northern Ireland, you need to register the death within **5 days**. In England and Wales this is usually counted from when the register office receives the medical certificate. In Scotland it is within **8 days**.
 
-### 3. Register the death
+The registrar will give you:
+- A death certificate (you can buy extra certified copies)
+- A Certificate for Burial or Cremation (the 'green form'), unless a coroner is involved
+- A Tell Us Once reference number, where the service is available
 
-You must register the death within **5 days** in England, Wales, and Northern Ireland (8 days in Scotland). Take the MCCD to your local register office and book an appointment. The registrar will give you:
-- A death certificate
-- A Certificate for Burial or Cremation (the 'green form')
-- A form for the DWP (BD8)
+### 3. Use Tell Us Once
 
-### 4. Use Tell Us Once
-
-After registering, use the government's Tell Us Once service to notify HMRC, DWP, DVLA, and your local council in a single step.
+In England, Scotland and Wales, Tell Us Once lets you report the death to many government organisations at the same time, including HMRC, DWP, DVLA, the Passport Office and the local council. It is not available in Northern Ireland.
 
 ## What to do in the first week
 
-- Obtain multiple copies of the death certificate (you will need 5–10)
-- Notify close family and friends
-- Secure the deceased's property
-- Check for a will
-- Begin planning the funeral
+- Buy enough certified copies of the death certificate (many families need 5 to 10)
+- Tell close family and friends
+- Make the person's home and property secure
+- Check whether there is a will
+- Start planning the funeral
 
 ## What to do in the coming weeks
 
-- Notify banks, pension providers, and insurance companies
-- Apply for Bereavement Support Payment if you were a spouse or civil partner
-- Apply for Funeral Expenses Payment if you need financial help
-- Begin the probate process if required
-- Notify utilities, landlord or mortgage provider
+- Tell banks, pension providers and insurance companies
+- Check whether you may be able to get Bereavement Support Payment if you were married, in a civil partnership or living together with children
+- Check whether you may be able to get a Funeral Expenses Payment if you need help with funeral costs
+- Find out whether probate is needed (called confirmation in Scotland)
+- Tell utility companies, the landlord or the mortgage provider
 
 ## Getting support
 
-Bereavement is one of the hardest experiences a person can face. You do not need to manage everything at once. AfterCare's personalised plan will help you prioritise what matters most.
+Losing someone is one of the hardest things a person can go through. You do not need to do everything at once. AfterCare's personalised plan can help you decide what to do first.
 
-**Source:** GOV.UK — What to do after someone dies
+**Source:** GOV.UK: What to do after someone dies
     `.trim(),
   },
 
@@ -75,55 +83,65 @@ Bereavement is one of the hardest experiences a person can face. You do not need
     title: "Registering a death",
     category: "Legal",
     readTime: 4,
-    lastUpdated: "January 2025",
+    lastUpdated: "October 2026",
     content: `
-## When must you register?
+## When do you need to register?
 
-You must register a death within **5 days** in England, Wales, and Northern Ireland, and within **8 days** in Scotland.
+- **England and Wales:** within **5 days**, usually counted from when the register office receives the medical certificate
+- **Northern Ireland:** within **5 days**
+- **Scotland:** within **8 days**
+
+If a coroner is involved, the register office will tell you when you can register.
+
+## The medical certificate
+
+Since 9 September 2024 in England and Wales, a medical examiner reviews the cause of death and the Medical Certificate of Cause of Death (MCCD) is sent to the register office electronically. You do not need to collect it or take it with you.
+
+Wait for the register office or the medical examiner's office to contact you, then book your appointment.
 
 ## Who can register?
 
-In order of preference:
+Usually, in this order:
 1. A relative who was present at the death
-2. A relative living in the area
-3. A relative who has taken responsibility for the arrangements
-4. Any other relative
-5. A person present at the death
-6. The occupier of the premises where the death occurred
-7. The person responsible for arranging the funeral
+2. A relative who was present during the last illness
+3. A relative who lives in the area where the death happened
+4. Someone who was present at the death
+5. The person in charge of the building where the death happened
+6. The person arranging the funeral (not the funeral director)
 
 ## Where to register
 
-You must register at the register office in the district where the death took place. You can find your nearest register office on GOV.UK.
+In England and Wales you can register at any register office. Registering in the area where the death happened is quickest, because the documents can be issued straight away.
 
-Most register offices require an appointment. Book as soon as possible, as appointments can fill up quickly.
+Most register offices need an appointment. Book as soon as you are contacted, as appointments can fill up quickly.
 
-## What you need to bring
+## What to take with you
 
-**Essential:**
-- The Medical Certificate of Cause of Death (issued by the doctor or hospital)
-
-**Also bring if available:**
-- The deceased's NHS medical card
-- The deceased's birth certificate
-- The deceased's marriage or civil partnership certificate (if applicable)
+If you have them, it helps to bring:
+- The person's NHS number or medical card
+- Their birth certificate
+- Their marriage or civil partnership certificate (if applicable)
+- Proof of address, such as a utility bill
 
 ## What you will receive
 
-- A **death certificate** — this is the official record. Order at least 5–10 certified copies at £12.50 each (England and Wales)
-- A **Certificate for Burial or Cremation** (the 'green form') — give this to the funeral director
-- A **BD8 form** — for notifying the DWP about pension and benefits
+- A **death certificate**: this is the official record. Certified copies cost £12.50 each in England and Wales when you buy them at registration (fees may change from 9 November 2026). Many families need 5 to 10 copies.
+- A **Certificate for Burial or Cremation** (the 'green form'): give this to the funeral director
+- A **Tell Us Once reference number** in England, Scotland and Wales
+- A **BD8 form**: you may get one if you cannot use Tell Us Once. It is used to tell the DWP about the death.
 
-## Informing others after registration
+## Telling others after registration
 
-After registration, use the **Tell Us Once** service to notify:
+In England, Scotland and Wales, use **Tell Us Once** to tell organisations such as:
 - HMRC
 - DWP
 - DVLA
-- Passport Office
-- Your local council
+- HM Passport Office
+- The local council
 
-**Source:** GOV.UK — Register a death
+In Northern Ireland, Tell Us Once is not available. Contact each organisation yourself. The nidirect website explains who to tell.
+
+**Source:** GOV.UK: Register a death; nidirect; mygov.scot
     `.trim(),
   },
 
@@ -132,60 +150,69 @@ After registration, use the **Tell Us Once** service to notify:
     title: "Probate explained",
     category: "Legal",
     readTime: 7,
-    lastUpdated: "January 2025",
+    lastUpdated: "October 2026",
     content: `
+This guide is for England and Wales. In Scotland, the equivalent process is called **confirmation**. Northern Ireland has its own probate office and rules.
+
 ## What is probate?
 
-Probate is the legal process that gives someone the authority to deal with the assets of a person who has died. In England and Wales, this is called a **Grant of Probate** (if there is a will) or **Letters of Administration** (if there is no will).
+Probate is the legal right to deal with the money, property and possessions (the estate) of a person who has died. In England and Wales you apply for a **Grant of Probate** if there is a will, or **Letters of Administration** if there is no will.
 
 ## When is probate needed?
 
 You usually need probate if:
-- The deceased owned property in their sole name
-- The estate is worth more than £10,000 (most banks require it)
-- The deceased held stocks and shares in their sole name
-- There are significant assets that need to be transferred
+- The person owned property or land in their sole name
+- A bank or other organisation asks for it before releasing money
+- The person held shares or investments in their sole name
+
+Each bank sets its own limit for when it needs to see probate. This is often between £5,000 and £50,000. Ask each organisation what it needs.
 
 You may **not** need probate if:
-- The estate is very small (under £5,000–£10,000, depending on the institution)
-- Assets are jointly held (e.g., a joint bank account) — these pass automatically to the survivor
-- Assets are held in trust
+- The estate is small and each organisation agrees to release the money without it
+- Everything was jointly owned. Jointly owned accounts usually pass to the surviving owner. Check with the bank.
+- Assets are held in a trust
 
 ## How long does probate take?
 
-- **Application to Grant:** Typically 12–20 weeks from submission to HMRC and the Probate Registry
-- **Full estate administration:** 6–18 months for a straightforward estate; longer if property is involved or if there are disputes
+- **Getting the grant:** this can take several months. Check GOV.UK for current processing times.
+- **Dealing with the whole estate:** often 6 to 18 months for a straightforward estate, and longer if property needs to be sold or there are disputes
 
 ## How to apply
 
-You can apply online through GOV.UK or through a solicitor.
+You can apply online through GOV.UK, by post, or through a solicitor.
 
 **Steps:**
-1. Gather all assets information and value the estate
-2. Complete Inheritance Tax forms (even if no tax is owed)
-3. Submit your probate application online or by post
-4. Pay the probate fee (£273 for estates over £5,000)
-5. Receive the Grant of Probate
-6. Use the grant to access and distribute assets
+1. Find out what the estate is worth, including money, property and debts
+2. Check whether you need to send Inheritance Tax forms. Since January 2022 most estates with no tax to pay ("excepted estates") do not need to send them.
+3. Apply for probate online or by post
+4. Pay the probate fee: **£526** for estates over £5,000 (since 13 July 2026). There is no fee if the estate is £5,000 or less. Extra copies of the grant cost £2 each.
+5. Receive the grant
+6. Use the grant to collect money and property, pay debts, and share out the estate
 
 ## Do I need a solicitor?
 
-A solicitor is not always required, but may be worth engaging if:
-- The estate is complex
+You do not always need a solicitor, but it may help if:
+- The estate is complicated
 - There is no will
 - There are disputes between beneficiaries
-- The estate is large and Inheritance Tax is payable
-- There are overseas assets
+- Inheritance Tax needs to be paid
+- There are assets abroad
 
-Solicitor fees are typically 1–3% of the estate value.
+Solicitor fees vary. Ask for a fixed quote.
 
 ## Inheritance Tax
 
-Inheritance Tax is payable on estates worth more than £325,000 (the 'nil-rate band'). The standard rate is 40% on the amount above the threshold.
+Inheritance Tax is usually only paid if the estate is worth more than the **nil-rate band of £325,000**. The standard rate is 40% on the amount above the threshold.
 
-Spouses and civil partners inherit tax-free. Unused nil-rate band can be transferred to a surviving spouse, potentially doubling the threshold to £650,000.
+- A further **residence nil-rate band** of up to £175,000 may apply when a home passes to children or grandchildren.
+- Gifts to a husband, wife or civil partner are usually free of Inheritance Tax.
+- Any unused allowance can usually be passed to a surviving spouse or civil partner, so a couple may be able to pass on up to **£1 million** without Inheritance Tax.
+- Both allowances are frozen until April 2031.
+- From 6 April 2027, most unused pension funds will count towards the estate for Inheritance Tax.
 
-**Source:** GOV.UK — Applying for probate; HMRC — Inheritance Tax
+This is general information, not tax advice. Check GOV.UK or speak to a professional about your situation.
+
+**Source:** GOV.UK: Applying for probate; HMRC: Inheritance Tax
     `.trim(),
   },
 
@@ -194,57 +221,59 @@ Spouses and civil partners inherit tax-free. Unused nil-rate band can be transfe
     title: "Funeral costs explained",
     category: "Funerals",
     readTime: 6,
-    lastUpdated: "January 2025",
+    lastUpdated: "October 2026",
     content: `
 ## How much does a funeral cost?
 
-Funeral costs vary significantly depending on what you choose and where you are in the UK. As of 2024, typical costs are:
+Funeral costs vary a lot depending on what you choose and where you live. The SunLife Cost of Dying Report 2026 (based on 2025 data) gives these UK averages:
 
 | Type | Average cost |
 |------|-------------|
-| Traditional burial | £4,200–£6,500 |
-| Traditional cremation | £3,200–£5,200 |
-| Direct cremation | £700–£1,800 |
+| Traditional funeral (all types) | £4,510 |
+| Traditional burial | about £5,440 |
+| Traditional cremation | about £4,200 |
+| Simple attended funeral | £3,828 |
+| Direct cremation | £1,628 |
 
-Costs in London and the South East are typically 20–30% higher than the national average.
+Costs in London and the South East are usually higher than the national average.
 
 ## What you are paying for
 
-**Funeral director's fees** (the largest element, typically £1,500–£3,200):
-- Collecting and caring for the deceased
-- Organising and conducting the funeral
-- All administration and documentation
+**Funeral director's fees** (usually the largest part of the bill):
+- Bringing the person into their care and looking after them
+- Organising and leading the funeral
+- Paperwork and administration
 
-**Third-party charges** (passed directly to you):
-- Burial fee (£500–£2,500 depending on cemetery and location)
-- Cremation fee (£350–£1,100)
-- Minister or officiant fee (£150–£350)
-- Doctor's fees for cremation paperwork (£100–£200, being phased out)
+**Third-party costs** (paid on your behalf, sometimes called disbursements):
+- Burial fees (these vary widely by cemetery and area, and may include buying the grave)
+- Cremation fees
+- A minister, celebrant or officiant
 
-**Optional elements:**
-- Coffin: £200–£3,500+
-- Flowers: £0–£900
-- Funeral cars (hearse + limousine): £200–£1,400
-- Death certificates: £12.50 each (England and Wales)
-- Catering/wake: variable
+**Optional extras:**
+- Coffin upgrades
+- Flowers
+- Funeral cars (hearse and limousines)
+- Death certificate copies: £12.50 each in England and Wales when bought at registration
+- Catering or a wake
 
 ## How to keep costs down
 
-- **Get at least 3 itemised quotes** — funeral directors are legally required by the FCA to provide a standardised price list
-- **Consider direct cremation** — no service, but significantly cheaper; a memorial can be held separately
-- **Choose a simple coffin** — the legal minimum is a sealed container; most coffins are similar in quality internally
+- **Compare prices.** Every funeral director has to show a Standardised Price List in their premises and on their website. Ask for a written, itemised quote.
+- **Consider a direct cremation.** There is no service at the crematorium, but you can hold a memorial separately.
+- **Choose a simple coffin.** There is no legal minimum coffin. Crematoria and cemeteries set their own rules, and a simple or eco coffin is usually accepted.
 - **Buy flowers from a local florist** rather than through the funeral director
-- **Hold the wake at home** rather than a venue
-- **Ask about council or charity assistance** if you are on a low income
+- **Hold the wake at home** or somewhere free
+- **Check whether you may be able to get help** with costs, such as a Funeral Expenses Payment
 
 ## Your rights as a consumer
 
-The Financial Conduct Authority (FCA) regulates funeral plan providers. All funeral directors must:
-- Provide a clear price list on their website
-- Give you an itemised quote before you commit
-- Not pressure you into purchasing more than you need
+The Competition and Markets Authority (CMA) Funerals Market Investigation Order 2021 requires every funeral director to show a Standardised Price List in their premises and on their website.
 
-**Source:** SunLife Cost of Dying Report 2024; FCA; GOV.UK
+The Financial Conduct Authority (FCA) regulates pre-paid funeral plans only.
+
+You do not have to buy anything you do not want. Take your time and ask questions.
+
+**Source:** SunLife Cost of Dying Report 2026; Competition and Markets Authority; GOV.UK
     `.trim(),
   },
 
@@ -253,48 +282,48 @@ The Financial Conduct Authority (FCA) regulates funeral plan providers. All fune
     title: "Council housing after death",
     category: "Housing",
     readTime: 5,
-    lastUpdated: "January 2025",
+    lastUpdated: "October 2026",
     content: `
+This guide is mainly for England. Rules are different in Wales, Scotland and Northern Ireland.
+
 ## What is tenancy succession?
 
-When a council tenant dies, certain family members may have the legal right to **take over (succeed to) the tenancy**. This is known as tenancy succession.
+When a council tenant dies, certain people may have the right to **take over (succeed to) the tenancy**. This is called tenancy succession.
 
-## Who has the automatic right to succeed?
+## Who usually has the right to succeed? (England)
 
-Under English law, the following people have an automatic right to succeed:
+For council tenancies that started on or after 1 April 2012, a **husband, wife, civil partner or partner** who lived in the home as their only or main home usually has the right to take over the tenancy. There is no 12-month rule for them.
 
-1. **The surviving spouse or civil partner** of the deceased tenant (as long as they lived in the property as their only or principal home)
-2. **A cohabiting partner** who lived with the tenant for at least 12 months before death
+## Who else may qualify?
 
-## Who may qualify (but not automatically)?
+Other relatives, such as adult children, may be able to take over:
+- An older tenancy (one that started before 1 April 2012), or
+- A tenancy where the council's own policy allows it
 
-Other family members — children, siblings, parents — may be entitled to succeed if they:
-- Lived with the tenant for at least 12 months before the death
-- Used the property as their only or principal home
-- No one else has already succeeded to the tenancy
+The rules depend on when the tenancy started and on the tenancy agreement.
 
-**Important:** Succession can only happen once. If the person who died was themselves a successor, there is no right to succeed again.
+**Important:** Usually a tenancy can only be passed on once. If the person who died had already taken over the tenancy from someone else, there may be no further right to succeed.
 
 ## What if you do not have the right to succeed?
 
 The council may:
-- Offer you an alternative tenancy (often on different terms)
-- Serve notice requiring you to leave the property
+- Offer you a different home or tenancy
+- Ask you to leave the property, giving proper notice
 
-You should seek advice from **Shelter** or a housing solicitor if you are at risk of losing your home.
+Get advice from **Shelter** or **Citizens Advice** as soon as possible if you are worried about losing your home.
 
 ## What to do
 
-1. **Notify the housing department immediately** — call the council's housing team as soon as possible after the death
-2. **Ask for a succession to tenancy form** in writing
-3. **Provide evidence** of your relationship and length of residency (utility bills, bank statements, etc.)
-4. **Do not ignore correspondence** from the council — respond to any letters promptly
+1. **Tell the council's housing team** about the death as soon as you can
+2. **Ask about succession** and whether there is a form to fill in
+3. **Provide evidence** of your relationship and that you lived there (for example, letters or bank statements sent to the address)
+4. **Reply to any letters** from the council promptly
 
 ## Rent payments
 
-Keep paying rent during this period. Falling into arrears will weaken your position when applying to succeed to the tenancy.
+Keep paying the rent while this is sorted out, if you can. Rent arrears can make things harder.
 
-**Source:** Shelter — Council housing and succession rights; GOV.UK — Social housing tenancies
+**Source:** Shelter; Citizens Advice; GOV.UK
     `.trim(),
   },
 
@@ -303,70 +332,84 @@ Keep paying rent during this period. Falling into arrears will weaken your posit
     title: "Funeral support payments",
     category: "Financial support",
     readTime: 5,
-    lastUpdated: "January 2025",
+    lastUpdated: "October 2026",
     content: `
-## Funeral Expenses Payment
+## Funeral Expenses Payment (England, Wales and Northern Ireland)
 
-The Funeral Expenses Payment (also called a Funeral Payment) is a grant from the DWP to help cover funeral costs.
+A Funeral Expenses Payment can help with the cost of a funeral if you get certain benefits and are responsible for the funeral.
 
-**Who can apply?**
-You may qualify if you are:
-- A spouse, civil partner, or close family member of the deceased
-- Responsible for arranging the funeral
-- Receiving one of the following benefits:
-  - Universal Credit
-  - Income Support
-  - Income-based Jobseeker's Allowance
-  - Income-related Employment and Support Allowance
-  - Pension Credit
-  - Housing Benefit
-  - Child Tax Credit
-  - Working Tax Credit (if also receiving a disability element)
+**Who may be able to get it?**
+You may be able to get it if you are:
+- The partner of the person who died, or
+- A close relative or close friend of the person who died, or
+- The parent of a baby or child who died
 
-**How much will you receive?**
-The payment covers:
-- The full cost of burial fees or cremation fees
-- Up to £1,000 for other expenses
+and you, or your partner, get one of these benefits:
+- Universal Credit
+- Pension Credit
+- Income Support
+- Income-based Jobseeker's Allowance
+- Income-related Employment and Support Allowance
+- Housing Benefit
 
-Any money paid by the estate or from insurance will be deducted from the payment.
+**What does it pay?**
+- Necessary burial or cremation fees
+- Up to £1,000 for other funeral costs, such as the funeral director's fees, flowers or a coffin (£120 if there is a funeral plan)
+
+Money from the estate or some other sources may be taken off the payment.
 
 **How to apply:**
-Call the DWP Bereavement Service on **0800 731 0469** or apply online. You must apply within **6 months** of the funeral.
+Claim within **6 months** of the funeral. Contact the DWP Bereavement Service on **0800 151 2012** (Relay UK: 18001 then 0800 731 0469; Welsh language: 0800 731 0453), or apply by post. In Northern Ireland, apply through the Department for Communities.
+
+---
+
+## Funeral Support Payment (Scotland)
+
+In Scotland, Social Security Scotland gives a Funeral Support Payment instead. It can pay burial or cremation costs plus £1,327.75 for other costs (£162.05 if there is a funeral plan). Apply within 6 months of the funeral.
+
+Phone **0800 182 2222** or visit mygov.scot/funeral-support-payment.
+
+---
+
+## Children's Funeral Fund (England)
+
+If a child under 18 dies, or a baby is stillborn after 24 weeks of pregnancy, and the funeral is in England, the Children's Funeral Fund can pay burial or cremation fees and up to £300 towards a coffin. It is not means tested. The funeral director usually claims it for you. Wales and Northern Ireland have their own schemes.
 
 ---
 
 ## Bereavement Support Payment
 
-If you were married to or in a civil partnership with the deceased, you may be entitled to Bereavement Support Payment.
+You may be able to get Bereavement Support Payment if your husband, wife, civil partner or partner died.
 
-**Who qualifies?**
-- You were married to or in a civil partnership with the deceased
-- The deceased paid National Insurance contributions for at least 25 weeks
+**You may qualify if:**
+- You were married, in a civil partnership, or living together with children
+- The person who died paid National Insurance contributions for at least 25 weeks, or died because of an accident at work or a disease caused by work
 - You were under State Pension age when they died
 
 **How much?**
-- Higher rate (if you have children): £3,500 lump sum + £350/month for 18 months
-- Lower rate (no children): £2,500 lump sum + £100/month for 18 months
+- Higher rate: £3,500 first payment, then 18 monthly payments of £350
+- Lower rate: £2,500 first payment, then 18 monthly payments of £100
 
-**Apply within 3 months** to receive the full amount. Applications accepted up to 21 months after the death.
+**Claim within 3 months** of the death to get the full amount. You can claim up to 21 months after the death, but if you claim more than 12 months after, you will not get the first payment.
 
-Call: **0800 731 0469**
+Call the DWP Bereavement Service: **0800 151 2012**
 
 ---
 
-## Council assistance
+## Council help
 
-Some councils have a Discretionary Fund or local welfare scheme that can help with funeral costs. Contact your local authority's welfare benefits team.
+Help from councils varies. Some have local welfare schemes. If no one is able to pay for a funeral, the council must arrange a public health funeral. Contact your local council to ask.
 
 ---
 
 ## Charity support
 
-**Down to Earth** (run by Quaker Social Action) helps people on low incomes who are not eligible for DWP support. They can provide direct financial help or guide you to other sources.
+**Down to Earth** (run by Quaker Social Action) gives free advice and support to help people arrange an affordable funeral. It does not give money.
 
-Visit: quakersocialaction.org.uk/down-to-earth
+Phone: **020 8983 5055**
+Visit: https://quakersocialaction.org.uk/we-can-help/helping-funerals/down-earth
 
-**Source:** GOV.UK — Funeral Expenses Payment; Bereavement Support Payment
+**Source:** GOV.UK: Funeral Expenses Payment; GOV.UK: Bereavement Support Payment; mygov.scot; Quaker Social Action
     `.trim(),
   },
 
@@ -375,71 +418,69 @@ Visit: quakersocialaction.org.uk/down-to-earth
     title: "Burial vs cremation",
     category: "Funerals",
     readTime: 5,
-    lastUpdated: "January 2025",
+    lastUpdated: "October 2026",
     content: `
 ## The choice
 
-Approximately 80% of funerals in the UK now involve cremation. However, both options have distinct advantages, and the right choice depends on personal, religious, and practical factors.
+Cremation is chosen for around 80% of UK funerals. Both options have advantages, and the right choice depends on personal, religious and practical factors.
 
 ## Burial
 
 **What happens:**
-The body is placed in a coffin and buried in a grave at a cemetery or churchyard. A graveside service is usually held.
+The person is placed in a coffin and buried in a grave at a cemetery, churchyard or natural burial ground. A service may be held at the graveside or beforehand.
 
-**Cost:** £4,200–£6,500 on average, including the grave purchase
+**Cost:** a traditional burial costs about £5,440 on average, but grave and burial fees vary a lot by area
 
 **Advantages:**
-- A permanent, physical place to visit
-- Some religions require burial (e.g., Islam, Judaism, some Christian denominations)
+- A permanent place to visit
+- Some faiths require burial (for example, Islam and Orthodox Judaism)
 - Natural or woodland burial is available in many areas
-- Remains stay together in a fixed location
 
-**Disadvantages:**
-- Significantly more expensive than cremation
+**Things to consider:**
+- Usually more expensive than cremation
 - Limited cemetery space in some areas
-- Ongoing grave maintenance costs
-- Less flexibility in how remains are handled
+- There may be ongoing costs for grave upkeep or a headstone
 
 ## Cremation
 
 **What happens:**
-The body is placed in a coffin and cremated at a crematorium. Ashes are returned to the family in an urn, and can be kept, scattered, buried, or made into a memorial.
+The person is placed in a coffin and cremated at a crematorium. The ashes are returned to the family. They can be kept, scattered, buried or placed in a memorial.
 
-**Cost:** £3,200–£5,200 on average
+**Cost:** a traditional cremation costs about £4,200 on average. A direct cremation costs about £1,628.
 
 **Advantages:**
-- Cheaper than burial
-- More flexible — ashes can be scattered in a meaningful place
-- No ongoing grave maintenance
-- Wide variety of memorialisation options
+- Usually cheaper than burial
+- More flexible: ashes can be scattered somewhere meaningful
+- No ongoing grave upkeep
+- Many ways to create a memorial
 
-**Disadvantages:**
-- Some religions prohibit or discourage cremation
-- Cannot be undone — there is no permanent grave to visit unless ashes are interred
-- Some people find it less tangible than burial
+**Things to consider:**
+- Some faiths do not allow or discourage cremation
+- There is no grave to visit unless the ashes are buried
+- It cannot be undone
 
 ## Faith considerations
 
-| Faith | Traditional preference |
+| Faith | Traditional practice |
 |-------|----------------------|
-| Islam | Burial required |
-| Judaism | Burial preferred; cremation is generally not permitted |
-| Hindu | Cremation preferred |
-| Sikh | Cremation preferred |
-| Christian | Both are accepted by most denominations |
-| Buddhist | Cremation common, but burial is also practised |
+| Islam | Burial is required |
+| Judaism | Orthodox Judaism requires burial; some Progressive communities accept cremation |
+| Hinduism | Cremation is usual |
+| Sikhism | Cremation is usual |
+| Christianity | Most denominations accept both |
+| Buddhism | Cremation is common, but burial is also practised |
 
-Always discuss wishes with a religious leader or the family's faith community.
+Talk to a faith leader or the family's community if you are unsure.
 
 ## Questions to consider
 
-- Did the deceased express a preference, verbally or in writing?
+- Did the person say what they wanted, in a will or otherwise?
 - Are there religious or cultural requirements?
 - Is there a family grave or burial plot?
-- What is the family's budget?
-- Would you prefer a permanent physical location to visit?
+- What can the family afford?
+- Would the family like a permanent place to visit?
 
-**Source:** Cremation Society of Great Britain; GOV.UK
+**Source:** SunLife Cost of Dying Report 2026; Cremation Society; GOV.UK
     `.trim(),
   },
 
@@ -448,105 +489,104 @@ Always discuss wishes with a religious leader or the family's faith community.
     title: "Direct cremation explained",
     category: "Funerals",
     readTime: 4,
-    lastUpdated: "January 2025",
+    lastUpdated: "October 2026",
     content: `
 ## What is direct cremation?
 
-Direct cremation is a simple cremation with no funeral service or ceremony attached. The body is collected, cremated, and the ashes are returned to the family.
+Direct cremation is a simple cremation without a funeral service at the crematorium. The person is collected, cremated, and the ashes are returned to the family.
 
-Roughly 20% of all cremations in the UK are now direct cremations, up from near zero a decade ago.
+About 1 in 5 funerals in the UK (21%) is now a direct cremation.
 
-## What is included?
+## What is usually included?
 
-- Collection of the deceased from the place of death
-- Care of the deceased prior to cremation
+- Bringing the person into the provider's care
+- Care before the cremation
 - A simple coffin
-- Cremation at a local crematorium (often at an off-peak time)
-- Return of ashes in a basic urn
+- Cremation, often at a quieter time of day
+- Return of the ashes
 
-## What is not included?
+## What is usually not included?
 
-- No hearse or funeral vehicles
-- No flowers
-- No formal church, chapel, or graveside service
-- No embalming (unless requested)
-- No viewing of the deceased (though some providers offer this as an add-on)
+- Hearse or funeral cars
+- Flowers
+- A service at the crematorium
+- Embalming
+- Viewing the person (some providers offer this for an extra cost)
 
 ## How much does it cost?
 
-Typically **£700–£1,800** depending on provider and location. This compares to £3,200–£5,200 for a traditional cremation with a service.
+The average cost of a direct cremation is about **£1,628**, though prices vary by provider and area. A traditional cremation with a service costs about £4,200 on average.
 
 ## Is it right for your family?
 
-Direct cremation may be suitable if:
-- Budget is a primary consideration
-- The family wants to hold a separate, personal memorial service at a later date
-- The deceased lived far from where they died and repatriation is not desired
-- The family prefers a low-key, private farewell
+Direct cremation may suit you if:
+- Cost is an important consideration
+- The family would like to hold a personal memorial later
+- The family prefers a quiet, private farewell
 
-It may not be suitable if:
-- The family needs a formal ceremony to say goodbye
+It may not suit you if:
+- The family wants a formal ceremony to say goodbye
 - Religious or cultural traditions require a service
-- Mourners need a structured event to grieve together
+- People would find it helpful to gather together at the funeral
 
 ## Holding a separate memorial
 
-Many families choose direct cremation and then hold a **celebration of life** or **memorial service** at a later date — at home, in a park, at a favourite restaurant, or in any meaningful location. This can be more personal and less expensive than a traditional funeral.
+Many families choose direct cremation and then hold a **celebration of life** or **memorial service** later, at home, outdoors or in another meaningful place. This can be personal and cost less than a traditional funeral.
 
-## Providers
+## Choosing a provider
 
-Established direct cremation providers in the UK include Pure Cremation, Simplicity Cremations, and many local funeral directors. Always check reviews and ask for an itemised price list.
+Many national companies and local funeral directors offer direct cremation. Compare their Standardised Price Lists, check reviews and ask for a written, itemised quote. If you are buying a pre-paid funeral plan, check the provider is authorised by the Financial Conduct Authority (FCA).
 
-**Source:** FCA; Cremation Society of Great Britain
+**Source:** SunLife Cost of Dying Report 2026; Competition and Markets Authority; FCA
     `.trim(),
   },
 
   "tell-us-once": {
     slug: "tell-us-once",
-    title: "Tell Us Once — notifying the government",
+    title: "Tell Us Once: notifying the government",
     category: "Government",
     readTime: 3,
-    lastUpdated: "January 2025",
+    lastUpdated: "October 2026",
     content: `
 ## What is Tell Us Once?
 
-Tell Us Once is a free government service that allows you to report a death to multiple government departments in a single step, rather than contacting each separately.
+Tell Us Once is a free government service that lets you report a death to many government organisations at the same time, rather than contacting each one separately.
 
-## Which departments are notified?
+It is available in England, Scotland and Wales. It is not available in Northern Ireland. In Northern Ireland, contact each organisation yourself. The nidirect website explains who to tell.
 
-- **HMRC** — to stop tax credits and update self-assessment
-- **DWP** — to stop benefits and initiate any survivor's pension
-- **DVLA** — to cancel the driving licence and Vehicle Excise Duty
-- **Passport Office** — to cancel the deceased's passport
-- **Veterans UK** — if the deceased received a war pension
-- **Your local council** — for council tax, housing benefit, and the Blue Badge scheme
-- **Electoral registration** office
+## Who does it tell?
+
+- **HMRC**: about tax
+- **DWP**: about benefits and State Pension
+- **DVLA**: about the driving licence and vehicles
+- **HM Passport Office**: to cancel the passport
+- **Veterans UK**: if the person got a war pension or Armed Forces Compensation
+- **The local council**: for example council tax, Housing Benefit, Blue Badges and electoral registration
+- Some public sector pension schemes
 
 ## How to use it
 
-1. **Register the death** at your local register office
-2. The registrar will give you a **Tell Us Once reference number** (valid for 28 days)
+1. **Register the death**
+2. The registrar will give you a **Tell Us Once reference number** (it lasts 28 days)
 3. Use it online at **gov.uk/tell-us-once** or by calling **0800 085 7308**
-4. Provide the details requested about the deceased
+4. Give the details asked for about the person who died
 
-The process takes approximately 15 minutes online.
+## What Tell Us Once does not cover
 
-## What Tell Us Once does NOT cover
-
-Tell Us Once does **not** notify:
+Tell Us Once does **not** tell:
 - Banks and building societies
-- Pension providers (workplace or personal)
+- Private or workplace pension providers
 - Insurance companies
 - Utility companies
 - Subscription services
 
-You will need to contact these separately.
+You will need to contact these yourself.
 
 ## After Tell Us Once
 
-Once you have used Tell Us Once, you should receive confirmation letters from the relevant departments. Keep these for your records.
+You should get letters from the organisations that were told. Keep these for your records.
 
-**Source:** GOV.UK — Tell Us Once
+**Source:** GOV.UK: Tell Us Once; nidirect
     `.trim(),
   },
 
@@ -555,54 +595,58 @@ Once you have used Tell Us Once, you should receive confirmation letters from th
     title: "Repatriation explained",
     category: "Funerals",
     readTime: 5,
-    lastUpdated: "January 2025",
+    lastUpdated: "October 2026",
     content: `
 ## What is repatriation?
 
-Repatriation is the process of returning the body of a person who has died in one country to their home country for burial or cremation.
+Repatriation means moving the body of a person who has died to another country for burial or cremation. It can mean bringing someone home to the UK, or taking someone from the UK to another country.
 
 ## Who arranges it?
 
-Most families use a specialist repatriation funeral director or an international funeral company. Some local funeral directors can also arrange repatriation.
+Most families use a funeral director who specialises in international funerals. Some local funeral directors can also arrange it.
 
-If the death occurred abroad, your travel insurance may cover repatriation costs — check the policy immediately.
+If the person died abroad, their travel insurance may cover repatriation. Check the policy as soon as you can.
 
-## What documentation is required?
+## Moving a body out of England or Wales
 
-**UK documents required:**
-- A certified copy of the death certificate (translated if required)
-- An Out of England form (for burial or cremation abroad)
+The funeral director needs to give notice to the coroner (Form 104) at least 4 clear days before the body is moved. You need to wait for the coroner's authorisation before the body can leave. Scotland and Northern Ireland have their own arrangements.
+
+## What documents are needed?
+
+**From the UK, usually:**
+- A certified copy of the death certificate (translated if needed)
+- The coroner's authorisation to move the body out of England or Wales
 - An embalming certificate (in most cases)
-- A Freedom from Infection certificate (in some countries)
+- A certificate confirming freedom from infection (some countries)
 
-**Documents required by the receiving country:**
-- These vary by country — the funeral director or embassy can advise
+**For the receiving country:**
+- These vary. The funeral director or the country's embassy can advise.
 
 ## How long does it take?
 
-Typically 5–14 days, depending on the destination country and documentation requirements.
+It often takes 1 to 2 weeks, depending on the country and the paperwork needed.
 
 ## How much does it cost?
 
-Costs vary widely depending on:
+Costs vary a lot depending on:
 - The destination country
-- Distance and transport method (air freight)
+- Distance and how the body is transported (usually by air)
 - Embalming requirements
-- Documentation costs
+- Document fees
 
-A typical European repatriation costs £2,000–£5,000. Long-haul destinations can cost £5,000–£12,000 or more.
+As a rough guide, repatriation within Europe may cost £2,000 to £5,000, and long-haul destinations may cost £5,000 to £12,000 or more. Ask for a written, itemised quote.
 
 ## Travel insurance
 
-If the deceased had travel insurance when they died abroad, repatriation costs may be fully covered. Contact the insurer as soon as possible.
+If the person had travel insurance when they died abroad, the costs may be covered. Contact the insurer as soon as possible.
 
 ## Who can help?
 
-- **The Foreign, Commonwealth and Development Office (FCDO)**: Can provide consular support if the death occurred abroad (call 020 7008 5000)
-- **Your funeral director**: Can organise the repatriation process end-to-end
-- **The deceased's embassy in the UK**: For advice on documentation requirements
+- **The Foreign, Commonwealth and Development Office (FCDO)**: can give consular support if the death happened abroad (020 7008 5000)
+- **Your funeral director**: can organise the whole process
+- **The relevant embassy**: can advise on documents
 
-**Source:** GOV.UK — Death abroad; FCDO
+**Source:** GOV.UK: Death abroad; GOV.UK: Moving a body out of England or Wales; FCDO
     `.trim(),
   },
 };

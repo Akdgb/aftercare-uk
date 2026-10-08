@@ -8,9 +8,9 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "sw
 const fraunces = Fraunces({ subsets: ["latin"], variable: "--font-fraunces", display: "swap", weight: ["500", "600"] });
 
 export const metadata: Metadata = {
-  title: "AfterCare UK – Bereavement Guidance & Support",
+  title: { default: "AfterCare UK: what to do after someone dies", template: "%s | AfterCare UK" },
   description:
-    "AfterCare helps families navigate everything that needs to happen after a loved one passes away. Get a personalised action plan, local resources, and expert guidance.",
+    "A free, step-by-step checklist for families in the UK after someone dies. Register the death, plan an affordable funeral, claim financial support and share tasks with family.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

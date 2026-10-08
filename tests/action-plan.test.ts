@@ -84,6 +84,40 @@ describe("generateActionPlan", () => {
   });
 });
 
+// Titles in the pre-slug implementation, and the slug each one became.
+// Fixed here because the live task titles have since been reworded.
+const LEGACY_TITLE_TO_SLUG = new Map<string, string>([
+  ["Collect Medical Certificate of Cause of Death (MCCD)", "collect-mccd"],
+  ["Contact a funeral director", "contact-funeral-director"],
+  ["Register the death", "register-death"],
+  ["Notify immediate family and close friends", "notify-family"],
+  ["Obtain multiple certified copies of the death certificate", "death-certificate-copies"],
+  ["Locate and review the will", "locate-will"],
+  ["Contact a solicitor if required", "contact-solicitor"],
+  ["Apply for a Grant of Probate or Letters of Administration", "apply-probate"],
+  ["Use the Tell Us Once service", "tell-us-once"],
+  ["Notify the Department for Work and Pensions (DWP)", "notify-dwp"],
+  ["Notify HMRC", "notify-hmrc"],
+  ["Notify the deceased's bank(s)", "notify-banks"],
+  ["Notify pension providers", "notify-pensions"],
+  ["Notify life insurance providers", "notify-life-insurance"],
+  ["Cancel direct debits and standing orders", "cancel-direct-debits"],
+  ["Apply for Funeral Expenses Payment", "funeral-expenses-payment"],
+  ["Apply for Bereavement Support Payment", "bereavement-support-payment"],
+  ["Contact the council housing office", "council-housing-office"],
+  ["Review tenancy succession rights", "council-tenancy-succession"],
+  ["Contact the landlord or letting agent", "contact-landlord"],
+  ["Review the tenancy agreement", "review-tenancy"],
+  ["Notify the mortgage provider (if applicable)", "notify-mortgage"],
+  ["Notify the Land Registry", "notify-land-registry"],
+  ["Notify utility providers", "notify-utilities"],
+  ["Cancel subscriptions and memberships", "cancel-subscriptions"],
+  ["Redirect mail", "redirect-mail"],
+  ["Contact your local mosque for funeral guidance", "contact-mosque"],
+  ["Contact the Chevra Kadisha (Jewish burial society)", "contact-chevra-kadisha"],
+  ["Contact your local temple or religious community", "contact-temple"],
+]);
+
 describe("normaliseTaskKeys", () => {
   it("maps legacy sequential ids from older saved plans onto slugs", () => {
     // Pre-slug numbering for this intake: 1 = MCCD, 2 = funeral director, 3 = register death
@@ -102,11 +136,11 @@ describe("normaliseTaskKeys", () => {
 
     for (const v of variants) {
       const intake = { ...base, ...v };
-      const titleToSlug = new Map(generateActionPlan(intake).map((t) => [t.title, t.id]));
+      const slugs = new Set(generateActionPlan(intake).map((t) => t.id));
       for (const old of generateLegacyActionPlan(intake)) {
-        expect(normaliseTaskKeys(intake, { [old.id]: "completed" })).toEqual({
-          [titleToSlug.get(old.title)!]: "completed",
-        });
+        const slug = LEGACY_TITLE_TO_SLUG.get(old.title)!;
+        expect(slugs.has(slug)).toBe(true);
+        expect(normaliseTaskKeys(intake, { [old.id]: "completed" })).toEqual({ [slug]: "completed" });
       }
     }
   });

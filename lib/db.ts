@@ -37,7 +37,7 @@ export async function savePlan(
   taskStatuses: Record<string, string> = {}
 ): Promise<string | null> {
   try {
-    // Pass objects via sql.json — the driver serialises them. Passing a
+    // Pass objects via sql.json: the driver serialises them. Passing a
     // JSON.stringify'd string would be stored as a double-encoded JSON string.
     const sql = db();
     const rows = await sql`
@@ -57,7 +57,7 @@ async function getPlan(id: string): Promise<SavedPlan | null> {
     const rows = await db()`SELECT * FROM saved_plans WHERE id = ${id}`;
     return (rows[0] as unknown as SavedPlan) ?? null;
   } catch {
-    // Invalid UUIDs throw — treat as not found
+    // Invalid UUIDs throw: treat as not found
     return null;
   }
 }
@@ -160,7 +160,7 @@ export async function removeFaith(planId: string) {
   const sql = db();
   await sql`
     UPDATE saved_plans
-    SET intake_data = intake_data || ${sql.json({ faith: "prefer-not-to-say", faiths: [], faithConsent: false })},
+    SET intake_data = (intake_data - 'backgroundOther') || ${sql.json({ faith: "prefer-not-to-say", faiths: [], backgrounds: [], faithConsent: false })},
         updated_at = NOW()
     WHERE id = ${planId}
   `;
@@ -249,7 +249,7 @@ export async function deleteAccount(userId: string, email: string) {
 
 // ── Scheduled jobs ──────────────────────────────────────────────────────────
 
-/** Plans at least 2 days old whose owner wants reminders and hasn't had one this week. */
+/** Plans at least 2 days old whose owner wants reminders and has not had one this week. */
 export async function getPlansDueReminder(): Promise<(SavedPlan & { owner_email: string })[]> {
   const rows = await db()`
     SELECT p.*, u.email AS owner_email

@@ -1,29 +1,30 @@
 "use client";
 import { useMemo } from "react";
 import Link from "next/link";
-import { ArrowLeft, Check, ExternalLink, PiggyBank } from "lucide-react";
+import { BackLink } from "@/components/layout/back-link";
+import { Check, ExternalLink, PiggyBank } from "lucide-react";
 import { useLocalStorage } from "@/lib/use-local-storage";
 import { cn } from "@/lib/utils";
 
 /*
  * Savings are deliberately rough, rounded-down figures based on published UK
- * averages (SunLife Cost of Dying 2025: attended funeral ~£4,285, direct
- * cremation ~£1,600) and the ranges in our cost estimator.
+ * averages (SunLife Cost of Dying Report 2026: traditional funeral £4,510,
+ * direct cremation £1,628) and the ranges in our cost estimator.
  */
 type Idea = { id: string; title: string; how: string; saving: number; link?: { href: string; label: string } };
 
 const IDEAS: Idea[] = [
   {
     id: "compare",
-    title: "Get prices from at least 3 funeral directors",
-    how: "By law every funeral director must publish a standard price list. The same funeral can cost hundreds more at one firm than another — ask for an itemised quote before agreeing anything.",
+    title: "Compare prices from at least 3 funeral directors",
+    how: "Every funeral director has to show a Standardised Price List in their premises and on their website. The same funeral can cost hundreds of pounds more at one firm than another. Ask for a written, itemised quote before agreeing to anything.",
     saving: 500,
     link: { href: "/resources", label: "Find funeral directors near you" },
   },
   {
     id: "direct",
     title: "Choose a direct cremation, then hold your own memorial",
-    how: "The cremation happens without a service; you hold a gathering afterwards wherever and whenever suits the family — at home, a place of worship, or back home abroad.",
+    how: "The cremation happens without a service. You can then hold a gathering wherever and whenever suits the family, for example at home, at a place of worship, or in another country.",
     saving: 2500,
   },
   {
@@ -35,7 +36,7 @@ const IDEAS: Idea[] = [
   {
     id: "coffin",
     title: "Pick a simple coffin",
-    how: "A simple or eco coffin does the same job as an expensive one. You don't have to choose from the funeral director's brochure.",
+    how: "There is no legal minimum coffin. Crematoria and cemeteries set their own rules, and a simple or eco coffin is usually accepted. You do not have to choose from the funeral director's brochure.",
     saving: 400,
   },
   {
@@ -47,7 +48,7 @@ const IDEAS: Idea[] = [
   {
     id: "flowers",
     title: "Do the flowers yourselves",
-    how: "Supermarket or garden flowers arranged by family look lovely — or ask for donations to a charity instead.",
+    how: "Flowers from a supermarket or garden, arranged by the family, can look lovely. You could also ask for donations to a charity instead.",
     saving: 150,
   },
   {
@@ -68,21 +69,21 @@ const IDEAS: Idea[] = [
 const HELP = [
   {
     title: "Funeral Expenses Payment",
-    body: "If you get certain benefits, the government can pay burial or cremation fees plus up to £1,000 towards other costs.",
+    body: "If you get certain benefits, you may be able to get help with necessary burial or cremation fees plus up to £1,000 towards other costs (England, Wales and Northern Ireland). Claim within 6 months of the funeral. In Scotland, ask about the Funeral Support Payment.",
     href: "https://www.gov.uk/funeral-payments",
   },
   {
     title: "Children's Funeral Fund (England)",
-    body: "For anyone under 18, burial and cremation fees are paid for you — no means test. The funeral director claims it.",
+    body: "For a child under 18, or a baby stillborn after 24 weeks, buried or cremated in England. It covers burial or cremation fees plus up to £300 towards a coffin. It is not means tested, and the funeral director usually claims it. Wales and Northern Ireland have their own schemes.",
     href: "https://www.gov.uk/child-funeral-costs",
   },
   {
     title: "Check for a funeral plan or life insurance",
-    body: "Look through their papers and bank statements for a pre-paid funeral plan or a policy that pays out.",
+    body: "Look through their papers and bank statements for a pre-paid funeral plan or an insurance policy that pays out.",
   },
   {
-    title: "Ask the bank to pay from their account",
-    body: "Most banks will pay the funeral director's invoice directly from the deceased's account, even before probate.",
+    title: "Ask the bank about paying the funeral invoice",
+    body: "Many banks will pay a funeral invoice from the deceased's account if you show it. Ask the bank.",
   },
 ];
 
@@ -108,13 +109,11 @@ export function SaveMoneyChecklist() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 pt-6 pb-40">
-      <Link href="/help" className="inline-flex items-center gap-1.5 text-sm text-ink-600 hover:text-ink-900">
-        <ArrowLeft className="h-4 w-4" /> Help
-      </Link>
+      <BackLink />
       <h1 className="text-3xl font-semibold text-ink-900 mt-3">Save money on the funeral</h1>
       <p className="text-ink-600 mt-2">
-        A typical UK funeral costs about <strong className="text-ink-900">£4,300</strong>. A respectful send-off
-        doesn&apos;t have to. Tick the ideas you&apos;ll use to see roughly how much you could save.
+        A traditional UK funeral costs about <strong className="text-ink-900">£4,500</strong> on average. A respectful
+        funeral does not have to cost this much. Tick the ideas you would like to use to see roughly how much you could save.
       </p>
 
       <ul className="mt-6 space-y-3">
@@ -175,7 +174,7 @@ export function SaveMoneyChecklist() {
         ))}
       </ul>
       <p className="text-xs text-ink-500 mt-4">
-        Savings are rough estimates based on published UK averages; your quotes will differ. AfterCare isn&apos;t paid by
+        Savings are rough estimates based on published UK averages. Your quotes will differ. AfterCare is not paid by
         any funeral director or company we mention.
       </p>
 

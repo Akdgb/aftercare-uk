@@ -1,9 +1,25 @@
 import { z } from "zod";
 import { getFaiths } from "@/lib/faith";
+import { isBackgroundId } from "@/lib/cultures";
 
 const text = (max: number) => z.string().trim().max(max);
 
-const faithEnum = z.enum(["christian", "muslim", "hindu", "sikh", "jewish", "humanist", "african-caribbean", "other", "none", "prefer-not-to-say"]);
+const faithEnum = z.enum([
+  "christian",
+  "christian-pentecostal",
+  "christian-orthodox",
+  "muslim",
+  "hindu",
+  "sikh",
+  "jewish",
+  "buddhist",
+  "traditional",
+  "humanist",
+  "african-caribbean",
+  "other",
+  "none",
+  "prefer-not-to-say",
+]);
 
 /** Server-side validation for intake data before it is stored in a saved plan. */
 const baseIntakeSchema = z.object({
@@ -20,19 +36,31 @@ const baseIntakeSchema = z.object({
   faith: faithEnum,
   faiths: z.array(faithEnum).max(10).optional(),
   faithConsent: z.boolean().optional(),
+  backgrounds: z.array(z.string().refine(isBackgroundId)).max(20).optional(),
+  backgroundOther: text(100).optional(),
+  burialPlace: z.enum(["uk", "abroad", "both", "unsure"]).optional(),
   housingType: z.enum(["owned", "private-rental", "council", "supported", "unsure"]),
   receivingBenefits: z.enum(["yes", "no", "unsure"]),
   needsFinancialHelp: z.enum(["yes", "no", "unsure"]),
 });
 
 /**
- * Faith is special category data: without explicit consent it is dropped
- * (never stored) rather than rejecting the whole plan.
+ * Faith and ethnic origin are special category data: without explicit consent
+ * they are dropped (never stored) rather than rejecting the whole plan.
  */
 export const intakeSchema = baseIntakeSchema.transform((data) => {
   const faiths = getFaiths(data);
-  if (faiths.length > 0 && data.faithConsent === true) {
-    return { ...data, faith: faiths[0], faiths, faithConsent: true };
+  const backgrounds = [...new Set(data.backgrounds ?? [])];
+  const backgroundOther = data.backgroundOther?.trim() || undefined;
+  if ((faiths.length > 0 || backgrounds.length > 0 || backgroundOther) && data.faithConsent === true) {
+    return { ...data, faith: faiths[0] ?? ("prefer-not-to-say" as const), faiths, backgrounds, backgroundOther, faithConsent: true };
   }
-  return { ...data, faith: "prefer-not-to-say" as const, faiths: [], faithConsent: false };
+  return {
+    ...data,
+    faith: "prefer-not-to-say" as const,
+    faiths: [],
+    backgrounds: [],
+    backgroundOther: undefined,
+    faithConsent: false,
+  };
 });

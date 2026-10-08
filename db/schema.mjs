@@ -65,4 +65,21 @@ CREATE TABLE IF NOT EXISTS task_comments (
 );
 
 CREATE INDEX IF NOT EXISTS task_comments_plan_idx ON task_comments (plan_id, created_at);
+
+-- Row level security on every table. The app connects as the tables' owner,
+-- which bypasses RLS, and checks access itself (lib/plan-access.ts). With no
+-- policies, any other role (for example a database "data API" or a leaked
+-- read-only login) can read nothing. Skipped quietly if this role cannot alter
+-- a table, so startup never fails because of it.
+DO $$
+DECLARE t TEXT;
+BEGIN
+  FOREACH t IN ARRAY ARRAY['users', 'magic_links', 'saved_plans', 'plan_members', 'task_comments'] LOOP
+    BEGIN
+      EXECUTE format('ALTER TABLE %I ENABLE ROW LEVEL SECURITY', t);
+    EXCEPTION WHEN insufficient_privilege THEN
+      RAISE NOTICE 'Could not enable RLS on %', t;
+    END;
+  END LOOP;
+END $$;
 `;

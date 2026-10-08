@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { ArrowRight, CheckCircle2, Heart, Loader2, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { AgeQuestion, ALLOWED_AGE_BANDS, useAgeBand } from "@/components/auth/age-question";
 
 export default function SignInPage() {
   return (
@@ -28,12 +29,18 @@ function SignInForm() {
   const [email, setEmail] = useState(params.get("email") ?? "");
   const [state, setState] = useState<"idle" | "loading" | "sent">("idle");
   const [err, setErr] = useState("");
+  const [ageBand, setAgeBand] = useAgeBand();
 
   const handleSubmit = async () => {
     if (!email.trim() || !email.includes("@")) {
       setErr("Please enter a valid email address.");
       return;
     }
+    if (!ageBand) {
+      setErr("Please tell us your age to continue.");
+      return;
+    }
+    if (!ALLOWED_AGE_BANDS.includes(ageBand)) return;
     setState("loading");
     setErr("");
 
@@ -41,7 +48,7 @@ function SignInForm() {
       const res = await fetch("/api/auth/magic-link", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email.trim(), next }),
+        body: JSON.stringify({ email: email.trim(), next, ageBand }),
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
@@ -74,7 +81,7 @@ function SignInForm() {
               <h1 className="text-lg font-semibold text-ink-800 mb-2">Check your email</h1>
               <p className="text-ink-500 text-sm leading-relaxed">
                 We sent a sign-in link to <strong className="text-ink-700">{email}</strong>.
-                Click it to continue — you can close this tab. The link expires in 20 minutes.
+                Open the link to continue. You can close this tab. The link expires in 20 minutes.
               </p>
               <button
                 onClick={() => setState("idle")}
@@ -90,8 +97,8 @@ function SignInForm() {
               </h1>
               <p className="text-sm text-ink-500 text-center mb-6">
                 {invited
-                  ? "Confirm your email address and we'll send you a link to open the family plan — no password needed."
-                  : "Enter your email and we'll send you a sign-in link — no password needed. New here? This creates your account."}
+                  ? "Confirm your email address and we'll send you a link to open the family plan. No password is needed."
+                  : "Enter your email and we'll send you a sign-in link. No password is needed. If you are new, this creates your account."}
               </p>
 
               {error && (
@@ -117,14 +124,19 @@ function SignInForm() {
                     autoFocus
                   />
                 </div>
+                <AgeQuestion value={ageBand} onChange={(v) => { setAgeBand(v); setErr(""); }} />
                 {err && <p className="text-xs text-red-600">{err}</p>}
-                <Button className="w-full" onClick={handleSubmit} loading={state === "loading"}>
+                <Button className="w-full" onClick={handleSubmit} loading={state === "loading"} disabled={ageBand === "under-13"}>
                   {state === "loading" ? "Sending link..." : "Send sign-in link"}
                   {state === "idle" && <ArrowRight className="h-4 w-4" />}
                 </Button>
               </div>
 
-              <p className="text-center text-xs text-ink-400 mt-5">
+              <p className="text-center text-xs text-ink-500 mt-4">
+                We use your email address only to sign you in and send messages about your plan. See our{" "}
+                <Link href="/privacy" className="underline">privacy policy</Link>.
+              </p>
+              <p className="text-center text-xs text-ink-400 mt-3">
                 No account?{" "}
                 <Link href="/intake" className="text-ink-600 font-medium hover:underline">
                   Start by creating a plan

@@ -12,7 +12,7 @@ interface PlanSummary {
 }
 
 const FEATURES = [
-  { icon: UserPlus, title: "Invite by email", desc: "Add brothers, sisters, children or friends. They sign in with their own email — no passwords." },
+  { icon: UserPlus, title: "Invite by email", desc: "Add brothers, sisters, children or friends. They sign in with their own email address. There are no passwords." },
   { icon: CheckCircle2, title: "Share the tasks", desc: "Everyone sees the same plan. Tick tasks off and say who's doing what, so nothing is done twice." },
   { icon: MessageSquare, title: "Leave notes", desc: "Record what the bank said or which funeral director you called, right on the task." },
 ];
@@ -42,7 +42,7 @@ export default function FamilyPage() {
           </div>
           <h1 className="text-3xl sm:text-4xl font-semibold text-ink-900">Share the plan with your family</h1>
           <p className="text-ink-500 mt-2 max-w-2xl">
-            There&apos;s a lot to do after someone dies, and it shouldn&apos;t all fall on one person. Invite family
+            There&apos;s a lot to do after someone dies, and it should not all fall on one person. Invite family
             members to your plan so you can divide up tasks and keep each other informed.
           </p>
         </div>
@@ -90,9 +90,9 @@ export default function FamilyPage() {
         ) : plans.length === 0 ? (
           <Card>
             <CardContent className="py-10 text-center">
-              <p className="text-ink-700 font-medium mb-2">You don&apos;t have any saved plans yet</p>
+              <p className="text-ink-700 font-medium mb-2">You do not have any saved plans yet</p>
               <p className="text-sm text-ink-500 mb-6">
-                Create a plan first — then you can invite family members to it. If someone has invited you, ask them to
+                Create a plan first. You can then invite family members to it. If someone has invited you, ask them to
                 check they used this email address.
               </p>
               <Link href="/intake">

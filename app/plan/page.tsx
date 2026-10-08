@@ -53,7 +53,7 @@ export default function LocalPlanPage() {
       writeLocal(LOCAL_KEYS.statuses, null);
       router.push(`/plan/${planId}`);
     } catch {
-      setError("We couldn't save your plan just now. Your progress is still kept in this browser.");
+      setError("We could not save your plan just now. Your progress is still kept in this browser.");
       setSaving(false);
     }
   };

@@ -29,7 +29,7 @@ export async function createMagicLink(email: string): Promise<string> {
 export async function verifyMagicLink(
   token: string
 ): Promise<{ userId: string; email: string } | null> {
-  // Claim the token atomically so a double-click can't create two sessions
+  // Claim the token atomically so a double-click cannot create two sessions
   const rows = await db()`
     UPDATE magic_links SET used_at = NOW()
     WHERE token = ${token} AND expires_at > NOW() AND used_at IS NULL

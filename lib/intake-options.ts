@@ -39,11 +39,17 @@ export const FAITHS: Choice<FaithOption>[] = [
   { value: "prefer-not-to-say", label: "Skip this question" },
   { value: "none", label: "No religious needs" },
   { value: "christian", label: "Christian" },
+  { value: "christian-pentecostal", label: "Pentecostal or Evangelical Christian" },
+  { value: "christian-orthodox", label: "Orthodox Christian" },
   { value: "muslim", label: "Muslim" },
   { value: "jewish", label: "Jewish" },
   { value: "hindu", label: "Hindu" },
   { value: "sikh", label: "Sikh" },
-  { value: "humanist", label: "Humanist" },
-  { value: "african-caribbean", label: "African / Caribbean traditions" },
-  { value: "other", label: "Other" },
+  { value: "buddhist", label: "Buddhist" },
+  { value: "traditional", label: "Traditional or ancestral beliefs" },
+  { value: "humanist", label: "Humanist or non-religious ceremony" },
+  { value: "other", label: "Another faith" },
 ];
+
+/** Faith options people can choose (older values such as "african-caribbean" are still read). */
+export const FAITH_CHOICES = FAITHS.filter((f) => f.value !== "none" && f.value !== "prefer-not-to-say");

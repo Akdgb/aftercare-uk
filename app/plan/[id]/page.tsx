@@ -63,7 +63,7 @@ export default function SavedPlanPage() {
       () =>
         !cancelled &&
         setLoadError(
-          "We couldn't find this plan. It may have been deleted, or it hasn't been shared with this email address."
+          "We could not find this plan. It may have been deleted, or it has not been shared with this email address."
         )
     );
     return () => {
@@ -163,11 +163,11 @@ export default function SavedPlanPage() {
         sidebar={
           <>
             <FamilyPanel plan={plan} onChange={(members) => setPlan({ ...plan, members })} />
-            {plan.role === "owner" && getFaiths(plan.intake_data).length > 0 && (
+            {plan.role === "owner" && (getFaiths(plan.intake_data).length > 0 || (plan.intake_data.backgrounds?.length ?? 0) > 0) && (
               <RemoveFaith
                 planId={planId}
                 onRemoved={() =>
-                  setPlan({ ...plan, intake_data: { ...plan.intake_data, faith: "prefer-not-to-say", faiths: [], faithConsent: false } })
+                  setPlan({ ...plan, intake_data: { ...plan.intake_data, faith: "prefer-not-to-say", faiths: [], backgrounds: [], backgroundOther: undefined, faithConsent: false } })
                 }
               />
             )}
@@ -255,7 +255,7 @@ function FamilyPanel({ plan, onChange }: { plan: PlanResponse; onChange: (member
         kind: "ok",
         text: data.emailSent
           ? `Invitation sent to ${email}.`
-          : `${name} has been added, but the invitation email couldn't be sent — ask them to sign in with ${email}.`,
+          : `${name} has been added, but the invitation email could not be sent. Ask them to sign in with ${email}.`,
       });
       setName("");
       setEmail("");
@@ -286,7 +286,7 @@ function FamilyPanel({ plan, onChange }: { plan: PlanResponse; onChange: (member
         <p className="text-sm font-medium text-ink-700">Family</p>
       </div>
       <p className="text-xs text-ink-500 mb-3">
-        Share the load — invited people can tick off tasks, take tasks on, and leave notes.
+        Share the work. People you invite can tick off tasks, take on tasks and leave notes.
       </p>
 
       <ul className="space-y-2 mb-3">
@@ -475,7 +475,7 @@ function TaskCollaboration({
 function RemoveFaith({ planId, onRemoved }: { planId: string; onRemoved: () => void }) {
   const [busy, setBusy] = useState(false);
   const remove = async () => {
-    if (!confirm("Remove the faith answer from this plan? Faith-specific tasks will be removed from the list.")) return;
+    if (!confirm("Remove the faith and cultural background answers from this plan? The steps based on them will be removed from the list.")) return;
     setBusy(true);
     try {
       await api(`/api/plan/${planId}`, { method: "PATCH", body: JSON.stringify({ removeFaith: true }) });
@@ -492,7 +492,7 @@ function RemoveFaith({ planId, onRemoved }: { planId: string; onRemoved: () => v
       disabled={busy}
       className="w-full text-xs text-ink-400 hover:text-ink-700 py-2"
     >
-      Remove faith details from this plan
+      Remove faith and background details from this plan
     </button>
   );
 }
@@ -500,7 +500,7 @@ function RemoveFaith({ planId, onRemoved }: { planId: string; onRemoved: () => v
 function DeletePlan({ planId, onDeleted }: { planId: string; onDeleted: () => void }) {
   const [busy, setBusy] = useState(false);
   const del = async () => {
-    if (!confirm("Delete this plan permanently? This also removes it for any family members. This can't be undone.")) {
+    if (!confirm("Delete this plan permanently? This also removes it for any family members. This cannot be undone.")) {
       return;
     }
     setBusy(true);
@@ -556,7 +556,7 @@ function SaveToast({ state }: { state: "idle" | "saving" | "saved" | "error" }) 
       )}
       {state === "error" && (
         <div className="flex items-center gap-2 bg-red-600 shadow-lg rounded-full px-4 py-2 text-sm text-white">
-          Couldn&apos;t save — please try again
+          Could not save. Please try again.
         </div>
       )}
     </div>
