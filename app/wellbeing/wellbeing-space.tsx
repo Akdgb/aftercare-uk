@@ -25,6 +25,7 @@ import {
   type SmallStep,
 } from "@/lib/wellbeing";
 import { cn, formatDate } from "@/lib/utils";
+import { NHS_GRIEF_URL, NHS_TALKING_THERAPIES_URL } from "@/lib/support";
 import type { IntakeFormData } from "@/types";
 
 type Exercise = "breathe" | "ground" | "write" | "step";
@@ -123,27 +124,16 @@ export function WellbeingSpace() {
       {/* Talk to someone */}
       <h2 className="font-sans text-sm font-semibold text-ink-500 uppercase tracking-wide mt-8 mb-2">Talk to someone</h2>
       <ul className="bg-white border border-stone-200 rounded-2xl divide-y divide-stone-100">
-        <SupportRow name="Cruse Bereavement Support" detail="Free grief helpline. Cruse Scotland: 0808 802 6161" phone="0808 808 1677" />
         <SupportRow
           name="NHS Talking Therapies"
           detail="Free NHS counselling. In England you can refer yourself online if you are registered with a GP. Elsewhere in the UK, ask your GP."
-          href="https://www.nhs.uk/service-search/mental-health/find-an-nhs-talking-therapies-service"
+          href={NHS_TALKING_THERAPIES_URL}
         />
-        <SupportRow
-          name="Sue Ryder"
-          detail="Up to 6 free video counselling sessions for adults, and an online community open day and night"
-          href="https://www.sueryder.org/grief-support/services/online-bereavement-counselling/"
-        />
-        {muslim && (
-          <SupportRow
-            name="Muslim Bereavement Support Service"
-            detail="Support for Muslim women, in line with Islamic values"
-            phone="020 3468 7333"
-          />
-        )}
+        <SupportRow name="Your GP" detail="They can talk to you about how you are coping and refer you for support." />
+        <SupportRow name="NHS advice on grief" detail="What is normal, and when to get help" href={NHS_GRIEF_URL} />
         <li className="px-4 py-3">
           <Link href="/help/support" className="text-sm font-medium text-ink-800 underline underline-offset-4">
-            More support, including for children and young people
+            {muslim ? "Free helplines, including support for Muslim women" : "Free national helplines"}
           </Link>
         </li>
       </ul>
@@ -308,16 +298,16 @@ function UrgentSupport() {
     <div className="rounded-2xl bg-rose-50 border border-rose-200 p-5 text-ink-900" role="status">
       <p className="font-semibold">If you are struggling to cope, please talk to someone now.</p>
       <div className="flex flex-wrap gap-2 mt-3">
-        <a href="tel:116123" className="inline-flex items-center gap-2 bg-ink-800 text-white font-medium px-4 py-2.5 rounded-xl">
-          <Phone className="h-4 w-4" /> Samaritans 116 123
+        <a href="tel:111" className="inline-flex items-center gap-2 bg-ink-800 text-white font-medium px-4 py-2.5 rounded-xl">
+          <Phone className="h-4 w-4" /> Call NHS 111
         </a>
-        <a href="sms:85258?body=SHOUT" className="inline-flex items-center gap-2 bg-white border border-stone-300 font-medium px-4 py-2.5 rounded-xl">
-          Text SHOUT to 85258
+        <a href="tel:999" className="inline-flex items-center gap-2 bg-white border border-stone-300 font-medium px-4 py-2.5 rounded-xl">
+          <Phone className="h-4 w-4" /> 999 if you are in danger
         </a>
       </div>
       <p className="text-sm text-ink-700 mt-3">
-        Both are free, day or night. For urgent mental health help in England or Wales, call 111 and choose option 2. In
-        Scotland, call NHS 24 on 111. If you might act on thoughts of ending your life, or are in danger now, call 999.
+        In England or Wales, choose option 2 for mental health. In Scotland, NHS 24 answers on 111. If you might act on
+        thoughts of ending your life, call 999. You can also call Samaritans free on 116 123, day or night.
       </p>
     </div>
   );

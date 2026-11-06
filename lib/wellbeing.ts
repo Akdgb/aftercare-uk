@@ -38,9 +38,9 @@ export const FEELINGS: { id: string; label: string; tip: string; href?: string; 
   {
     id: "lonely",
     label: "Loneliness",
-    tip: "Support often fades after the funeral, just when it is needed most. Talking to other people who have been bereaved can help. Sue Ryder runs a free online community that is open day and night.",
-    href: "https://community.sueryder.org",
-    linkText: "Sue Ryder online community",
+    tip: "Support often fades after the funeral, just when it is needed most. Telling a friend you are finding it hard, or talking to other people who have been bereaved, can help.",
+    href: "/help/support",
+    linkText: "Free helplines",
   },
   {
     id: "guilt",

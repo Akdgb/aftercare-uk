@@ -48,12 +48,10 @@ export default function HomePage() {
       </main>
 
       <footer className="max-w-5xl w-full mx-auto px-5 py-6 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-ink-500">
-        <a href="tel:08088081677" className="flex items-center gap-1.5 hover:text-ink-900">
-          <Phone className="h-3.5 w-3.5" /> Cruse 0808 808 1677
+        <a href="tel:111" className="flex items-center gap-1.5 hover:text-ink-900">
+          <Phone className="h-3.5 w-3.5" /> NHS 111 for urgent help
         </a>
-        <a href="tel:116123" className="flex items-center gap-1.5 hover:text-ink-900">
-          <Phone className="h-3.5 w-3.5" /> Samaritans 116 123
-        </a>
+        <Link href="/help/support" className="hover:text-ink-900">Getting support</Link>
         <Link href="/privacy" className="hover:text-ink-900">Privacy</Link>
       </footer>
     </div>

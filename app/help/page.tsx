@@ -14,7 +14,7 @@ const TOOLS: HelpItem[] = [
 
 export default function HelpPage() {
   const guides: HelpItem[] = [
-    { href: "/help/support", title: "Someone to talk to", desc: "Free helplines for grief and difficult times", kind: "guide", icon: "book" },
+    { href: "/help/support", title: "Getting support", desc: "NHS help first, then free national helplines", kind: "guide", icon: "book" },
     { href: "/help/streaming", title: "Stream the funeral to family abroad", desc: "WhatsApp, Zoom or a venue webcast", kind: "guide", icon: "book" },
     { href: "/help/memorials", title: "Condolences and online memorials", desc: "Free memorial pages, notices and donations", kind: "guide", icon: "book" },
     { href: "/help/documents", title: "Documents you'll need", desc: "What to gather and where it comes from", kind: "guide", icon: "book" },
