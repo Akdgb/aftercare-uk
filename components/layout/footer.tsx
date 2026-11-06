@@ -22,6 +22,7 @@ export function Footer() {
         </div>
         <div className="flex flex-wrap gap-x-4 gap-y-1 mt-5 text-xs text-ink-500">
           <Link href="/about" className="hover:text-ink-900">About</Link>
+          <Link href="/partners" className="hover:text-ink-900">For organisations</Link>
           <Link href="/privacy" className="hover:text-ink-900">Privacy</Link>
           <Link href="/accessibility" className="hover:text-ink-900">Accessibility</Link>
           <span>General guidance, not legal or financial advice.</span>
