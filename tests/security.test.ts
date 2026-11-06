@@ -103,3 +103,19 @@ describe("intakeSchema", () => {
     expect(parsed).not.toHaveProperty("isAdmin");
   });
 });
+
+import { normaliseSiteUrl } from "@/lib/site";
+
+describe("site address setting", () => {
+  it("accepts the address with or without https and a trailing slash", () => {
+    expect(normaliseSiteUrl("https://aftercare-uk.vercel.app/")).toBe("https://aftercare-uk.vercel.app");
+    expect(normaliseSiteUrl("aftercare-uk.vercel.app")).toBe("https://aftercare-uk.vercel.app");
+    expect(normaliseSiteUrl("http://localhost:3100")).toBe("http://localhost:3100");
+  });
+
+  it("falls back when the setting is empty or nonsense", () => {
+    expect(normaliseSiteUrl(undefined)).toBe("https://aftercare-uk.vercel.app");
+    expect(normaliseSiteUrl("   ")).toBe("https://aftercare-uk.vercel.app");
+    expect(normaliseSiteUrl("not a url at all", "http://localhost:3000")).toBe("http://localhost:3000");
+  });
+});

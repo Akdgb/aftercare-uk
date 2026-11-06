@@ -26,6 +26,7 @@ import {
 } from "@/lib/wellbeing";
 import { cn, formatDate } from "@/lib/utils";
 import { NHS_GRIEF_URL, NHS_TALKING_THERAPIES_URL } from "@/lib/support";
+import { InstallPrompt } from "@/components/app/install-prompt";
 import type { IntakeFormData } from "@/types";
 
 type Exercise = "breathe" | "ground" | "write" | "step";
@@ -58,6 +59,8 @@ export function WellbeingSpace() {
       />
 
       {checkIns.length > 0 && <WeekStrip checkIns={checkIns} today={today} />}
+
+      <InstallPrompt className="mt-4" />
 
       {hasHardFortnight(checkIns, today) && (
         <div className="mt-4 rounded-2xl bg-amber-50 border border-amber-200 p-4 text-sm text-ink-800">

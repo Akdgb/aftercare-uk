@@ -1,5 +1,6 @@
+import { normaliseSiteUrl } from "@/lib/site";
 export function appUrl(): string {
-  return (process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000").replace(/\/$/, "");
+  return normaliseSiteUrl(process.env.NEXT_PUBLIC_APP_URL, "http://localhost:3000");
 }
 
 const FROM = () => process.env.EMAIL_FROM ?? "AfterCare <no-reply@aftercare-uk.co.uk>";

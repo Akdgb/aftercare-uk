@@ -19,6 +19,7 @@ import {
   Zap,
 } from "lucide-react";
 import { generateActionPlan } from "@/lib/action-plan";
+import { InstallPrompt } from "@/components/app/install-prompt";
 import { cn, formatDate } from "@/lib/utils";
 import type { ActionPlanTask, IntakeFormData } from "@/types";
 
@@ -279,6 +280,7 @@ export function PlanView({
             )}
 
             {banner && <div className="print:hidden">{banner}</div>}
+            <InstallPrompt className="print:hidden" />
 
             {/* ── Toolbar ─────────────────────────────────────────────── */}
             <div className="print:hidden space-y-3">
