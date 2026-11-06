@@ -92,6 +92,7 @@ export const REGIONS: Region[] = [
       { id: "sri-lankan-tamil", label: "Sri Lankan Tamil" },
       { id: "sri-lankan-other", label: "Other Sri Lankan" },
       { id: "nepali", label: "Nepali" },
+      { id: "afghan", label: "Afghan" },
     ],
   },
   {
@@ -125,6 +126,39 @@ export const REGIONS: Region[] = [
       { id: "roma", label: "Roma" },
     ],
   },
+  {
+    id: "middle-east",
+    label: "Middle Eastern and North African",
+    backgrounds: [
+      { id: "iraqi", label: "Iraqi" },
+      { id: "syrian", label: "Syrian" },
+      { id: "lebanese", label: "Lebanese" },
+      { id: "yemeni", label: "Yemeni" },
+      { id: "egyptian", label: "Egyptian" },
+      { id: "moroccan-algerian", label: "Moroccan or Algerian" },
+      { id: "kurdish", label: "Kurdish" },
+      { id: "iranian", label: "Iranian" },
+      { id: "middle-eastern-other", label: "Other Middle Eastern or North African" },
+    ],
+  },
+  {
+    id: "indian-ocean",
+    label: "Mauritian and Indian Ocean",
+    backgrounds: [
+      { id: "mauritian", label: "Mauritian" },
+      { id: "seychellois", label: "Seychellois" },
+      { id: "indian-ocean-other", label: "Other Indian Ocean" },
+    ],
+  },
+  {
+    id: "latin-america",
+    label: "Latin American",
+    backgrounds: [
+      { id: "brazilian", label: "Brazilian" },
+      { id: "colombian", label: "Colombian" },
+      { id: "latin-american-other", label: "Other Latin American" },
+    ],
+  },
 ];
 
 const ALL = new Map(REGIONS.flatMap((r) => r.backgrounds.map((b) => [b.id, { ...b, region: r.id }] as const)));
@@ -149,13 +183,15 @@ export function getBackgrounds(data: Pick<IntakeFormData, "backgrounds" | "faith
 
 // ── Tailored steps ─────────────────────────────────────────────────────────────
 
-type Ctx = { b: Set<string>; f: Set<FaithOption>; place: BurialPlace | undefined };
+type Ctx = { b: Set<string>; f: Set<FaithOption>; place: BurialPlace | undefined; other: string };
 type Step = Omit<ActionPlanTask, "status"> & { when: (c: Ctx) => boolean };
 
 const inRegion = (c: Ctx, ...regions: string[]) => [...c.b].some((id) => regions.includes(ALL.get(id)?.region ?? ""));
 const has = (c: Ctx, ...ids: string[]) => ids.some((id) => c.b.has(id));
 const starts = (c: Ctx, ...prefixes: string[]) => [...c.b].some((id) => prefixes.some((p) => id.startsWith(p)));
 const AFRICA = ["west-africa", "horn-of-africa", "east-africa", "southern-central-africa"];
+// Communities where many families have close relatives in another country
+const ABROAD_TIES = [...AFRICA, "caribbean", "middle-east", "indian-ocean", "latin-america"];
 const abroad = (c: Ctx) => c.place === "abroad" || c.place === "both";
 
 const STEPS: Step[] = [
@@ -178,7 +214,7 @@ const STEPS: Step[] = [
     priority: "urgent",
     when: (c) =>
       (c.place === undefined || c.place === "unsure") &&
-      (inRegion(c, ...AFRICA, "caribbean", "europe") || has(c, "pakistani", "bangladeshi", "indian")),
+      (inRegion(c, ...ABROAD_TIES, "europe") || has(c, "pakistani", "bangladeshi", "indian", "afghan")),
   },
   {
     id: "start-repatriation",
@@ -214,7 +250,7 @@ const STEPS: Step[] = [
       "Share the news with family overseas and agree who will announce the death more widely. Relatives may need time to arrange travel, which can affect the funeral date.",
     category: "personal",
     priority: "urgent",
-    when: (c) => inRegion(c, ...AFRICA, "caribbean") || has(c, "filipino", "polish", "irish"),
+    when: (c) => inRegion(c, ...ABROAD_TIES) || has(c, "filipino", "polish", "irish", "afghan"),
   },
   // This week
   {
@@ -254,7 +290,8 @@ const STEPS: Step[] = [
     when: (c) =>
       has(c, "nigerian-yoruba", "nigerian-igbo", "nigerian-edo", "nigerian-other", "sierra-leonean-krio", "zambian", "congolese-drc", "irish", "filipino", "polish", "st-lucian", "dominican", "haitian", "romany-gypsy", "irish-traveller", "roma") ||
       starts(c, "kenyan-") ||
-      c.f.has("christian-pentecostal"),
+      c.f.has("christian-pentecostal") ||
+      (has(c, "mauritian", "seychellois", "brazilian", "colombian", "latin-american-other") && c.f.has("christian")),
   },
   {
     id: "receive-visitors",
@@ -263,7 +300,10 @@ const STEPS: Step[] = [
       "Many families welcome visitors at home for several days after a death, and friends often bring food so the family does not need to cook. You could ask one relative to coordinate visits.",
     category: "personal",
     priority: "this-week",
-    when: (c) => c.f.has("muslim") || has(c, "somali", "eritrean", "ethiopian", "sudanese", "south-sudanese", "congolese-drc", "zambian"),
+    when: (c) =>
+      c.f.has("muslim") ||
+      inRegion(c, "middle-east") ||
+      has(c, "somali", "eritrean", "ethiopian", "sudanese", "south-sudanese", "congolese-drc", "zambian", "afghan", "mauritian"),
   },
   {
     id: "check-cemetery-rules",
@@ -319,7 +359,8 @@ const STEPS: Step[] = [
     category: "personal",
     priority: "this-month",
     when: (c) =>
-      has(c, "eritrean", "ethiopian", "greek-greek-cypriot", "sierra-leonean-krio", "trinidadian-tobagonian", "turkish-cypriot-turkish", "chinese", "hong-kong", "vietnamese", "filipino", "irish", "polish") ||
+      has(c, "eritrean", "ethiopian", "greek-greek-cypriot", "sierra-leonean-krio", "trinidadian-tobagonian", "turkish-cypriot-turkish", "chinese", "hong-kong", "vietnamese", "filipino", "irish", "polish", "mauritian", "seychellois") ||
+      inRegion(c, "middle-east", "latin-america") ||
       ["christian-orthodox", "hindu", "sikh", "buddhist", "muslim"].some((f) => c.f.has(f as FaithOption)),
   },
   {
@@ -398,7 +439,19 @@ export function traditionTasks(data: IntakeFormData): Omit<ActionPlanTask, "stat
     f: new Set(getFaiths(data)),
     // Where the burial will be is not sensitive, so it applies with or without consent
     place: data.burialPlace,
+    other: data.faithConsent ? (data.backgroundOther ?? "").trim() : "",
   };
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  return STEPS.filter((s) => s.when(c)).map(({ when, ...task }) => task);
+  const tasks: Omit<ActionPlanTask, "status">[] = STEPS.filter((s) => s.when(c)).map(({ when, ...task }) => task);
+  // A background we have no specific steps for still gets a gentle prompt
+  if (c.other) {
+    tasks.push({
+      id: "ask-about-customs",
+      title: "Ask family about the customs that matter",
+      description: `We do not yet have specific steps for ${c.other} traditions. An elder, a faith leader or a community group can tell you what usually happens and when, so you can tell the funeral director early.`,
+      category: "personal",
+      priority: "this-week",
+    });
+  }
+  return tasks;
 }

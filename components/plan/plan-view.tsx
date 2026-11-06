@@ -179,6 +179,14 @@ export function PlanView({
               <p className="text-sm sm:text-base text-ink-600 mt-3 max-w-xl print:hidden">
                 {encouragement(done, tasks.length)}
               </p>
+              {daysSince !== null && daysSince >= 21 && (
+                <Link
+                  href="/wellbeing"
+                  className="print:hidden inline-flex items-center gap-1.5 mt-3 text-sm font-medium text-ink-800 bg-ink-50 border border-ink-200 px-3.5 py-2 rounded-xl hover:bg-ink-100"
+                >
+                  How are you doing? Looking after you <ArrowRight className="h-4 w-4" />
+                </Link>
+              )}
             </div>
             <ProgressRing done={done} total={tasks.length} />
           </div>

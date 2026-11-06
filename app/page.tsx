@@ -32,6 +32,12 @@ export default function HomePage() {
           >
             Start <ArrowRight className="h-5 w-5" />
           </Link>
+          <Link
+            href="/wellbeing"
+            className="mt-3 w-full sm:w-auto sm:min-w-80 inline-flex items-center justify-center gap-2 bg-white/80 border border-stone-300 text-ink-800 text-base font-medium px-8 py-3.5 rounded-2xl hover:bg-white"
+          >
+            It&apos;s been a while. I need support.
+          </Link>
           <p className="mt-5 text-sm text-ink-500">
             Just need an answer?{" "}
             <Link href="/help" className="font-medium text-ink-800 underline underline-offset-4">
@@ -42,12 +48,10 @@ export default function HomePage() {
       </main>
 
       <footer className="max-w-5xl w-full mx-auto px-5 py-6 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-ink-500">
-        <a href="tel:08088081677" className="flex items-center gap-1.5 hover:text-ink-900">
-          <Phone className="h-3.5 w-3.5" /> Cruse 0808 808 1677
+        <a href="tel:111" className="flex items-center gap-1.5 hover:text-ink-900">
+          <Phone className="h-3.5 w-3.5" /> NHS 111 for urgent help
         </a>
-        <a href="tel:116123" className="flex items-center gap-1.5 hover:text-ink-900">
-          <Phone className="h-3.5 w-3.5" /> Samaritans 116 123
-        </a>
+        <Link href="/help/support" className="hover:text-ink-900">Getting support</Link>
         <Link href="/privacy" className="hover:text-ink-900">Privacy</Link>
       </footer>
     </div>

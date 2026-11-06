@@ -322,11 +322,10 @@ function buildTasks(data: IntakeFormData) {
       {
         title: "Look after yourself",
         description:
-          "Grief can be overwhelming, especially alongside all these tasks. Free, confidential support is available by phone and online, including from Cruse Bereavement Support (Cruse Scotland in Scotland).",
+          "Grief can be overwhelming, especially alongside all these tasks. Your GP and free NHS talking therapies can help, and our support page lists free helplines.",
         category: "personal",
         priority: "future",
-        link: "/help/support",
-        phone: "0808 808 1677",
+        link: "/wellbeing",
       },
       { legacy: false }
     ),

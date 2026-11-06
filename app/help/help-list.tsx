@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { BookOpen, Calculator, ChevronRight, MapPin, MessageCircleQuestion, PiggyBank, PoundSterling, Search } from "lucide-react";
+import { BookOpen, Calculator, ChevronRight, HeartHandshake, MapPin, MessageCircleQuestion, PiggyBank, PoundSterling, Search } from "lucide-react";
 import { ShareButton } from "@/components/share/share-button";
 
 export type HelpItem = {
@@ -9,10 +9,10 @@ export type HelpItem = {
   title: string;
   desc: string;
   kind: "tool" | "guide";
-  icon: "money" | "calc" | "map" | "chat" | "book";
+  icon: "money" | "calc" | "map" | "chat" | "book" | "heart";
 };
 
-const ICONS = { money: PoundSterling, calc: Calculator, map: MapPin, chat: MessageCircleQuestion, book: BookOpen };
+const ICONS = { money: PoundSterling, calc: Calculator, map: MapPin, chat: MessageCircleQuestion, book: BookOpen, heart: HeartHandshake };
 
 export function HelpList({ tools, guides }: { tools: HelpItem[]; guides: HelpItem[] }) {
   const [q, setQ] = useState("");

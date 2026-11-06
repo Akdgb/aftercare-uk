@@ -249,25 +249,8 @@ function Intake({ draft }: { draft: Draft | null }) {
               submitEmail();
             }}
           >
-            <Title>Keep your plan safe</Title>
-            <p className="text-ink-500 mb-6">This step is optional. Add your email address and we will save the plan to an account for you.</p>
-            <ul className="space-y-3 mb-6">
-              {[
-                ["Gentle reminders", "A short email if a task with a deadline is still open. Turn it off any time."],
-                ["Open it anywhere", "Use your phone, a laptop or a relative's computer. Your progress is the same everywhere."],
-                ["Share the work", "Invite family so everyone can see and tick off tasks."],
-              ].map(([title, body]) => (
-                <li key={title} className="flex gap-3">
-                  <span className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5">
-                    <Check className="h-3.5 w-3.5" strokeWidth={3} />
-                  </span>
-                  <span>
-                    <span className="block font-medium text-ink-900">{title}</span>
-                    <span className="block text-sm text-ink-600">{body}</span>
-                  </span>
-                </li>
-              ))}
-            </ul>
+            <Title>Save your plan?</Title>
+            <p className="text-ink-500 mb-6">Get reminders and share it with family.</p>
             <Field label="Your email">
               <input
                 type="email"
@@ -284,8 +267,10 @@ function Intake({ draft }: { draft: Draft | null }) {
                 <AgeQuestion value={ageBand} onChange={(v) => { setAgeBand(v); setError(null); }} />
               </div>
             )}
-            <p className="text-xs text-ink-500 mt-2">There is no password. We will email you a link to save your plan. We never share your email address. See our{" "}
-              <a href="/privacy" target="_blank" className="underline">privacy policy</a>.</p>
+            <p className="text-xs text-ink-500 mt-2">
+              No password needed.{" "}
+              <a href="/privacy" target="_blank" className="underline">Privacy</a>
+            </p>
             {error && <p className="text-sm text-rose-700 mt-3">{error}</p>}
             <button type="submit" className={primaryClass + " mt-6"} disabled={!data.email.trim()}>
               Continue <ArrowRight className="h-5 w-5" />
