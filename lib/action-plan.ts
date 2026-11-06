@@ -325,7 +325,7 @@ function buildTasks(data: IntakeFormData) {
           "Grief can be overwhelming, especially alongside all these tasks. Free, confidential support is available by phone and online, including from Cruse Bereavement Support (Cruse Scotland in Scotland).",
         category: "personal",
         priority: "future",
-        link: "/help/support",
+        link: "/wellbeing",
         phone: "0808 808 1677",
       },
       { legacy: false }

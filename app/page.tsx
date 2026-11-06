@@ -32,6 +32,12 @@ export default function HomePage() {
           >
             Start <ArrowRight className="h-5 w-5" />
           </Link>
+          <Link
+            href="/wellbeing"
+            className="mt-3 w-full sm:w-auto sm:min-w-80 inline-flex items-center justify-center gap-2 bg-white/80 border border-stone-300 text-ink-800 text-base font-medium px-8 py-3.5 rounded-2xl hover:bg-white"
+          >
+            It&apos;s been a while. I need support.
+          </Link>
           <p className="mt-5 text-sm text-ink-500">
             Just need an answer?{" "}
             <Link href="/help" className="font-medium text-ink-800 underline underline-offset-4">

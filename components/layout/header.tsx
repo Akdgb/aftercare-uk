@@ -14,7 +14,7 @@ const TABS = [
     href: "/help",
     label: "Help",
     icon: CircleHelp,
-    match: ["/help", "/guidance", "/financial-support", "/cost-estimator", "/resources", "/assistant"],
+    match: ["/help", "/wellbeing", "/guidance", "/financial-support", "/cost-estimator", "/resources", "/assistant"],
   },
   { href: "/family", label: "Family", icon: Users, match: ["/family"] },
   { href: "/dashboard", label: "Account", icon: UserRound, match: ["/dashboard", "/auth", "/privacy"] },

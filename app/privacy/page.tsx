@@ -188,6 +188,18 @@ export default function PrivacyPage() {
             </div>
           </section>
 
+          <section className="p-6 sm:p-8" id="wellbeing">
+            <h2 className="text-lg font-semibold text-ink-800 mb-3">Looking after you</h2>
+            <div className="prose text-sm text-ink-600">
+              <p>
+                Your daily check-ins, the feelings you choose, anything you write and the dates you add in &ldquo;Looking
+                after you&rdquo; are stored only in your browser on your own device. They are never sent to us or to
+                anyone else, and they are not saved to your account. You can delete them at any time from that page, or
+                by clearing your browser data.
+              </p>
+            </div>
+          </section>
+
           <section className="p-6 sm:p-8" id="children">
             <h2 className="text-lg font-semibold text-ink-800 mb-3">Children</h2>
             <div className="prose text-sm text-ink-600">

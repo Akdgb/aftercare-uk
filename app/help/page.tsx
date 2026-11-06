@@ -5,6 +5,7 @@ export const metadata = { title: "Help" };
 
 // Everything that is not the plan lives here, as one searchable list.
 const TOOLS: HelpItem[] = [
+  { href: "/wellbeing", title: "Looking after you", desc: "Check in, take a breath and find support", kind: "tool", icon: "heart" },
   { href: "/financial-support", title: "Money you could claim", desc: "2-minute check for government payments", kind: "tool", icon: "money" },
   { href: "/cost-estimator", title: "Funeral cost estimate", desc: "See typical prices before you call anyone", kind: "tool", icon: "calc" },
   { href: "/resources", title: "Services near you", desc: "Register office, funeral directors, crematoriums", kind: "tool", icon: "map" },

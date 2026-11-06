@@ -78,3 +78,23 @@ describe("cultural backgrounds", () => {
     expect(new Set(plan).size).toBe(plan.length);
   });
 });
+
+describe("backgrounds added after feedback", () => {
+  it("gives a Mauritian Muslim family Muslim timing, visitors and the 40th day prayers", () => {
+    const plan = ids({ faith: "muslim", faiths: ["muslim"], backgrounds: ["mauritian"], faithConsent: true });
+    expect(plan).toEqual(expect.arrayContaining(["request-urgent-release", "contact-mosque", "receive-visitors", "plan-memorial-prayers", "inform-relatives-abroad"]));
+    expect(plan).not.toContain("arrange-wake");
+  });
+
+  it("covers Middle Eastern families", () => {
+    expect(ids({ backgrounds: ["syrian"], faithConsent: true })).toEqual(
+      expect.arrayContaining(["receive-visitors", "inform-relatives-abroad", "decide-burial-place"])
+    );
+  });
+
+  it("turns a background we do not list into a gentle prompt, only with consent", () => {
+    const withConsent = generateActionPlan({ ...base, backgroundOther: "Tamil Malaysian", faithConsent: true });
+    expect(withConsent.find((t) => t.id === "ask-about-customs")?.description).toContain("Tamil Malaysian");
+    expect(ids({ backgroundOther: "Tamil Malaysian" })).not.toContain("ask-about-customs");
+  });
+});
