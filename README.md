@@ -16,8 +16,10 @@ through alone or share with family.
 - **Gentle reminders** — at most one email a week while urgent tasks are open
   (first 90 days), with one-click unsubscribe.
 - **Print / save as PDF** of the plan.
-- **Guidance library**, **funeral cost estimator**, **financial support checker**,
-  **local services finder** (postcodes.io + OpenStreetMap) and an **AI assistant**.
+- **Guidance library**, **funeral cost estimator**, **financial support checker**
+  and links to the official GOV.UK, mygov.scot and nidirect services.
+- **Looking after you** — daily check-in, short exercises and NHS-first support,
+  all stored only on the person's device.
 - **Privacy controls** — delete a plan or your whole account from the dashboard;
   plans are purged automatically after 3 years.
 
@@ -26,7 +28,7 @@ through alone or share with family.
 Next.js 16 (App Router) · React 19 · Tailwind CSS 4 · Postgres via the
 dependency-free [`postgres`](https://github.com/porsager/postgres) driver (works
 with any Postgres host) · `jose` signed-cookie sessions · Zod · Vitest.
-Email (Resend) and the AI assistant (OpenAI) are called over plain HTTPS — no SDKs.
+Email (Resend) is called over plain HTTPS — no SDK.
 
 ## Run it locally
 
@@ -39,9 +41,8 @@ docker compose up -d           # starts a local Postgres
 npm run dev                    # http://localhost:3000
 ```
 
-No email or AI keys are needed locally: sign-in links and other emails are
-printed in the terminal running `npm run dev` — copy the link into your browser.
-The assistant falls back to built-in answers for common questions.
+No email key is needed locally: sign-in links and other emails are printed in
+the terminal running `npm run dev` — copy the link into your browser.
 
 ### Checks
 
@@ -63,7 +64,7 @@ CI runs everything, including the database tests, on every pull request.
 3. In Vercel → Settings → Environment Variables, add the variables from
    `.env.example`: `DATABASE_URL` (the Neon string, ending in `?sslmode=require`),
    `SESSION_SECRET`, `NEXT_PUBLIC_APP_URL`, `CRON_SECRET`, and optionally
-   `RESEND_API_KEY` + `EMAIL_FROM` (real emails) and `OPENAI_API_KEY` (AI assistant).
+   `RESEND_API_KEY` + `EMAIL_FROM` (real emails).
 4. Deploy. The app creates and upgrades its own database tables when it starts
    (`instrumentation.ts`); `npm run db:migrate` does the same by hand if you want. `vercel.json` runs `/api/cron/reminders` daily at 09:00 UTC to send
    reminders and delete expired data.

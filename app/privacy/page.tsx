@@ -42,12 +42,11 @@ export default function PrivacyPage() {
             <div className="prose text-sm text-ink-600">
               <p>When you use AfterCare, we may collect the following personal data:</p>
               <ul>
-                <li><strong>Your contact details:</strong> email address and postcode</li>
+                <li><strong>Your contact details:</strong> email address</li>
                 <li><strong>Your relationship</strong> to the deceased</li>
                 <li><strong>Plan preferences:</strong> funeral type, housing situation, financial support needs and, only if you consent, faith and cultural background</li>
                 <li><strong>Usage data:</strong> which tasks you have completed, when you last accessed your plan</li>
                 <li><strong>Family workspace:</strong> the names and email addresses of people you invite to a plan, who has taken on which task, and notes left on tasks</li>
-                <li><strong>AI chat messages:</strong> questions you ask the AI assistant</li>
               </ul>
               <p>We also receive information about the deceased person. Under UK law, GDPR does not apply to people who have died. However, we treat all bereavement data with the same care and confidentiality as personal data.</p>
             </div>
@@ -114,7 +113,6 @@ export default function PrivacyPage() {
                 <li><strong>Your account:</strong> until you delete it from your dashboard (Account tab). This removes all plans you own.</li>
                 <li><strong>Family members and task notes:</strong> deleted with the plan, or when the owner removes that person</li>
                 <li><strong>Sign-in links:</strong> expire after 20 minutes and are deleted after 1 day</li>
-                <li><strong>AI chat messages:</strong> not stored by AfterCare; they are sent to OpenAI to generate a reply</li>
                 <li><strong>Server logs:</strong> 90 days</li>
               </ul>
               <p>You can request deletion of your data at any time. See section 7.</p>
@@ -127,11 +125,8 @@ export default function PrivacyPage() {
               <p>We use the following third-party processors. All are contractually required to process your data only on our instructions and in compliance with UK GDPR:</p>
               <ul>
                 <li><strong>Neon Inc.</strong> (database hosting): stores your account and saved plans</li>
-                <li><strong>OpenAI LLC</strong> (AI assistant): messages sent to the AI are processed in the USA under EU/UK Standard Contractual Clauses</li>
                 <li><strong>Resend Inc.</strong> (email delivery): email addresses are processed to send sign-in links, family invitations, your plan link and reminders</li>
                 <li><strong>Vercel Inc.</strong> (website hosting): your requests are processed on Vercel servers in London</li>
-                <li><strong>postcodes.io</strong> (postcode lookup): if you search for services near you, the postcode you type is sent to postcodes.io to find its location. Nothing else is sent.</li>
-                <li><strong>OpenStreetMap, through the Overpass API</strong> (local services): the approximate location of that postcode is used to find nearby register offices, funeral directors and crematoriums. No personal details are sent.</li>
               </ul>
               <p>
                 We do not use analytics, advertising, tracking pixels or session recording tools. The website&apos;s fonts
@@ -145,7 +140,7 @@ export default function PrivacyPage() {
             <h2 className="text-lg font-semibold text-ink-800 mb-3">6. Transfers outside the UK</h2>
             <div className="prose text-sm text-ink-600">
               <p>
-                Our processors (Neon, OpenAI, Vercel, Resend) are based in the USA. Transfers to the USA are protected by either:
+                Our processors (Neon, Vercel, Resend) are based in the USA. Transfers to the USA are protected by either:
               </p>
               <ul>
                 <li>The UK International Data Transfer Agreement (IDTA), or</li>

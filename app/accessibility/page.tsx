@@ -25,8 +25,6 @@ export default function AccessibilityPage() {
         testing of every page found no failures that affect use. We know some parts may still not be fully accessible:
       </p>
       <ul>
-        <li>the AI assistant&apos;s answers are added to the page as they arrive and may not always be announced by screen readers</li>
-        <li>the map of local services relies on information from third parties and some entries may be incomplete</li>
         <li>some links go to other organisations&apos; websites, which we do not control</li>
       </ul>
 

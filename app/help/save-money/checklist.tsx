@@ -19,7 +19,6 @@ const IDEAS: Idea[] = [
     title: "Compare prices from at least 3 funeral directors",
     how: "Every funeral director has to show a Standardised Price List in their premises and on their website. The same funeral can cost hundreds of pounds more at one firm than another. Ask for a written, itemised quote before agreeing to anything.",
     saving: 500,
-    link: { href: "/resources", label: "Find funeral directors near you" },
   },
   {
     id: "direct",

@@ -3,7 +3,12 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   // Help replaced the separate guidance hub
   async redirects() {
-    return [{ source: "/guidance", destination: "/help", permanent: false }];
+    return [
+      { source: "/guidance", destination: "/help", permanent: false },
+      // Removed features: send old links and bookmarks to Help
+      { source: "/assistant", destination: "/help", permanent: true },
+      { source: "/resources", destination: "/help", permanent: true },
+    ];
   },
   // Standard security headers checked by public sector IT reviews
   async headers() {
