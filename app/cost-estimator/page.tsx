@@ -148,7 +148,7 @@ export default function CostEstimatorPage() {
 
   return (
     <div className="bg-stone-50 min-h-screen">
-      <div className="bg-gradient-to-b from-white to-stone-50 border-b border-stone-200/70">
+      <div className="bg-white border-b border-stone-200/70">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
           <div className="max-w-2xl">
             <h1 className="text-3xl sm:text-4xl font-semibold text-ink-900 mb-2">Estimate funeral costs</h1>

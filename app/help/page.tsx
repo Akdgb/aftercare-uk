@@ -32,7 +32,7 @@ export default function HelpPage() {
     ...Object.values(articles).map((a): HelpItem => ({
     href: `/guidance/${a.slug}`,
     title: a.title,
-    desc: `${a.category} · ${a.readTime} min read`,
+    desc: `${a.readTime} minute read`,
     kind: "guide",
     icon: "book",
   })),

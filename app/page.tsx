@@ -1,42 +1,38 @@
 import Link from "next/link";
-import { ArrowRight, Phone } from "lucide-react";
+import { Phone } from "lucide-react";
 import { Logo } from "@/components/layout/logo";
 import { ResumeRedirect } from "./resume-redirect";
 
 // One screen, one button. People who already have a plan are taken straight to it.
 export default function HomePage() {
   return (
-    <div className="min-h-[100dvh] flex flex-col bg-[radial-gradient(ellipse_at_top,#e2ebe7_0%,transparent_60%)]">
+    <div className="min-h-[100dvh] flex flex-col bg-stone-50">
       <ResumeRedirect />
       <header className="max-w-5xl w-full mx-auto px-5 h-16 flex items-center justify-between">
         <Logo />
-        <Link href="/auth/signin" className="text-sm font-medium text-ink-700 px-3 py-2 rounded-lg hover:bg-white/70">
+        <Link href="/auth/signin" className="text-sm font-medium text-ink-700 px-3 py-2 rounded-lg hover:bg-white">
           Sign in
         </Link>
       </header>
 
       <main className="flex-1 flex items-center">
-        <div className="max-w-xl w-full mx-auto px-5 py-10 text-center animate-fade-up">
-          <h1 className="text-4xl sm:text-5xl font-semibold text-ink-900 leading-[1.1]">
-            We&apos;ll help you with
-            <br />
-            <span className="text-ink-600">what comes next.</span>
-          </h1>
-          <p className="text-lg text-ink-600 mt-5">
-            When someone close to you has died, there&apos;s a lot to sort out. Answer a few gentle questions and
-            we&apos;ll give you a step-by-step checklist. Free and private.
+        <div className="max-w-xl w-full mx-auto px-5 py-10">
+          <h1 className="text-4xl sm:text-5xl text-ink-900 leading-tight">What to do after someone dies</h1>
+          <p className="text-lg text-ink-700 mt-4 max-w-prose">
+            When someone close to you has died, there is a lot to sort out. Answer a few questions and get a
+            step-by-step plan for your family. Free and private.
           </p>
           <Link
             href="/intake"
-            className="mt-9 w-full sm:w-auto sm:min-w-80 inline-flex items-center justify-center gap-2 bg-ink-700 text-white text-lg font-medium px-8 py-4 rounded-2xl shadow-lg shadow-ink-900/10 hover:bg-ink-800 active:scale-[0.99] transition-all"
+            className="mt-8 w-full sm:w-auto sm:min-w-72 inline-flex items-center justify-center bg-ink-700 text-white text-lg font-semibold px-8 py-4 rounded-xl hover:bg-ink-800"
           >
-            Start <ArrowRight className="h-5 w-5" />
+            Start your plan
           </Link>
           <Link
             href="/wellbeing"
-            className="mt-3 w-full sm:w-auto sm:min-w-80 inline-flex items-center justify-center gap-2 bg-white/80 border border-stone-300 text-ink-800 text-base font-medium px-8 py-3.5 rounded-2xl hover:bg-white"
+            className="mt-3 w-full sm:w-auto sm:min-w-72 sm:ml-3 inline-flex items-center justify-center bg-white border border-stone-300 text-ink-800 text-base font-semibold px-8 py-3.5 rounded-xl hover:border-ink-400"
           >
-            It&apos;s been a while. I need support.
+            It has been a while. I need support.
           </Link>
           <p className="mt-5 text-sm text-ink-500">
             Just need an answer?{" "}
@@ -47,7 +43,7 @@ export default function HomePage() {
         </div>
       </main>
 
-      <footer className="max-w-5xl w-full mx-auto px-5 py-6 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-ink-500">
+      <footer className="max-w-5xl w-full mx-auto px-5 py-6 flex flex-wrap gap-x-6 gap-y-2 text-sm text-ink-600">
         <a href="tel:111" className="flex items-center gap-1.5 hover:text-ink-900">
           <Phone className="h-3.5 w-3.5" /> NHS 111 for urgent help
         </a>

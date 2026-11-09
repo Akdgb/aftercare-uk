@@ -1,12 +1,13 @@
 import type { Metadata, Viewport } from "next";
 import { SITE } from "@/lib/site";
-import { Fraunces, Inter } from "next/font/google";
+import { Public_Sans } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
-const fraunces = Fraunces({ subsets: ["latin"], variable: "--font-fraunces", display: "swap", weight: ["500", "600"] });
+// One plain typeface, made for government digital services: clear, calm and
+// easy to read for anyone tired or stressed
+const publicSans = Public_Sans({ subsets: ["latin", "latin-ext"], variable: "--font-public-sans", display: "swap" });
 
 const DESCRIPTION =
   "A free, step-by-step plan for families in the UK after someone dies. Register the death, plan an affordable funeral, claim financial support, share tasks with family and look after yourself.";
@@ -31,12 +32,12 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#f8f6f1",
+  themeColor: "#f5f7f6",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en-GB" className={`${inter.variable} ${fraunces.variable}`}>
+    <html lang="en-GB" className={publicSans.variable}>
       <body className="min-h-screen flex flex-col bg-stone-50">
         <Header />
         <main className="flex-1">{children}</main>

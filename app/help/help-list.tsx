@@ -81,7 +81,7 @@ export function HelpList({ tools, official, guides }: { tools: HelpItem[]; offic
 
       {shownOfficial.length > 0 && (
         <>
-          <h2 className="font-sans text-sm font-semibold text-ink-500 uppercase tracking-wide mt-8 mb-2">
+          <h2 className="font-sans text-lg font-semibold text-ink-900 mt-8 mb-2">
             Official government services
           </h2>
           <ul className="bg-white border border-stone-200 rounded-2xl divide-y divide-stone-100 overflow-hidden">
@@ -104,7 +104,7 @@ export function HelpList({ tools, official, guides }: { tools: HelpItem[]; offic
 
       {shownGuides.length > 0 && (
         <>
-          <h2 className="font-sans text-sm font-semibold text-ink-500 uppercase tracking-wide mt-8 mb-2">Guides</h2>
+          <h2 className="font-sans text-lg font-semibold text-ink-900 mt-8 mb-2">Guides</h2>
           <ul className="bg-white border border-stone-200 rounded-2xl divide-y divide-stone-100 overflow-hidden">
             {shownGuides.map((g) => (
               <li key={g.href}>

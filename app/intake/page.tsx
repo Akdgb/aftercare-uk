@@ -273,7 +273,7 @@ function Intake({ draft }: { draft: Draft | null }) {
             </p>
             {error && <p className="text-sm text-rose-700 mt-3">{error}</p>}
             <button type="submit" className={primaryClass + " mt-6"} disabled={!data.email.trim()}>
-              Continue <ArrowRight className="h-5 w-5" />
+              Continue
             </button>
             <button
               type="button"
@@ -327,7 +327,7 @@ function Intake({ draft }: { draft: Draft | null }) {
             </Field>
             {error && <p className="text-sm text-rose-700 mt-3">{error}</p>}
             <button type="submit" className={primaryClass + " mt-8"}>
-              Continue <ArrowRight className="h-5 w-5" />
+              Continue
             </button>
           </form>
         )}
@@ -388,7 +388,7 @@ function Intake({ draft }: { draft: Draft | null }) {
             </div>
             {selectedFaiths.length > 0 ? (
               <button onClick={() => go(7)} className={primaryClass + " mt-5"}>
-                Continue <ArrowRight className="h-5 w-5" />
+                Continue
               </button>
             ) : (
               <div className="grid grid-cols-2 gap-2.5 mt-5">
@@ -479,7 +479,7 @@ function Intake({ draft }: { draft: Draft | null }) {
             )}
             {error && <p className="text-sm text-rose-700 mt-3">{error}</p>}
             <button onClick={submitTraditions} className={primaryClass + " mt-5"}>
-              Show my plan <ArrowRight className="h-5 w-5" />
+              Show my plan
             </button>
           </div>
         )}

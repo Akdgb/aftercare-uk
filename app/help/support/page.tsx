@@ -71,7 +71,7 @@ export default function SupportPage() {
                 </div>
                 <p className="text-sm text-ink-600 mt-1">{l.what}</p>
                 <p className="text-xs text-ink-500 mt-1">
-                  {l.hours} · {l.where}
+                  {l.where}. {l.hours}.
                 </p>
               </li>
             ))}

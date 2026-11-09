@@ -2,7 +2,6 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import {
-  ArrowRight,
   BookOpen,
   Building2,
   Check,
@@ -152,7 +151,7 @@ export function PlanView({
   return (
     <div className="min-h-screen print:bg-white">
       {/* ── Header ─────────────────────────────────────────────────────── */}
-      <div className="bg-gradient-to-b from-white to-stone-50 border-b border-stone-200/70">
+      <div className="bg-white border-b border-stone-200/70">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-5 pb-5 sm:pt-8 sm:pb-7 print:py-2">
           <div className="flex items-start justify-between gap-6">
             <div className="min-w-0">
@@ -164,7 +163,7 @@ export function PlanView({
                   {daysSince !== null && daysSince <= 365 && (
                     <span className="text-ink-400">
                       {" "}
-                      · {daysSince === 0 ? "today" : daysSince === 1 ? "yesterday" : `${daysSince} days ago`}
+                      ({daysSince === 0 ? "today" : daysSince === 1 ? "yesterday" : `${daysSince} days ago`})
                     </span>
                   )}
                 </p>
@@ -185,7 +184,7 @@ export function PlanView({
                   href="/wellbeing"
                   className="print:hidden inline-flex items-center gap-1.5 mt-3 text-sm font-medium text-ink-800 bg-ink-50 border border-ink-200 px-3.5 py-2 rounded-xl hover:bg-ink-100"
                 >
-                  How are you doing? Looking after you <ArrowRight className="h-4 w-4" />
+                  How are you doing? Looking after you
                 </Link>
               )}
             </div>
@@ -213,9 +212,8 @@ export function PlanView({
                   key={nextTask.id}
                   className="relative overflow-hidden rounded-2xl bg-ink-800 text-white p-6 sm:p-7 shadow-lg animate-card-in"
                 >
-                  <div className="absolute -right-16 -top-16 w-56 h-56 rounded-full bg-white/5" aria-hidden="true" />
                   <div className="flex items-center justify-between gap-3 mb-2">
-                    <p id="up-next" className="text-xs font-semibold uppercase tracking-wider text-ink-200">
+                    <p id="up-next" className="text-sm font-semibold text-ink-100">
                       Up next
                     </p>
                     <p className="text-xs text-ink-200 tabular-nums">{queue.length} to do</p>
@@ -263,7 +261,7 @@ export function PlanView({
                       disabled={queue.length < 2}
                       className="inline-flex items-center justify-center gap-2 font-semibold py-3.5 rounded-xl border border-white/30 hover:bg-white/10 active:scale-[0.98] transition-all disabled:opacity-40"
                     >
-                      Not yet <ArrowRight className="h-4 w-4" />
+                      Not yet
                     </button>
                   </div>
                 </div>
@@ -288,8 +286,8 @@ export function PlanView({
                 <div role="tablist" aria-label="Show tasks" className="inline-flex p-1 bg-stone-100 rounded-xl">
                   {(
                     [
-                      ["todo", `To do · ${tasks.length - done}`],
-                      ["done", `Done · ${done}`],
+                      ["todo", `To do (${tasks.length - done})`],
+                      ["done", `Done (${done})`],
                       ["all", "All"],
                     ] as [View, string][]
                   ).map(([key, label]) => (
@@ -443,7 +441,7 @@ function ProgressRing({ done, total }: { done: number; total: number }) {
   return (
     <div className="relative w-16 h-16 sm:w-28 sm:h-28 shrink-0" role="img" aria-label={`${done} of ${total} tasks done`}>
       <svg viewBox="0 0 80 80" className="w-full h-full -rotate-90">
-        <circle cx="40" cy="40" r={r} fill="none" stroke="#e4dfd3" strokeWidth="7" />
+        <circle cx="40" cy="40" r={r} fill="none" stroke="#dce3e0" strokeWidth="7" />
         <circle
           cx="40"
           cy="40"

@@ -2,8 +2,8 @@
 
 /*
  * Brand palette. "ink" is a calm evergreen-grey used for text, buttons and
- * accents; "stone" is overridden with warmer creams for page backgrounds.
- * Text shades 400+ meet WCAG AA contrast on white and on the cream background.
+ * accents; "stone" is overridden with cool, quiet greys for page backgrounds
+ * and lines. Text shades 400+ meet WCAG AA contrast on white and on stone-50.
  */
 @theme {
   --color-ink-50: #f2f6f4;
@@ -18,23 +18,23 @@
   --color-ink-900: #182a26;
   --color-ink-950: #0e1a17;
 
-  --color-stone-50: #f8f6f1;
-  --color-stone-100: #f1eee6;
-  --color-stone-200: #e4dfd3;
-  --color-stone-300: #d3ccbc;
+  --color-stone-50: #f5f7f6;
+  --color-stone-100: #ecf0ee;
+  --color-stone-200: #dce3e0;
+  --color-stone-300: #c3cdc9;
 
-  --radius-xl: 0.875rem;
-  --radius-2xl: 1.25rem;
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
 }
 
 @theme inline {
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-fraunces), Georgia, serif;
+  --font-sans: var(--font-public-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-public-sans), ui-sans-serif, system-ui, sans-serif;
 }
 
 :root {
-  --background: #f8f6f1;
-  --foreground: #182a26;
+  --background: #f5f7f6;
+  --foreground: #1d2b28;
 }
 
 body {
@@ -48,7 +48,8 @@ body {
 @layer base {
   h1,
   h2 {
-    font-family: var(--font-display);
+    font-family: var(--font-sans);
+    font-weight: 700;
     letter-spacing: -0.01em;
   }
 }
@@ -126,7 +127,7 @@ input[type="radio"] {
 .prose td {
   text-align: left;
   padding: 0.5em 0.75em;
-  border-bottom: 1px solid #e7e2d8;
+  border-bottom: 1px solid #dce3e0;
   color: #3b554e;
   vertical-align: top;
 }

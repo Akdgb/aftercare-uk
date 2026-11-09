@@ -2,7 +2,7 @@
 import { Suspense, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { ArrowRight, CheckCircle2, Heart, Loader2, Mail } from "lucide-react";
+import { CheckCircle2, Heart, Loader2, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AgeQuestion, ALLOWED_AGE_BANDS, useAgeBand } from "@/components/auth/age-question";
 
@@ -128,8 +128,7 @@ function SignInForm() {
                 {err && <p className="text-xs text-red-600">{err}</p>}
                 <Button className="w-full" onClick={handleSubmit} loading={state === "loading"} disabled={ageBand === "under-13"}>
                   {state === "loading" ? "Sending link..." : "Send sign-in link"}
-                  {state === "idle" && <ArrowRight className="h-4 w-4" />}
-                </Button>
+                                  </Button>
               </div>
 
               <p className="text-center text-xs text-ink-500 mt-4">

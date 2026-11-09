@@ -57,7 +57,7 @@ export function BackgroundPicker({
               <div className="px-4 pb-4 space-y-3">
                 {groups.map((g) => (
                   <fieldset key={g || "all"}>
-                    {g && <legend className="text-xs font-semibold text-ink-500 uppercase tracking-wide mb-1.5">{g}</legend>}
+                    {g && <legend className="text-sm font-semibold text-ink-700 mb-1.5">{g}</legend>}
                     <div className="flex flex-wrap gap-2">
                       {r.backgrounds
                         .filter((b) => (b.group ?? "") === g)

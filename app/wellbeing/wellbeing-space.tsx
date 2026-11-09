@@ -73,7 +73,7 @@ export function WellbeingSpace() {
       )}
 
       {/* Something to do right now */}
-      <h2 className="font-sans text-sm font-semibold text-ink-500 uppercase tracking-wide mt-8 mb-2">Try something now</h2>
+      <h2 className="font-sans text-lg font-semibold text-ink-900 mt-8 mb-2">Try something now</h2>
       <div className="grid grid-cols-2 gap-3">
         {(
           [
@@ -109,7 +109,7 @@ export function WellbeingSpace() {
       )}
 
       {/* Understanding grief */}
-      <h2 className="font-sans text-sm font-semibold text-ink-500 uppercase tracking-wide mt-8 mb-2">Understanding grief</h2>
+      <h2 className="font-sans text-lg font-semibold text-ink-900 mt-8 mb-2">Understanding grief</h2>
       <div className="bg-white border border-stone-200 rounded-2xl divide-y divide-stone-100">
         {GRIEF_CARDS.map((c) => (
           <details key={c.title} className="group px-4 py-3.5">
@@ -125,7 +125,7 @@ export function WellbeingSpace() {
       <HardDates />
 
       {/* Talk to someone */}
-      <h2 className="font-sans text-sm font-semibold text-ink-500 uppercase tracking-wide mt-8 mb-2">Talk to someone</h2>
+      <h2 className="font-sans text-lg font-semibold text-ink-900 mt-8 mb-2">Talk to someone</h2>
       <ul className="bg-white border border-stone-200 rounded-2xl divide-y divide-stone-100">
         <SupportRow
           name="NHS Talking Therapies"
@@ -320,7 +320,7 @@ function WeekStrip({ checkIns, today }: { checkIns: CheckIn[]; today: string }) 
   const days = Array.from({ length: 7 }, (_, i) => new Date(Date.parse(today) - (6 - i) * 86_400_000).toISOString().slice(0, 10));
   return (
     <div className="mt-4 rounded-2xl bg-white border border-stone-200 px-4 py-3">
-      <p className="text-xs font-semibold text-ink-500 uppercase tracking-wide">Your last 7 days</p>
+      <p className="text-sm font-semibold text-ink-700">Your last 7 days</p>
       <ol className="grid grid-cols-7 gap-1 mt-2">
         {days.map((d) => {
           const c = checkIns.find((x) => x.date === d);
@@ -485,7 +485,7 @@ function Write() {
               <li key={e.id} className="bg-stone-50 rounded-xl p-3">
                 <div className="flex items-start justify-between gap-2">
                   <p className="text-xs text-ink-500">
-                    {formatDate(e.at.slice(0, 10))} · {e.prompt}
+                    {formatDate(e.at.slice(0, 10))}: {e.prompt}
                   </p>
                   <button
                     type="button"
@@ -601,7 +601,7 @@ function HardDates() {
 
   return (
     <section className="mt-8" aria-labelledby="dates">
-      <h2 id="dates" className="font-sans text-sm font-semibold text-ink-500 uppercase tracking-wide mb-2">Dates that may be hard</h2>
+      <h2 id="dates" className="font-sans text-lg font-semibold text-ink-900 mb-2">Dates that may be hard</h2>
       <div className="bg-white border border-stone-200 rounded-2xl p-4">
         <p className="text-sm text-ink-600">
           Birthdays, anniversaries and festivals such as Eid or Christmas can bring grief back. Knowing they are coming
@@ -617,7 +617,7 @@ function HardDates() {
                   <span className="flex-1 min-w-0">
                     <span className="block font-medium text-ink-900">{d.label}</span>
                     <span className="block text-sm text-ink-500">
-                      {formatDate(d.next)} · {n === 0 ? "today" : n === 1 ? "tomorrow" : `in ${n} days`}
+                      {formatDate(d.next)}, {n === 0 ? "today" : n === 1 ? "tomorrow" : `in ${n} days`}
                     </span>
                   </span>
                   <button type="button" onClick={() => download(d)} className="text-sm font-medium text-ink-700 underline underline-offset-4">
