@@ -16,7 +16,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/help/documents",
     "/financial-support",
     "/cost-estimator",
-    "/resources",
     "/partners",
     "/about",
     "/privacy",
