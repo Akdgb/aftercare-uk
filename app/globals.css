@@ -18,22 +18,23 @@
   --color-ink-900: #182a26;
   --color-ink-950: #0e1a17;
 
-  --color-stone-50: #f5f7f6;
-  --color-stone-100: #ecf0ee;
-  --color-stone-200: #dce3e0;
-  --color-stone-300: #c3cdc9;
+  /* Warm paper neutrals */
+  --color-stone-50: #f7f4ee;
+  --color-stone-100: #efebe3;
+  --color-stone-200: #e2dcd1;
+  --color-stone-300: #cdc5b7;
 
   --radius-xl: 0.75rem;
   --radius-2xl: 1rem;
 }
 
 @theme inline {
-  --font-sans: var(--font-public-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-public-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-figtree), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
 }
 
 :root {
-  --background: #f5f7f6;
+  --background: #f7f4ee;
   --foreground: #1d2b28;
 }
 
@@ -48,9 +49,23 @@ body {
 @layer base {
   h1,
   h2 {
-    font-family: var(--font-sans);
-    font-weight: 700;
-    letter-spacing: -0.01em;
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-variation-settings: "SOFT" 60;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+
+  /* Every button and button-like link presses in slightly when tapped */
+  button:not(:disabled),
+  a[class*="rounded-"][class*="bg-ink-"] {
+    transition-property: color, background-color, border-color, box-shadow, transform;
+    transition-duration: 160ms;
+    transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
+  }
+  button:not(:disabled):active,
+  a[class*="rounded-"][class*="bg-ink-"]:active {
+    transform: scale(0.97);
   }
 }
 
