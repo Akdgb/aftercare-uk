@@ -61,6 +61,18 @@ input[type="radio"] {
 
 ::selection {
   background: #c5d5ce;
+  color: #1d2b28;
+}
+
+input,
+textarea {
+  caret-color: #2c4640;
+}
+
+/* Placeholders stay readable: at least 4.5:1 on white */
+::placeholder {
+  color: #587469;
+  opacity: 1;
 }
 
 :focus-visible {

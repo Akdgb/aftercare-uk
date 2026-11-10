@@ -77,7 +77,7 @@ export default function LocalPlanPage() {
       banner={
         linkSentTo ? (
           <div className="bg-white border border-stone-200/80 rounded-2xl p-4 flex items-center gap-3">
-            <Mail className="h-5 w-5 text-emerald-700 shrink-0" />
+            <Mail className="h-5 w-5 text-ink-500 shrink-0" aria-hidden="true" />
             <p className="flex-1 text-sm text-ink-700">
               <span className="font-medium text-ink-900">Check your email.</span> Open the link we sent to{" "}
               <span className="font-medium">{linkSentTo}</span> to save this plan and switch on reminders.
@@ -88,7 +88,7 @@ export default function LocalPlanPage() {
           </div>
         ) : (
         <div className="bg-white border border-stone-200/80 rounded-2xl p-4 flex items-center gap-3">
-          <Cloud className="h-5 w-5 text-amber-700 shrink-0" />
+          <Cloud className="h-5 w-5 text-ink-500 shrink-0" aria-hidden="true" />
           <p className="flex-1 text-sm text-ink-700">
             <span className="font-medium text-ink-900">Only saved on this device.</span> Save it to share with family
             and open it anywhere.
