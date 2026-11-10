@@ -199,13 +199,13 @@ export default function PrivacyPage() {
             <h2 className="text-lg font-semibold text-ink-800 mb-3">Children</h2>
             <div className="prose text-sm text-ink-600">
               <p>
-                AfterCare is designed for adults dealing with the practical tasks after a death. You need to be 13 or
-                over to create an account, and we ask for your age before you sign in. If you are under 13, we do not
+                AfterCare is designed for adults dealing with the practical tasks after a death. You need to be 16 or
+                over to create an account, and we ask for your age before you sign in. If you are under 16, we do not
                 create an account or keep the email address you entered, and we point you to free support services
                 for young people, such as Childline and Child Bereavement UK.
               </p>
               <p>
-                If you think a child under 13 has given us their details, email us and we will delete them.
+                If you think someone under 16 has given us their details, email us and we will delete them.
               </p>
             </div>
           </section>

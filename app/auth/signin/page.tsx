@@ -146,7 +146,7 @@ function SignInForm() {
                     {ageErr}
                   </p>
                 )}
-                <Button className="w-full" onClick={handleSubmit} loading={state === "loading"} disabled={ageBand === "under-13"}>
+                <Button className="w-full" onClick={handleSubmit} loading={state === "loading"} disabled={ageBand === "under-16"}>
                   {state === "loading" ? "Sending link..." : "Send sign-in link"}
                                   </Button>
               </div>
