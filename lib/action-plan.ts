@@ -48,9 +48,9 @@ function buildTasks(data: IntakeFormData) {
   if (data.currentLocation === "hospital" || data.currentLocation === "hospice") {
     tasks.push(
       makeTask("collect-mccd", {
-        title: "Wait for the medical certificate to be sent to the register office",
+        title: "Check the medical certificate has gone to the register office",
         description:
-          "A doctor completes the Medical Certificate of Cause of Death. In England and Wales a medical examiner reviews it and sends it straight to the register office, so you do not need to collect it. The hospital, the medical examiner's office or the register office will contact you when you can book an appointment to register.",
+          "A doctor completes the Medical Certificate of Cause of Death. In England and Wales a medical examiner reviews it and sends it straight to the register office, so you do not need to collect it. If you have not heard within a few days, call the hospital bereavement office or the GP surgery to ask whether it has been sent, then book your appointment to register.",
         category: "immediate",
         priority: "urgent",
         link: "https://www.gov.uk/register-a-death",

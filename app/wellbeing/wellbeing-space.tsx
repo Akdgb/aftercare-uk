@@ -48,6 +48,18 @@ export function WellbeingSpace() {
 
   const [exercise, setExercise] = useState<Exercise | null>(null);
 
+  // "#breathe" (linked from the urgent support panel) opens the breathing exercise
+  useEffect(() => {
+    const open = () => {
+      if (window.location.hash !== "#breathe") return;
+      setExercise("breathe");
+      requestAnimationFrame(() => document.getElementById("exercise")?.scrollIntoView({ block: "center" }));
+    };
+    open();
+    window.addEventListener("hashchange", open);
+    return () => window.removeEventListener("hashchange", open);
+  }, []);
+
   return (
     <div className="max-w-2xl mx-auto px-4 pt-6 pb-12">
       <h1 className="text-3xl font-semibold text-ink-900">Looking after you</h1>
@@ -73,7 +85,7 @@ export function WellbeingSpace() {
       )}
 
       {/* Something to do right now */}
-      <h2 className="font-sans text-sm font-semibold text-ink-500 uppercase tracking-wide mt-8 mb-2">Try something now</h2>
+      <h2 className="font-sans text-lg font-semibold text-ink-900 mt-8 mb-2">Try something now</h2>
       <div className="grid grid-cols-2 gap-3">
         {(
           [
@@ -100,7 +112,7 @@ export function WellbeingSpace() {
         ))}
       </div>
       {exercise && (
-        <div className="mt-3 rounded-2xl bg-white border border-stone-200 p-5 animate-fade-up">
+        <div id="exercise" className="mt-3 rounded-2xl bg-white border border-stone-200 p-5 animate-fade-up scroll-mt-20">
           {exercise === "breathe" && <Breathe />}
           {exercise === "ground" && <Ground />}
           {exercise === "write" && <Write />}
@@ -109,7 +121,7 @@ export function WellbeingSpace() {
       )}
 
       {/* Understanding grief */}
-      <h2 className="font-sans text-sm font-semibold text-ink-500 uppercase tracking-wide mt-8 mb-2">Understanding grief</h2>
+      <h2 className="font-sans text-lg font-semibold text-ink-900 mt-8 mb-2">Understanding grief</h2>
       <div className="bg-white border border-stone-200 rounded-2xl divide-y divide-stone-100">
         {GRIEF_CARDS.map((c) => (
           <details key={c.title} className="group px-4 py-3.5">
@@ -125,7 +137,7 @@ export function WellbeingSpace() {
       <HardDates />
 
       {/* Talk to someone */}
-      <h2 className="font-sans text-sm font-semibold text-ink-500 uppercase tracking-wide mt-8 mb-2">Talk to someone</h2>
+      <h2 className="font-sans text-lg font-semibold text-ink-900 mt-8 mb-2">Talk to someone</h2>
       <ul className="bg-white border border-stone-200 rounded-2xl divide-y divide-stone-100">
         <SupportRow
           name="NHS Talking Therapies"
@@ -298,20 +310,29 @@ function moodMessage(mood: Mood): string {
 
 function UrgentSupport() {
   return (
-    <div className="rounded-2xl bg-rose-50 border border-rose-200 p-5 text-ink-900" role="status">
+    <div className="rounded-2xl bg-white border-2 border-ink-700 p-5 text-ink-900" role="status">
       <p className="font-semibold">If you are struggling to cope, please talk to someone now.</p>
       <div className="flex flex-wrap gap-2 mt-3">
         <a href="tel:111" className="inline-flex items-center gap-2 bg-ink-800 text-white font-medium px-4 py-2.5 rounded-xl">
-          <Phone className="h-4 w-4" /> Call NHS 111
+          <Phone className="h-4 w-4" aria-hidden="true" /> Call NHS 111
+        </a>
+        <a href="tel:116123" className="inline-flex items-center gap-2 bg-white border border-stone-300 font-medium px-4 py-2.5 rounded-xl">
+          <Phone className="h-4 w-4" aria-hidden="true" /> Samaritans 116 123
         </a>
         <a href="tel:999" className="inline-flex items-center gap-2 bg-white border border-stone-300 font-medium px-4 py-2.5 rounded-xl">
-          <Phone className="h-4 w-4" /> 999 if you are in danger
+          <Phone className="h-4 w-4" aria-hidden="true" /> 999 if you are in danger
         </a>
       </div>
       <p className="text-sm text-ink-700 mt-3">
         In England or Wales, choose option 2 for mental health. In Scotland, NHS 24 answers on 111. If you might act on
-        thoughts of ending your life, call 999. You can also call Samaritans free on 116 123, day or night.
+        thoughts of ending your life, call 999. Samaritans is free, day or night.
       </p>
+      <a
+        href="#breathe"
+        className="inline-flex items-center gap-1.5 mt-3 text-sm font-medium text-ink-800 underline underline-offset-4 decoration-ink-300 hover:decoration-ink-800"
+      >
+        <Wind className="h-4 w-4" aria-hidden="true" /> Try a one-minute breathing exercise
+      </a>
     </div>
   );
 }
@@ -320,7 +341,7 @@ function WeekStrip({ checkIns, today }: { checkIns: CheckIn[]; today: string }) 
   const days = Array.from({ length: 7 }, (_, i) => new Date(Date.parse(today) - (6 - i) * 86_400_000).toISOString().slice(0, 10));
   return (
     <div className="mt-4 rounded-2xl bg-white border border-stone-200 px-4 py-3">
-      <p className="text-xs font-semibold text-ink-500 uppercase tracking-wide">Your last 7 days</p>
+      <p className="text-sm font-semibold text-ink-700">Your last 7 days</p>
       <ol className="grid grid-cols-7 gap-1 mt-2">
         {days.map((d) => {
           const c = checkIns.find((x) => x.date === d);
@@ -332,7 +353,7 @@ function WeekStrip({ checkIns, today }: { checkIns: CheckIn[]; today: string }) 
                 className={cn("w-6 h-6 rounded-full", m ? m.colour : "bg-stone-100 border border-dashed border-stone-300")}
                 title={m ? m.label : "No check-in"}
               />
-              <span className="text-[11px] text-ink-500">{label}</span>
+              <span className="text-xs text-ink-500">{label}</span>
               <span className="sr-only">{m ? m.label : "No check-in"}</span>
             </li>
           );
@@ -485,13 +506,17 @@ function Write() {
               <li key={e.id} className="bg-stone-50 rounded-xl p-3">
                 <div className="flex items-start justify-between gap-2">
                   <p className="text-xs text-ink-500">
-                    {formatDate(e.at.slice(0, 10))} · {e.prompt}
+                    {formatDate(e.at.slice(0, 10))}: {e.prompt}
                   </p>
                   <button
                     type="button"
-                    onClick={() => setRaw(JSON.stringify(entries.filter((x) => x.id !== e.id)))}
+                    onClick={() => {
+                      if (window.confirm("Delete this entry? This cannot be undone.")) {
+                        setRaw(JSON.stringify(entries.filter((x) => x.id !== e.id)));
+                      }
+                    }}
                     aria-label="Delete this entry"
-                    className="text-ink-400 hover:text-rose-700"
+                    className="p-2 -m-2 text-ink-500 hover:text-rose-700"
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>
@@ -601,7 +626,7 @@ function HardDates() {
 
   return (
     <section className="mt-8" aria-labelledby="dates">
-      <h2 id="dates" className="font-sans text-sm font-semibold text-ink-500 uppercase tracking-wide mb-2">Dates that may be hard</h2>
+      <h2 id="dates" className="font-sans text-lg font-semibold text-ink-900 mb-2">Dates that may be hard</h2>
       <div className="bg-white border border-stone-200 rounded-2xl p-4">
         <p className="text-sm text-ink-600">
           Birthdays, anniversaries and festivals such as Eid or Christmas can bring grief back. Knowing they are coming
@@ -617,7 +642,7 @@ function HardDates() {
                   <span className="flex-1 min-w-0">
                     <span className="block font-medium text-ink-900">{d.label}</span>
                     <span className="block text-sm text-ink-500">
-                      {formatDate(d.next)} · {n === 0 ? "today" : n === 1 ? "tomorrow" : `in ${n} days`}
+                      {formatDate(d.next)}, {n === 0 ? "today" : n === 1 ? "tomorrow" : `in ${n} days`}
                     </span>
                   </span>
                   <button type="button" onClick={() => download(d)} className="text-sm font-medium text-ink-700 underline underline-offset-4">
@@ -627,7 +652,7 @@ function HardDates() {
                     type="button"
                     onClick={() => setRaw(JSON.stringify(dates.filter((x) => x.id !== d.id)))}
                     aria-label={`Remove ${d.label}`}
-                    className="text-ink-400 hover:text-rose-700"
+                    className="p-2 -m-2 text-ink-500 hover:text-rose-700"
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>

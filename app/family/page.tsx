@@ -35,7 +35,7 @@ export default function FamilyPage() {
 
   return (
     <div className="bg-stone-50 min-h-screen">
-      <div className="bg-gradient-to-b from-white to-stone-50 border-b border-stone-200/70">
+      <div className="bg-white border-b border-stone-200/70">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
           <div className="flex items-center gap-2 text-ink-500 text-sm mb-2">
             <Users className="h-4 w-4" /> Family Workspace
@@ -78,7 +78,7 @@ export default function FamilyPage() {
               <div className="flex justify-center gap-3">
                 <Link href="/intake">
                   <Button>
-                    Create my plan <ArrowRight className="h-4 w-4" />
+                    Create my plan
                   </Button>
                 </Link>
                 <Link href="/auth/signin?next=/family">
@@ -97,7 +97,7 @@ export default function FamilyPage() {
               </p>
               <Link href="/intake">
                 <Button>
-                  Create my plan <ArrowRight className="h-4 w-4" />
+                  Create my plan
                 </Button>
               </Link>
             </CardContent>

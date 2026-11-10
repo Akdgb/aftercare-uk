@@ -156,7 +156,7 @@ export function SaveMoneyChecklist() {
         })}
       </ul>
 
-      <h2 className="font-sans text-sm font-semibold text-ink-500 uppercase tracking-wide mt-10 mb-3">
+      <h2 className="font-sans text-lg font-semibold text-ink-900 mt-10 mb-3">
         Help paying for it
       </h2>
       <ul className="bg-white border border-stone-200 rounded-2xl divide-y divide-stone-100">

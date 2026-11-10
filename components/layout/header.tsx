@@ -54,8 +54,9 @@ export function Header() {
                   "flex items-center gap-2 px-4 py-1.5 text-sm rounded-lg transition-all",
                   active(t.match) ? "bg-white text-ink-900 font-medium shadow-sm" : "text-ink-600 hover:text-ink-900"
                 )}
+                aria-current={active(t.match) ? "page" : undefined}
               >
-                <t.icon className="h-4 w-4" /> {t.label}
+                <t.icon className="h-4 w-4" aria-hidden="true" /> {t.label}
               </Link>
             ))}
           </nav>
@@ -75,7 +76,7 @@ export function Header() {
                 key={t.label}
                 href={t.href}
                 className={cn(
-                  "flex flex-col items-center gap-1 py-2 text-[11px] font-medium",
+                  "flex flex-col items-center gap-1 py-2 text-xs font-medium",
                   on ? "text-ink-900" : "text-ink-400"
                 )}
                 aria-current={on ? "page" : undefined}

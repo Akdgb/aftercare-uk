@@ -95,7 +95,7 @@ export default function DashboardPage() {
       {account && <p className="text-ink-500 mt-1">{account.email}</p>}
 
       <div className="flex items-center justify-between mt-8 mb-3">
-        <h2 className="font-sans text-sm font-semibold text-ink-500 uppercase tracking-wide">Your plans</h2>
+        <h2 className="font-sans text-lg font-semibold text-ink-900">Your plans</h2>
         <Link href="/intake" className="text-sm font-medium text-ink-700 hover:text-ink-900">
           + New plan
         </Link>
@@ -117,7 +117,7 @@ export default function DashboardPage() {
 
       {account && (
         <>
-          <h2 className="font-sans text-sm font-semibold text-ink-500 uppercase tracking-wide mt-10 mb-3">Settings</h2>
+          <h2 className="font-sans text-lg font-semibold text-ink-900 mt-10 mb-3">Settings</h2>
           <AccountSettings account={account} onChange={setAccount} />
         </>
       )}

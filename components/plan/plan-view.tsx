@@ -1,8 +1,7 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
-  ArrowRight,
   BookOpen,
   Building2,
   Check,
@@ -25,14 +24,17 @@ import type { ActionPlanTask, IntakeFormData } from "@/types";
 
 export type TaskStatus = ActionPlanTask["status"];
 
-const CATEGORY_META: Record<ActionPlanTask["category"], { label: string; icon: React.ElementType; chip: string }> = {
-  immediate: { label: "Immediate", icon: Zap, chip: "bg-rose-50 text-rose-700" },
-  legal: { label: "Legal", icon: Scale, chip: "bg-violet-50 text-violet-700" },
-  financial: { label: "Money", icon: PoundSterling, chip: "bg-emerald-50 text-emerald-700" },
-  government: { label: "Government", icon: Building2, chip: "bg-sky-50 text-sky-700" },
-  housing: { label: "Home", icon: Home, chip: "bg-amber-50 text-amber-800" },
-  personal: { label: "Personal", icon: User, chip: "bg-stone-100 text-ink-700" },
+// One quiet colour for every category: the label helps scanning, colour would only compete.
+const CATEGORY_META: Record<ActionPlanTask["category"], { label: string; icon: React.ElementType }> = {
+  immediate: { label: "Immediate", icon: Zap },
+  legal: { label: "Legal", icon: Scale },
+  financial: { label: "Money", icon: PoundSterling },
+  government: { label: "Government", icon: Building2 },
+  housing: { label: "Home", icon: Home },
+  personal: { label: "Personal", icon: User },
 };
+
+const NOT_YET_HOURS = 24;
 
 // Stages read like GOV.UK's "step by step" guides: when, and why
 const STAGES: { priority: ActionPlanTask["priority"]; title: string; subtitle: string }[] = [
@@ -82,7 +84,11 @@ export function PlanView({
   const [view, setView] = useState<View>("todo");
   const [onlyExtra, setOnlyExtra] = useState(false);
   const [openTasks, setOpenTasks] = useState<Set<string>>(new Set());
-  const [collapsedStages, setCollapsedStages] = useState<Set<string>>(new Set());
+  // Stages the person has opened or closed themselves. Otherwise, on "To do"
+  // only the first unfinished stage starts open, so the page is not a wall of tasks.
+  const [stageOverrides, setStageOverrides] = useState<Map<string, boolean>>(new Map());
+  // The last task marked done from "Up next", so it can be undone.
+  const [undoTask, setUndoTask] = useState<{ id: string; title: string } | null>(null);
   // Tasks ticked while viewing "To do" stay visible (struck through) until the
   // view changes, so an accidental tick is easy to see and undo.
   const [recentlyDone, setRecentlyDone] = useState<Set<string>>(new Set());
@@ -90,6 +96,7 @@ export function PlanView({
   const changeView = (next: View) => {
     setView(next);
     setRecentlyDone(new Set());
+    setStageOverrides(new Map());
   };
 
   const toggleTask = (id: string, next: TaskStatus) => {
@@ -108,8 +115,15 @@ export function PlanView({
 
   const done = tasks.filter((t) => t.status === "completed").length;
   // The "Up next" queue: open tasks in stage order, with any the person said
-  // "Not yet" to moved to the back (for this visit).
-  const [notYet, setNotYet] = useState<string[]>([]);
+  // "Not yet" to moved to the back. Remembered on this device for a day.
+  const planKey = `aftercare.notYet.${intake.deceasedFirstName}|${intake.deceasedLastName}|${intake.dateOfDeath}`;
+  // Plans load on the client, so reading storage here does not affect hydration
+  const [notYet, setNotYet] = useState<string[]>(() => readNotYet(planKey));
+  useEffect(() => {
+    if (!undoTask) return;
+    const t = setTimeout(() => setUndoTask(null), 8000);
+    return () => clearTimeout(t);
+  }, [undoTask]);
   const open = sortByStage(tasks).filter((t) => t.status !== "completed");
   const queue = [
     ...open.filter((t) => !notYet.includes(t.id)),
@@ -118,7 +132,24 @@ export function PlanView({
   const nextTask = queue[0];
   const later = () => {
     if (!nextTask || queue.length < 2) return;
-    setNotYet((prev) => [...prev.filter((id) => id !== nextTask.id), nextTask.id]);
+    const ids = [...notYet.filter((id) => id !== nextTask.id), nextTask.id];
+    setNotYet(ids);
+    saveNotYet(planKey, ids);
+  };
+  const doneFromUpNext = () => {
+    if (!nextTask) return;
+    toggleTask(nextTask.id, "completed");
+    setUndoTask({ id: nextTask.id, title: nextTask.title });
+  };
+  const undo = () => {
+    if (!undoTask) return;
+    onToggle(undoTask.id, "pending");
+    setRecentlyDone((prev) => {
+      const next = new Set(prev);
+      next.delete(undoTask.id);
+      return next;
+    });
+    setUndoTask(null);
   };
 
   const visible = tasks.filter(
@@ -136,13 +167,11 @@ export function PlanView({
       return next;
     });
 
+  const firstOpenStage = STAGES.find((s) => open.some((t) => t.priority === s.priority))?.priority;
+  const stageOpenByDefault = (key: string) => view !== "todo" || key === firstOpenStage;
+  const isStageOpen = (key: string) => stageOverrides.get(key) ?? stageOpenByDefault(key);
   const toggleStage = (key: string) =>
-    setCollapsedStages((prev) => {
-      const next = new Set(prev);
-      if (next.has(key)) next.delete(key);
-      else next.add(key);
-      return next;
-    });
+    setStageOverrides((prev) => new Map(prev).set(key, !isStageOpen(key)));
 
   const name = `${intake.deceasedFirstName} ${intake.deceasedLastName}`.trim();
   const daysSince = intake.dateOfDeath
@@ -152,7 +181,7 @@ export function PlanView({
   return (
     <div className="min-h-screen print:bg-white">
       {/* ── Header ─────────────────────────────────────────────────────── */}
-      <div className="bg-gradient-to-b from-white to-stone-50 border-b border-stone-200/70">
+      <div className="bg-white border-b border-stone-200/70">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-5 pb-5 sm:pt-8 sm:pb-7 print:py-2">
           <div className="flex items-start justify-between gap-6">
             <div className="min-w-0">
@@ -164,7 +193,7 @@ export function PlanView({
                   {daysSince !== null && daysSince <= 365 && (
                     <span className="text-ink-400">
                       {" "}
-                      · {daysSince === 0 ? "today" : daysSince === 1 ? "yesterday" : `${daysSince} days ago`}
+                      ({daysSince === 0 ? "today" : daysSince === 1 ? "yesterday" : `${daysSince} days ago`})
                     </span>
                   )}
                 </p>
@@ -177,19 +206,19 @@ export function PlanView({
                   <Pencil className="h-3.5 w-3.5" /> Edit answers
                 </Link>
               )}
-              <p className="text-sm sm:text-base text-ink-600 mt-3 max-w-xl print:hidden">
+              <p className="text-sm sm:text-base text-ink-600 mt-3 max-w-xl text-pretty print:hidden">
                 {encouragement(done, tasks.length)}
               </p>
+              <Progress done={done} total={tasks.length} />
               {daysSince !== null && daysSince >= 21 && (
                 <Link
                   href="/wellbeing"
                   className="print:hidden inline-flex items-center gap-1.5 mt-3 text-sm font-medium text-ink-800 bg-ink-50 border border-ink-200 px-3.5 py-2 rounded-xl hover:bg-ink-100"
                 >
-                  How are you doing? Looking after you <ArrowRight className="h-4 w-4" />
+                  How are you doing? Looking after you
                 </Link>
               )}
             </div>
-            <ProgressRing done={done} total={tasks.length} />
           </div>
           {headerActions && <div className="flex flex-wrap items-center gap-2 mt-4 print:hidden">{headerActions}</div>}
         </div>
@@ -201,27 +230,19 @@ export function PlanView({
 
             {/* ── Up next ──────────────────────────────────────────────── */}
             {nextTask ? (
-              <section aria-labelledby="up-next" className="print:hidden relative">
-                {/* Stacked cards behind hint that more are coming */}
-                {queue.length > 2 && (
-                  <div className="absolute inset-x-6 -bottom-3 h-full rounded-2xl bg-ink-800/25" aria-hidden="true" />
-                )}
-                {queue.length > 1 && (
-                  <div className="absolute inset-x-3 -bottom-1.5 h-full rounded-2xl bg-ink-800/50" aria-hidden="true" />
-                )}
+              <section aria-labelledby="up-next" className="print:hidden">
                 <div
                   key={nextTask.id}
-                  className="relative overflow-hidden rounded-2xl bg-ink-800 text-white p-6 sm:p-7 shadow-lg animate-card-in"
+                  className="rounded-2xl bg-ink-800 text-white p-6 sm:p-7 animate-card-in"
                 >
-                  <div className="absolute -right-16 -top-16 w-56 h-56 rounded-full bg-white/5" aria-hidden="true" />
                   <div className="flex items-center justify-between gap-3 mb-2">
-                    <p id="up-next" className="text-xs font-semibold uppercase tracking-wider text-ink-200">
+                    <p id="up-next" className="text-sm font-semibold text-ink-100">
                       Up next
                     </p>
                     <p className="text-xs text-ink-200 tabular-nums">{queue.length} to do</p>
                   </div>
-                  <h2 className="text-xl sm:text-2xl font-semibold leading-snug">{nextTask.title}</h2>
-                  <p className="text-ink-100/90 mt-2 leading-relaxed max-w-2xl">{nextTask.description}</p>
+                  <h2 className="text-xl sm:text-2xl font-semibold leading-snug text-balance">{nextTask.title}</h2>
+                  <p className="text-ink-100/90 mt-2 leading-relaxed max-w-2xl text-pretty">{nextTask.description}</p>
                   {(nextTask.link || nextTask.phone) && (
                     <div className="flex flex-wrap items-center gap-x-5 gap-y-2 mt-4 text-sm">
                       {nextTask.link && (
@@ -253,7 +274,7 @@ export function PlanView({
                   {renderUpNextExtras && <div className="mt-4">{renderUpNextExtras(nextTask)}</div>}
                   <div className="grid grid-cols-2 gap-3 mt-6">
                     <button
-                      onClick={() => toggleTask(nextTask.id, "completed")}
+                      onClick={doneFromUpNext}
                       className="inline-flex items-center justify-center gap-2 bg-white text-ink-900 font-semibold py-3.5 rounded-xl hover:bg-ink-50 active:scale-[0.98] transition-all"
                     >
                       <Check className="h-5 w-5" /> I&apos;ve done this
@@ -263,7 +284,7 @@ export function PlanView({
                       disabled={queue.length < 2}
                       className="inline-flex items-center justify-center gap-2 font-semibold py-3.5 rounded-xl border border-white/30 hover:bg-white/10 active:scale-[0.98] transition-all disabled:opacity-40"
                     >
-                      Not yet <ArrowRight className="h-4 w-4" />
+                      Not yet
                     </button>
                   </div>
                 </div>
@@ -279,27 +300,42 @@ export function PlanView({
               </section>
             )}
 
+            <div role="status" aria-live="polite" className="print:hidden empty:hidden">
+              {undoTask && (
+                <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-stone-200 bg-white px-4 py-3 animate-fade-up">
+                  <p className="text-sm text-ink-700 min-w-0">
+                    Marked as done: <span className="font-medium text-ink-900">{undoTask.title}</span>
+                  </p>
+                  <button
+                    onClick={undo}
+                    className="text-sm font-semibold text-ink-800 underline underline-offset-4 decoration-ink-300 hover:decoration-ink-800 px-1 py-1"
+                  >
+                    Undo
+                  </button>
+                </div>
+              )}
+            </div>
+
             {banner && <div className="print:hidden">{banner}</div>}
             <InstallPrompt className="print:hidden" />
 
             {/* ── Toolbar ─────────────────────────────────────────────── */}
             <div className="print:hidden space-y-3">
               <div className="flex flex-wrap items-center justify-between gap-3">
-                <div role="tablist" aria-label="Show tasks" className="inline-flex p-1 bg-stone-100 rounded-xl">
+                <div role="group" aria-label="Show tasks" className="inline-flex p-1 bg-stone-100 rounded-xl">
                   {(
                     [
-                      ["todo", `To do · ${tasks.length - done}`],
-                      ["done", `Done · ${done}`],
+                      ["todo", `To do (${tasks.length - done})`],
+                      ["done", `Done (${done})`],
                       ["all", "All"],
                     ] as [View, string][]
                   ).map(([key, label]) => (
                     <button
                       key={key}
-                      role="tab"
-                      aria-selected={view === key}
+                      aria-pressed={view === key}
                       onClick={() => changeView(key)}
                       className={cn(
-                        "px-4 py-1.5 text-sm rounded-lg transition-all",
+                        "px-4 py-2 text-sm rounded-lg transition-all",
                         view === key ? "bg-white text-ink-900 font-medium shadow-sm" : "text-ink-600 hover:text-ink-900"
                       )}
                     >
@@ -329,7 +365,7 @@ export function PlanView({
                 const shown = visible.filter((t) => t.priority === stage.priority);
                 const stageDone = all.filter((t) => t.status === "completed").length;
                 const complete = stageDone === all.length;
-                const collapsed = collapsedStages.has(stage.priority);
+                const collapsed = !isStageOpen(stage.priority);
 
                 return (
                   <li key={stage.priority} className="relative print:break-inside-avoid-page">
@@ -351,11 +387,11 @@ export function PlanView({
                           <span className="block font-semibold text-ink-900">{stage.title}</span>
                           <span className="block text-sm text-ink-500">{stage.subtitle}</span>
                         </span>
-                        <span className="hidden sm:flex flex-col items-end gap-1 shrink-0">
-                          <span className="text-xs text-ink-500">
+                        <span className="flex flex-col items-end gap-1 shrink-0">
+                          <span className="text-xs text-ink-500 whitespace-nowrap">
                             {stageDone} of {all.length} done
                           </span>
-                          <span className="w-24 h-1.5 bg-stone-200 rounded-full overflow-hidden">
+                          <span className="hidden sm:block w-24 h-1.5 bg-stone-200 rounded-full overflow-hidden">
                             <span
                               className="block h-full bg-emerald-500 rounded-full transition-all duration-500"
                               style={{ width: `${(stageDone / all.length) * 100}%` }}
@@ -370,10 +406,14 @@ export function PlanView({
                       {!collapsed && (
                         <div className="border-t border-stone-100">
                           {shown.length === 0 ? (
-                            <p className="px-5 py-4 text-sm text-ink-500">
-                              {view === "todo" && complete
-                                ? "All done here. ✓"
-                                : "Nothing here matches the current filter."}
+                            <p className="px-5 py-4 text-sm text-ink-500 inline-flex items-center gap-1.5">
+                              {view === "todo" && complete ? (
+                                <>
+                                  <Check className="h-4 w-4 text-emerald-600" aria-hidden="true" /> All done here.
+                                </>
+                              ) : (
+                                "Nothing here matches the current filter."
+                              )}
                             </p>
                           ) : (
                             <ul className="divide-y divide-stone-100">
@@ -421,6 +461,26 @@ export function PlanView({
   );
 }
 
+function readNotYet(key: string): string[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const saved = JSON.parse(localStorage.getItem(key) ?? "null") as { ids: string[]; until: number } | null;
+    if (saved && saved.until > Date.now() && Array.isArray(saved.ids)) return saved.ids;
+    localStorage.removeItem(key);
+  } catch {
+    /* storage unavailable: "Not yet" lasts for this visit only */
+  }
+  return [];
+}
+
+function saveNotYet(key: string, ids: string[]) {
+  try {
+    localStorage.setItem(key, JSON.stringify({ ids, until: Date.now() + NOT_YET_HOURS * 3_600_000 }));
+  } catch {
+    /* ignore */
+  }
+}
+
 function sortByStage<T extends ActionPlanTask>(tasks: T[]): T[] {
   const order = STAGES.map((s) => s.priority);
   return [...tasks].sort((a, b) => order.indexOf(a.priority) - order.indexOf(b.priority));
@@ -436,33 +496,21 @@ function encouragement(done: number, total: number): string {
   return "Nearly there. Only a few tasks are left.";
 }
 
-function ProgressRing({ done, total }: { done: number; total: number }) {
-  const pct = total ? done / total : 0;
-  const r = 34;
-  const c = 2 * Math.PI * r;
+function Progress({ done, total }: { done: number; total: number }) {
+  if (total === 0) return null;
   return (
-    <div className="relative w-16 h-16 sm:w-28 sm:h-28 shrink-0" role="img" aria-label={`${done} of ${total} tasks done`}>
-      <svg viewBox="0 0 80 80" className="w-full h-full -rotate-90">
-        <circle cx="40" cy="40" r={r} fill="none" stroke="#e4dfd3" strokeWidth="7" />
-        <circle
-          cx="40"
-          cy="40"
-          r={r}
-          fill="none"
-          stroke="#2c4640"
-          strokeWidth="7"
-          strokeLinecap="round"
-          strokeDasharray={c}
-          strokeDashoffset={c * (1 - pct)}
-          className="transition-[stroke-dashoffset] duration-700 ease-out"
+    <div className="mt-4 max-w-xs print:hidden">
+      <p className="text-sm text-ink-700">
+        <span className="font-semibold text-ink-900 tabular-nums">
+          {done} of {total}
+        </span>{" "}
+        tasks done
+      </p>
+      <div className="mt-2 h-1.5 bg-stone-200 rounded-full overflow-hidden" aria-hidden="true">
+        <div
+          className="h-full bg-ink-700 rounded-full transition-[width] duration-500"
+          style={{ width: `${(done / total) * 100}%` }}
         />
-      </svg>
-      <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-lg sm:text-2xl font-semibold text-ink-900 leading-none">
-          {done}
-          <span className="text-ink-400 text-base font-normal">/{total}</span>
-        </span>
-        <span className="text-[11px] text-ink-500 mt-1">done</span>
       </div>
     </div>
   );
@@ -488,20 +536,25 @@ function TaskRow({
 
   return (
     <li className={cn("group transition-colors print:break-inside-avoid", open && "bg-stone-50/60")}>
-      <div className="flex items-start gap-3 px-4 sm:px-5 py-3.5">
+      <div className="flex items-start gap-1 px-2 sm:px-3 py-1.5">
+        {/* 44px tap target around a 24px circle */}
         <button
           onClick={onToggle}
-          className={cn(
-            "mt-0.5 w-6 h-6 shrink-0 rounded-full border-2 flex items-center justify-center transition-all",
-            done
-              ? "bg-emerald-600 border-emerald-600 text-white"
-              : "border-stone-300 text-transparent hover:border-emerald-500 hover:text-emerald-500"
-          )}
+          className="group/tick w-11 h-11 shrink-0 flex items-center justify-center rounded-full"
           aria-label={done ? `Mark "${task.title}" as not done` : `Mark "${task.title}" as done`}
         >
-          <Check className={cn("h-3.5 w-3.5", done && "animate-pop")} strokeWidth={3} />
+          <span
+            className={cn(
+              "w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all",
+              done
+                ? "bg-emerald-600 border-emerald-600 text-white"
+                : "border-stone-300 text-transparent group-hover/tick:border-emerald-500 group-hover/tick:text-emerald-500"
+            )}
+          >
+            <Check className={cn("h-3.5 w-3.5", done && "animate-pop")} strokeWidth={3} />
+          </span>
         </button>
-        <button onClick={onOpen} aria-expanded={open} className="flex-1 min-w-0 text-left">
+        <button onClick={onOpen} aria-expanded={open} className="flex-1 min-w-0 text-left py-2 pr-2">
           <span className="flex items-start justify-between gap-3">
             <span
               className={cn(
@@ -519,8 +572,8 @@ function TaskRow({
             />
           </span>
           <span className="flex flex-wrap items-center gap-2 mt-1.5">
-            <span className={cn("inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full", cat.chip)}>
-              <cat.icon className="h-3 w-3" /> {cat.label}
+            <span className="inline-flex items-center gap-1 text-xs text-ink-500">
+              <cat.icon className="h-3 w-3" aria-hidden="true" /> {cat.label}
             </span>
             {meta}
           </span>
@@ -528,7 +581,7 @@ function TaskRow({
       </div>
 
       {/* Details: always printed, shown on screen when opened */}
-      <div className={cn("pl-[3.25rem] sm:pl-14 pr-4 sm:pr-5 pb-4 -mt-1", open ? "block animate-fade-up" : "hidden print:block")}>
+      <div className={cn("pl-14 sm:pl-[3.75rem] pr-4 sm:pr-5 pb-4", open ? "block animate-fade-up" : "hidden print:block")}>
         <p className="text-sm text-ink-600 leading-relaxed">{task.description}</p>
         {(task.link || task.phone) && (
           <div className="flex flex-wrap items-center gap-2 mt-3">

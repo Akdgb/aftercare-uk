@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { AlertCircle, ArrowRight, Check, CheckCircle2, ExternalLink, Info, PoundSterling, X } from "lucide-react";
+import { AlertCircle, Check, CheckCircle2, ExternalLink, Info, PoundSterling, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -190,7 +190,7 @@ export default function FinancialSupportPage() {
   return (
     <div className="bg-stone-50 min-h-screen">
       {/* Header */}
-      <div className="bg-gradient-to-b from-white to-stone-50 border-b border-stone-200/70">
+      <div className="bg-white border-b border-stone-200/70">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
           <div className="max-w-2xl">
             <h1 className="text-3xl sm:text-4xl font-semibold text-ink-900 mb-2">Check what money help you can get</h1>
@@ -308,11 +308,11 @@ export default function FinancialSupportPage() {
                   </div>
                   {data.whichBenefits.length > 0 && (
                     <div onClick={() => { update("receivingBenefits", "yes"); setStep(3); }}>
-                      <Button size="sm">Continue <ArrowRight className="h-4 w-4" /></Button>
+                      <Button size="sm">Continue</Button>
                     </div>
                   )}
                   {data.receivingBenefits === "no" && (
-                    <Button size="sm" onClick={() => setStep(3)}>Continue <ArrowRight className="h-4 w-4" /></Button>
+                    <Button size="sm" onClick={() => setStep(3)}>Continue</Button>
                   )}
                 </CardContent>
               </Card>
@@ -369,7 +369,6 @@ export default function FinancialSupportPage() {
               <div className="text-center">
                 <Button size="lg" onClick={handleCheck}>
                   Check what you may be able to get
-                  <ArrowRight className="h-4 w-4" />
                 </Button>
               </div>
             )}
@@ -431,18 +430,18 @@ export default function FinancialSupportPage() {
                   <p className="text-sm text-ink-600 mb-4">{program.description}</p>
                   <div className="space-y-3">
                     <div>
-                      <p className="text-xs font-medium text-ink-500 uppercase tracking-wide mb-1">Eligibility</p>
+                      <p className="text-sm font-semibold text-ink-700 mb-1">Eligibility</p>
                       <p className="text-sm text-ink-700">{program.eligibility}</p>
                     </div>
                     <div>
-                      <p className="text-xs font-medium text-ink-500 uppercase tracking-wide mb-1">How much</p>
+                      <p className="text-sm font-semibold text-ink-700 mb-1">How much</p>
                       <p className="text-sm text-ink-700 font-medium flex items-center gap-1">
                         <PoundSterling className="h-3.5 w-3.5 text-emerald-600" />
                         {program.amount}
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs font-medium text-ink-500 uppercase tracking-wide mb-1">How to apply</p>
+                      <p className="text-sm font-semibold text-ink-700 mb-1">How to apply</p>
                       <p className="text-sm text-ink-700">{program.how}</p>
                     </div>
                   </div>

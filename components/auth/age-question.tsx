@@ -1,8 +1,9 @@
 "use client";
 import { LOCAL_KEYS, useLocalStorage } from "@/lib/use-local-storage";
 
-export type AgeBand = "under-13" | "13-17" | "18-plus";
-export const ALLOWED_AGE_BANDS: AgeBand[] = ["13-17", "18-plus"];
+export type AgeBand = "under-16" | "16-17" | "18-plus";
+/** Accounts are for people aged 16 or over. */
+export const ALLOWED_AGE_BANDS: AgeBand[] = ["16-17", "18-plus"];
 
 /**
  * Neutral age question asked before an account is created: no default answer
@@ -10,7 +11,8 @@ export const ALLOWED_AGE_BANDS: AgeBand[] = ["13-17", "18-plus"];
  */
 export function useAgeBand(): [AgeBand | "", (v: AgeBand | "") => void] {
   const [value, set] = useLocalStorage(LOCAL_KEYS.ageBand);
-  const band = value === "under-13" || value === "13-17" || value === "18-plus" ? value : "";
+  // Answers saved under the old 13+ bands are asked again
+  const band = value === "under-16" || value === "16-17" || value === "18-plus" ? value : "";
   return [band, (v) => set(v || null)];
 }
 
@@ -27,21 +29,21 @@ export function AgeQuestion({ value, onChange }: { value: AgeBand | ""; onChange
           <option value="" disabled>
             Choose an answer
           </option>
-          <option value="under-13">Under 13</option>
-          <option value="13-17">13 to 17</option>
+          <option value="under-16">Under 16</option>
+          <option value="16-17">16 to 17</option>
           <option value="18-plus">18 or over</option>
         </select>
       </label>
-      {value === "under-13" && <UnderThirteen />}
+      {value === "under-16" && <UnderSixteen />}
     </div>
   );
 }
 
-function UnderThirteen() {
+function UnderSixteen() {
   return (
     <div className="mt-3 rounded-xl bg-amber-50 border border-amber-200 p-4 text-sm text-ink-800 space-y-2" role="status">
       <p>
-        You need to be 13 or over to create an account, so we have not saved your email address. You can still read
+        You need to be 16 or over to create an account, so we have not saved your email address. You can still read
         everything on AfterCare, and an adult you trust can create a plan for your family.
       </p>
       <p>

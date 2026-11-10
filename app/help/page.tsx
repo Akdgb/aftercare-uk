@@ -23,6 +23,20 @@ const OFFICIAL: HelpItem[] = [
   { href: "https://www.nidirect.gov.uk/information-and-services/death-and-bereavement", title: "In Northern Ireland", desc: "nidirect: death and bereavement", kind: "official", icon: "gov" },
 ];
 
+// One line on what each guide answers, shown under its title
+const SUMMARIES: Record<string, string> = {
+  "what-happens-after-someone-dies": "The first steps, in order, and what can wait",
+  "registering-a-death": "Who can register, what to bring and the deadlines",
+  "probate-explained": "When you need it, how to apply and what it costs",
+  "funeral-costs-explained": "Typical prices and where the money goes",
+  "council-housing-after-death": "Tenancies, notice periods and succession rights",
+  "funeral-support-payments": "Government help with funeral costs and who qualifies",
+  "burial-vs-cremation": "Costs, timings and how to choose",
+  "direct-cremation-explained": "A simpler, lower-cost option, and what it involves",
+  "tell-us-once": "Tell most government services about a death at once",
+  "repatriation-explained": "Taking someone home to be buried in another country",
+};
+
 export default function HelpPage() {
   const guides: HelpItem[] = [
     { href: "/help/support", title: "Getting support", desc: "NHS help first, then free national helplines", kind: "guide", icon: "book" },
@@ -30,12 +44,14 @@ export default function HelpPage() {
     { href: "/help/memorials", title: "Condolences and online memorials", desc: "Free memorial pages, notices and donations", kind: "guide", icon: "book" },
     { href: "/help/documents", title: "Documents you'll need", desc: "What to gather and where it comes from", kind: "guide", icon: "book" },
     ...Object.values(articles).map((a): HelpItem => ({
-    href: `/guidance/${a.slug}`,
-    title: a.title,
-    desc: `${a.category} · ${a.readTime} min read`,
-    kind: "guide",
-    icon: "book",
-  })),
+      href: `/guidance/${a.slug}`,
+      title: a.title,
+      desc: SUMMARIES[a.slug] ?? a.category,
+      kind: "guide",
+      icon: "book",
+      // Search the whole guide, not only its title
+      keywords: a.content.replace(/[#*_>\[\]()`-]/g, " "),
+    })),
   ];
   return <HelpList tools={TOOLS} official={OFFICIAL} guides={guides} />;
 }

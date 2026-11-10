@@ -2,7 +2,7 @@
 import { Suspense, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { ArrowRight, CheckCircle2, Heart, Loader2, Mail } from "lucide-react";
+import { CheckCircle2, Loader2, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AgeQuestion, ALLOWED_AGE_BANDS, useAgeBand } from "@/components/auth/age-question";
 
@@ -29,15 +29,17 @@ function SignInForm() {
   const [email, setEmail] = useState(params.get("email") ?? "");
   const [state, setState] = useState<"idle" | "loading" | "sent">("idle");
   const [err, setErr] = useState("");
+  const [ageErr, setAgeErr] = useState("");
   const [ageBand, setAgeBand] = useAgeBand();
 
   const handleSubmit = async () => {
-    if (!email.trim() || !email.includes("@")) {
-      setErr("Please enter a valid email address.");
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      setErr(email.trim() ? "Enter an email address in the correct format, like name@example.com" : "Enter your email address");
+      requestAnimationFrame(() => document.getElementById("signin-email")?.focus());
       return;
     }
     if (!ageBand) {
-      setErr("Please tell us your age to continue.");
+      setAgeErr("Tell us your age to continue");
       return;
     }
     if (!ALLOWED_AGE_BANDS.includes(ageBand)) return;
@@ -64,14 +66,6 @@ function SignInForm() {
   return (
     <div className="min-h-screen bg-stone-50 flex items-center justify-center px-4 py-16">
       <div className="w-full max-w-sm">
-        {/* Logo */}
-        <div className="flex items-center gap-2.5 justify-center mb-8">
-          <div className="w-9 h-9 bg-ink-700 rounded-xl flex items-center justify-center">
-            <Heart className="h-5 w-5 text-white" strokeWidth={1.5} />
-          </div>
-          <span className="text-ink-800 font-semibold text-xl">AfterCare</span>
-        </div>
-
         <div className="bg-white rounded-2xl border border-stone-200 shadow-sm p-8">
           {state === "sent" ? (
             <div className="text-center">
@@ -102,8 +96,8 @@ function SignInForm() {
               </p>
 
               {error && (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4">
-                  <p className="text-sm text-red-700">
+                <div role="alert" className="bg-rose-50 border border-rose-200 rounded-lg p-3 mb-4">
+                  <p className="text-sm text-rose-800">
                     {error === "expired"
                       ? "That link has expired or already been used. Please request a new one."
                       : "Something went wrong. Please try again."}
@@ -112,24 +106,41 @@ function SignInForm() {
               )}
 
               <div className="space-y-3">
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-ink-400 pointer-events-none" />
+                <label htmlFor="signin-email" className="block text-sm font-medium text-ink-700">
+                  Email address
+                </label>
+                {err && (
+                  <p id="signin-email-error" role="alert" className="text-sm font-semibold text-rose-800 !mt-1.5">
+                    <span className="sr-only">Error: </span>
+                    {err}
+                  </p>
+                )}
+                <div className="relative !mt-1.5">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-ink-500 pointer-events-none" aria-hidden="true" />
                   <input
+                    id="signin-email"
                     type="email"
-                    placeholder="your@email.com"
+                    inputMode="email"
+                    autoComplete="email"
                     value={email}
                     onChange={(e) => { setEmail(e.target.value); setErr(""); }}
                     onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
-                    className="w-full pl-9 pr-4 py-3 rounded-xl border border-stone-300 bg-white text-sm text-ink-800 placeholder-ink-400 focus:outline-none focus:ring-2 focus:ring-ink-400"
+                    aria-invalid={Boolean(err) || undefined}
+                    aria-describedby={err ? "signin-email-error" : undefined}
+                    className={`w-full pl-9 pr-4 py-3 rounded-xl border bg-white text-base text-ink-800 focus:outline-none focus:ring-2 focus:ring-ink-400 ${err ? "border-2 border-rose-700" : "border-stone-300"}`}
                     autoFocus
                   />
                 </div>
-                <AgeQuestion value={ageBand} onChange={(v) => { setAgeBand(v); setErr(""); }} />
-                {err && <p className="text-xs text-red-600">{err}</p>}
-                <Button className="w-full" onClick={handleSubmit} loading={state === "loading"} disabled={ageBand === "under-13"}>
+                <AgeQuestion value={ageBand} onChange={(v) => { setAgeBand(v); setErr(""); setAgeErr(""); }} />
+                {ageErr && (
+                  <p role="alert" className="text-sm font-semibold text-rose-800">
+                    <span className="sr-only">Error: </span>
+                    {ageErr}
+                  </p>
+                )}
+                <Button className="w-full" onClick={handleSubmit} loading={state === "loading"} disabled={ageBand === "under-16"}>
                   {state === "loading" ? "Sending link..." : "Send sign-in link"}
-                  {state === "idle" && <ArrowRight className="h-4 w-4" />}
-                </Button>
+                                  </Button>
               </div>
 
               <p className="text-center text-xs text-ink-500 mt-4">
