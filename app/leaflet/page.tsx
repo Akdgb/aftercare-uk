@@ -1,4 +1,5 @@
 import QRCode from "qrcode";
+import { Logo } from "@/components/layout/logo";
 import { SITE } from "@/lib/site";
 import { PrintButton } from "./print-button";
 
@@ -20,7 +21,7 @@ export default async function LeafletPage({ searchParams }: { searchParams: Prom
       </div>
 
       <article className="bg-white border border-stone-200 rounded-3xl p-10 print:border-0 print:rounded-none print:p-12">
-        <p className="font-display text-2xl font-semibold text-ink-900">AfterCare</p>
+        <Logo href={null} />
         <h1 className="text-4xl font-semibold text-ink-900 mt-8 leading-tight">
           What to do after
           <br />

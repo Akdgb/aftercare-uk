@@ -2,7 +2,7 @@
 import { Suspense, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { CheckCircle2, Heart, Loader2, Mail } from "lucide-react";
+import { CheckCircle2, Loader2, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AgeQuestion, ALLOWED_AGE_BANDS, useAgeBand } from "@/components/auth/age-question";
 
@@ -66,14 +66,6 @@ function SignInForm() {
   return (
     <div className="min-h-screen bg-stone-50 flex items-center justify-center px-4 py-16">
       <div className="w-full max-w-sm">
-        {/* Logo */}
-        <div className="flex items-center gap-2.5 justify-center mb-8">
-          <div className="w-9 h-9 bg-ink-700 rounded-xl flex items-center justify-center">
-            <Heart className="h-5 w-5 text-white" strokeWidth={1.5} />
-          </div>
-          <span className="text-ink-800 font-semibold text-xl">AfterCare</span>
-        </div>
-
         <div className="bg-white rounded-2xl border border-stone-200 shadow-sm p-8">
           {state === "sent" ? (
             <div className="text-center">
