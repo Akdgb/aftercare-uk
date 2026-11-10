@@ -9,13 +9,13 @@ const REASSURANCE = ["Free", "Private", "For all of the UK"];
 export default function HomePage() {
   return (
     <div className="min-h-[100dvh] flex flex-col bg-[radial-gradient(120%_60%_at_50%_0%,#e7eee9_0%,transparent_70%)]">
-      <ResumeRedirect />
       <header className="max-w-5xl w-full mx-auto px-5 h-16 flex items-center justify-between">
         <Logo />
         <Link href="/auth/signin" className="text-sm font-medium text-ink-700 px-3 py-2 rounded-lg hover:bg-white/70">
           Sign in
         </Link>
       </header>
+      <ResumeRedirect />
 
       <main className="flex-1 flex items-center">
         <div className="max-w-xl w-full mx-auto px-5 py-12 text-center">
