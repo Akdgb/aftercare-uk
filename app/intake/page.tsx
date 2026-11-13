@@ -291,7 +291,6 @@ function Intake({ draft }: { draft: Draft | null }) {
           >
             <Title>Who is this plan for?</Title>
             <p className="text-ink-500 mb-6">We are sorry for your loss. Tell us their name and the date they died.</p>
-            <p className="text-sm text-ink-500 -mt-4 mb-6">If more than one person has died, make a plan for each person, one at a time.</p>
             <div className="grid grid-cols-2 gap-3">
               <Field label="First name" id="first-name" error={errors.firstName}>
                 <input
