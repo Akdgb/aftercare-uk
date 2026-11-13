@@ -24,6 +24,8 @@ export function Footer() {
           <Link href="/about" className="hover:text-ink-900">About</Link>
           <Link href="/partners" className="hover:text-ink-900">For organisations</Link>
           <Link href="/privacy" className="hover:text-ink-900">Privacy</Link>
+          <Link href="/terms" className="hover:text-ink-900">Terms</Link>
+          <Link href="/cookies" className="hover:text-ink-900">Cookies</Link>
           <Link href="/accessibility" className="hover:text-ink-900">Accessibility</Link>
           <span>General guidance, not legal or financial advice.</span>
         </div>

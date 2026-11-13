@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { SITE } from "@/lib/site";
 import Link from "next/link";
+import { ClearDeviceData } from "@/components/privacy/clear-device-data";
 
 export const metadata: Metadata = {
   title: "Privacy policy",
@@ -13,13 +14,13 @@ export default function PrivacyPage() {
       <div className="bg-white border-b border-stone-200/70">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
           <h1 className="text-3xl sm:text-4xl font-semibold text-ink-900 mb-2">Privacy Policy</h1>
-          <p className="text-ink-500 text-sm">Last updated: October 2026</p>
+          <p className="text-ink-500 text-sm">Last updated: November 2026</p>
         </div>
       </div>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-8">
-          <p className="text-sm text-blue-800">
+        <div className="bg-ink-50 border border-ink-200 rounded-xl p-4 mb-8">
+          <p className="text-sm text-ink-800">
             <strong>Summary:</strong> We collect only the information needed to generate your bereavement plan.
             We do not sell your data, send marketing emails, or share your information with third parties for commercial purposes.
           </p>
@@ -30,10 +31,14 @@ export default function PrivacyPage() {
           <section className="p-6 sm:p-8">
             <h2 className="text-lg font-semibold text-ink-800 mb-3">1. Who we are</h2>
             <div className="prose text-sm text-ink-600">
-              <p>AfterCare UK is a bereavement guidance platform operated as a sole trader / limited company based in England.</p>
-              <p><strong>Data Controller:</strong> AfterCare UK</p>
+              <p>AfterCare UK is a free bereavement guidance service based in England.</p>
+              <p><strong>Data controller:</strong> {SITE.operator ? `${SITE.operator}, trading as AfterCare UK` : "AfterCare UK"}</p>
               <p><strong>Contact:</strong> <a href={`mailto:${SITE.privacyEmail}`} className="text-ink-700 underline">{SITE.privacyEmail}</a></p>
-              <p>We are required to register with the Information Commissioner&apos;s Office (ICO) as a data controller. Our ICO registration number will be listed here once obtained.</p>
+              <p>
+                {SITE.icoNumber
+                  ? `We are registered with the Information Commissioner's Office (ICO). Registration number: ${SITE.icoNumber}.`
+                  : "We are registering with the Information Commissioner's Office (ICO) as a data controller. Our registration number will be shown here."}
+              </p>
             </div>
           </section>
 
@@ -149,6 +154,14 @@ export default function PrivacyPage() {
             </div>
           </section>
 
+          <section className="p-6 sm:p-8" id="device">
+            <h2 className="text-lg font-semibold text-ink-800 mb-3">Delete what is saved on this device</h2>
+            <div className="prose text-sm text-ink-600">
+              <p>Your plan, answers and wellbeing notes may be saved in this browser. You can remove all of them now. If you saved a plan to your email, you can delete it from your account page.</p>
+            </div>
+            <ClearDeviceData />
+          </section>
+
           <section className="p-6 sm:p-8" id="rights">
             <h2 className="text-lg font-semibold text-ink-800 mb-3">7. Your rights</h2>
             <div className="prose text-sm text-ink-600">
@@ -179,7 +192,7 @@ export default function PrivacyPage() {
           <section className="p-6 sm:p-8">
             <h2 className="text-lg font-semibold text-ink-800 mb-3">8. Cookies</h2>
             <div className="prose text-sm text-ink-600">
-              <p>AfterCare uses only technically necessary cookies and browser localStorage to maintain your session and save your plan state. We do not use advertising cookies or third-party tracking cookies.</p>
+              <p>AfterCare uses one cookie, to keep you signed in, and storage in your browser to keep your plan and answers on your device. Both are strictly necessary for the service you ask for, so we do not need a cookie banner. We do not use advertising, analytics or tracking cookies. <Link href="/cookies" className="text-ink-700 underline">See our cookie policy</Link>.</p>
             </div>
           </section>
 
@@ -211,18 +224,9 @@ export default function PrivacyPage() {
           </section>
 
           <section className="p-6 sm:p-8" id="terms">
-            <h2 className="text-lg font-semibold text-ink-800 mb-3">9. Terms of Use</h2>
+            <h2 className="text-lg font-semibold text-ink-800 mb-3">9. Terms of use</h2>
             <div className="prose text-sm text-ink-600">
-              <p>
-                AfterCare provides guidance information only. Nothing on this platform constitutes legal, financial, or medical advice.
-                You should always consult a qualified professional, such as a solicitor, financial adviser or GP, for advice specific to your situation.
-              </p>
-              <p>
-                The platform is provided free of charge for personal, non-commercial use. We reserve the right to withdraw or modify any feature at any time.
-              </p>
-              <p>
-                These terms are governed by the laws of England and Wales.
-              </p>
+              <p>Using AfterCare means you agree to our <Link href="/terms" className="text-ink-700 underline">terms of use</Link>.</p>
             </div>
           </section>
 
