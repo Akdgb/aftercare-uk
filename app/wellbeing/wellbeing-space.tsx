@@ -181,11 +181,13 @@ function greeting(intake: IntakeFormData | null): string {
 function CheckInCard({ todays, onSave }: { todays?: CheckIn; onSave: (c: CheckIn) => void }) {
   const [mood, setMood] = useState<Mood | null>(null);
   const [feelings, setFeelings] = useState<string[]>([]);
+  const [note, setNote] = useState("");
   const [editing, setEditing] = useState(false);
 
   if (todays && !editing) return <CheckInResponse entry={todays} onChange={() => {
     setMood(todays.mood);
     setFeelings(todays.feelings);
+    setNote(todays.note ?? "");
     setEditing(true);
   }} />;
 
@@ -233,10 +235,27 @@ function CheckInCard({ todays, onSave }: { todays?: CheckIn; onSave: (c: CheckIn
               );
             })}
           </div>
+          {feelings.includes("other") && (
+            <div className="mt-3 animate-fade-up">
+              <label htmlFor="checkin-note" className="block text-sm font-medium text-ink-700">
+                What is on your mind? (optional)
+              </label>
+              <textarea
+                id="checkin-note"
+                value={note}
+                maxLength={280}
+                rows={2}
+                onChange={(e) => setNote(e.target.value)}
+                className="mt-1.5 w-full rounded-xl border border-stone-300 bg-white px-3 py-2.5 text-base text-ink-900 focus:outline-none focus:ring-2 focus:ring-ink-400"
+              />
+              <p className="text-xs text-ink-500 mt-1">Only saved on this device. Nobody else can see it.</p>
+            </div>
+          )}
           <button
             type="button"
             onClick={() => {
-              onSave({ date: todayIso(), mood, feelings });
+              const text = feelings.includes("other") ? note.trim() : "";
+              onSave({ date: todayIso(), mood, feelings, ...(text ? { note: text } : {}) });
               setEditing(false);
             }}
             className="mt-4 w-full bg-ink-700 text-white font-medium py-3 rounded-xl hover:bg-ink-800"
@@ -266,6 +285,9 @@ function CheckInResponse({ entry, onChange }: { entry: CheckIn; onChange: () => 
           </button>
         </div>
         <p className="text-sm text-ink-600 mt-2">{moodMessage(entry.mood)}</p>
+        {entry.note && (
+          <blockquote className="mt-3 border-l border-stone-300 pl-3 text-sm text-ink-700 italic">{entry.note}</blockquote>
+        )}
         {tips.length > 0 && (
           <ul className="mt-4 space-y-3">
             {tips.map((t) => (

@@ -10,7 +10,18 @@ import { getFaiths } from "@/lib/faith";
 export type Background = { id: string; label: string; group?: string };
 export type Region = { id: string; label: string; backgrounds: Background[] };
 
-export const REGIONS: Region[] = [
+const RAW_REGIONS: Region[] = [
+  {
+    id: "united-kingdom",
+    label: "British",
+    backgrounds: [
+      { id: "english", label: "English" },
+      { id: "scottish", label: "Scottish" },
+      { id: "welsh", label: "Welsh" },
+      { id: "northern-irish", label: "Northern Irish" },
+      { id: "british-other", label: "Other British" },
+    ],
+  },
   {
     id: "west-africa",
     label: "West African",
@@ -160,6 +171,19 @@ export const REGIONS: Region[] = [
     ],
   },
 ];
+
+// Shown in A to Z order so no background appears to come first. Entries
+// starting "Other" go last in their list, as people expect.
+const isOther = (label: string) => /^Other\b/.test(label);
+const byLabel = (a: string, b: string) =>
+  Number(isOther(a)) - Number(isOther(b)) || a.localeCompare(b, "en-GB");
+
+export const REGIONS: Region[] = RAW_REGIONS.map((r) => ({
+  ...r,
+  backgrounds: [...r.backgrounds].sort(
+    (a, b) => byLabel(a.group ?? "", b.group ?? "") || byLabel(a.label, b.label)
+  ),
+})).sort((a, b) => byLabel(a.label, b.label));
 
 const ALL = new Map(REGIONS.flatMap((r) => r.backgrounds.map((b) => [b.id, { ...b, region: r.id }] as const)));
 export const isBackgroundId = (id: string) => ALL.has(id);
