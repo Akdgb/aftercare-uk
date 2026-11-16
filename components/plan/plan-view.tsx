@@ -95,7 +95,8 @@ export function PlanView({
   // only the first unfinished stage starts open, so the page is not a wall of tasks.
   const [stageOverrides, setStageOverrides] = useState<Map<string, boolean>>(new Map());
   // The last task marked done from "Up next", so it can be undone.
-  const [undoTask, setUndoTask] = useState<{ id: string; title: string } | null>(null);
+  // The last task marked done from "Up next", or removed as not applying, so it can be undone
+  const [undoTask, setUndoTask] = useState<{ id: string; title: string; kind: "done" | "removed" } | null>(null);
   // Tasks ticked while viewing "To do" stay visible (struck through) until the
   // view changes, so an accidental tick is easy to see and undo.
   const [recentlyDone, setRecentlyDone] = useState<Set<string>>(new Set());
@@ -113,10 +114,13 @@ export function PlanView({
 
   const tasks = useMemo(
     () =>
-      generateActionPlan(intake).map((t) => ({
-        ...t,
-        status: (statuses[t.id] as TaskStatus) ?? "pending",
-      })),
+      generateActionPlan(intake)
+        .map((t) => ({
+          ...t,
+          status: (statuses[t.id] as TaskStatus) ?? "pending",
+        }))
+        // Removed as not applying: gone from the plan and from progress
+        .filter((t) => t.status !== "not-needed"),
     [intake, statuses]
   );
 
@@ -146,7 +150,12 @@ export function PlanView({
   const doneFromUpNext = () => {
     if (!nextTask) return;
     toggleTask(nextTask.id, "completed");
-    setUndoTask({ id: nextTask.id, title: nextTask.title });
+    setUndoTask({ id: nextTask.id, title: nextTask.title, kind: "done" });
+  };
+  /** "This doesn't apply to us": the task leaves the plan, with a few seconds to undo. */
+  const removeTask = (task: { id: string; title: string }) => {
+    onToggle(task.id, "not-needed");
+    setUndoTask({ id: task.id, title: task.title, kind: "removed" });
   };
   const undo = () => {
     if (!undoTask) return;
@@ -294,6 +303,13 @@ export function PlanView({
                       Not yet
                     </button>
                   </div>
+                  <button
+                    type="button"
+                    onClick={() => removeTask(nextTask)}
+                    className="block mx-auto mt-4 px-2 py-1 text-sm text-ink-200 underline underline-offset-4 decoration-ink-200/50 hover:text-white hover:decoration-white"
+                  >
+                    This doesn&apos;t apply to us
+                  </button>
                 </div>
               </section>
             ) : (
@@ -311,7 +327,7 @@ export function PlanView({
               {undoTask && (
                 <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-stone-200 bg-white px-4 py-3 animate-fade-up">
                   <p className="text-sm text-ink-700 min-w-0">
-                    Marked as done: <span className="font-medium text-ink-900">{undoTask.title}</span>
+                    {undoTask.kind === "removed" ? "Removed" : "Marked as done"}: <span className="font-medium text-ink-900">{undoTask.title}</span>
                   </p>
                   <button
                     onClick={undo}
@@ -433,6 +449,7 @@ export function PlanView({
                                   onToggle={() =>
                                     toggleTask(task.id, task.status === "completed" ? "pending" : "completed")
                                   }
+                                  onRemove={() => removeTask(task)}
                                   meta={renderTaskMeta?.(task)}
                                   extras={renderTaskExtras?.(task)}
                                 />
@@ -528,6 +545,7 @@ function TaskRow({
   open,
   onOpen,
   onToggle,
+  onRemove,
   meta,
   extras,
 }: {
@@ -535,6 +553,7 @@ function TaskRow({
   open: boolean;
   onOpen: () => void;
   onToggle: () => void;
+  onRemove: () => void;
   meta?: React.ReactNode;
   extras?: React.ReactNode;
 }) {
@@ -613,6 +632,15 @@ function TaskRow({
           </div>
         )}
         {extras && <div className="print:hidden">{extras}</div>}
+        {!done && (
+          <button
+            type="button"
+            onClick={onRemove}
+            className="print:hidden mt-3 py-1 text-sm text-ink-600 underline underline-offset-4 decoration-ink-300 hover:text-ink-900"
+          >
+            This doesn&apos;t apply to us
+          </button>
+        )}
       </div>
     </li>
   );

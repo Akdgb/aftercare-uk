@@ -75,7 +75,8 @@ export interface ActionPlanTask {
   description: string;
   category: "immediate" | "legal" | "financial" | "government" | "housing" | "personal";
   priority: "urgent" | "this-week" | "this-month" | "future";
-  status: "pending" | "in-progress" | "completed";
+  /** "not-needed": removed by the family because it does not apply to them. */
+  status: "pending" | "in-progress" | "completed" | "not-needed";
   assignedTo?: string;
   dueDate?: string;
   link?: string;

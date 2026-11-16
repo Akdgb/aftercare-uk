@@ -24,6 +24,7 @@ const faithEnum = z.enum([
 /** Server-side validation for intake data before it is stored in a saved plan. */
 const baseIntakeSchema = z.object({
   deceasedFirstName: text(100).min(1),
+  ageGroup: z.enum(["baby", "child", "adult"]).optional(),
   deceasedLastName: text(100),
   dateOfDeath: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   locationOfDeath: text(200),
