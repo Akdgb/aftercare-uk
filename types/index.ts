@@ -23,11 +23,16 @@ export type HousingType =
   | "unsure";
 export type BurialPlace = "uk" | "abroad" | "both" | "unsure";
 export type YesNoUnsure = "yes" | "no" | "unsure";
+
+/** Who died. Plans saved before this question existed are treated as "adult". */
+export type AgeGroup = "baby" | "child" | "adult";
 export type DeceasedLocation = "hospital" | "hospice" | "care-home" | "home" | "funeral-director";
 
 export interface IntakeFormData {
   // About the deceased
   deceasedFirstName: string;
+  /** A baby (including stillbirth), a child under 18, or an adult. Changes the whole plan. */
+  ageGroup?: AgeGroup;
   deceasedLastName: string;
   dateOfDeath: string;
   locationOfDeath: string;

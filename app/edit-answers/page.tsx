@@ -3,7 +3,8 @@ import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft, Check, Loader2 } from "lucide-react";
-import { FAITH_CHOICES, HOMES, LOCATIONS, MONEY, RELATIONSHIPS } from "@/lib/intake-options";
+import { AGE_GROUPS, CHILD_RELATIONSHIPS, FAITH_CHOICES, HOMES, LOCATIONS, MONEY, RELATIONSHIPS } from "@/lib/intake-options";
+import { isChildPlan } from "@/lib/child-plan";
 import { BURIAL_PLACES } from "@/lib/cultures";
 import { BackgroundPicker } from "@/components/plan/background-picker";
 import { getFaiths } from "@/lib/faith";
@@ -192,12 +193,23 @@ function EditAnswers() {
       <Section title="Where they are now">
         <Pills name="currentLocation" label="Where they are now" options={LOCATIONS} value={data.currentLocation} onChange={(v) => set({ currentLocation: v })} />
       </Section>
+      <Section title="How old they were">
+        <Pills
+          name="ageGroup"
+          label="How old they were"
+          options={AGE_GROUPS}
+          value={data.ageGroup ?? "adult"}
+          onChange={(v) => set({ ageGroup: v, ...(v !== "adult" ? { housingType: "unsure" as const } : {}) })}
+        />
+      </Section>
       <Section title="Your relationship">
-        <Pills name="relationship" label="Your relationship" options={RELATIONSHIPS} value={data.relationship} onChange={(v) => set({ relationship: v })} />
+        <Pills name="relationship" label="Your relationship" options={isChildPlan(data) ? CHILD_RELATIONSHIPS : RELATIONSHIPS} value={data.relationship} onChange={(v) => set({ relationship: v })} />
       </Section>
-      <Section title="Where they lived">
-        <Pills name="housingType" label="Where they lived" options={HOMES} value={data.housingType} onChange={(v) => set({ housingType: v })} />
-      </Section>
+      {!isChildPlan(data) && (
+        <Section title="Where they lived">
+          <Pills name="housingType" label="Where they lived" options={HOMES} value={data.housingType} onChange={(v) => set({ housingType: v })} />
+        </Section>
+      )}
       <Section title="Help paying for the funeral">
         <Pills name="needsFinancialHelp" label="Help paying for the funeral" options={MONEY} value={data.needsFinancialHelp} onChange={(v) => set({ needsFinancialHelp: v })} />
       </Section>

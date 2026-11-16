@@ -2,7 +2,8 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, ArrowRight, Check, Loader2 } from "lucide-react";
-import { FAITH_CHOICES, HOMES, LOCATIONS, MONEY, RELATIONSHIPS, type Choice } from "@/lib/intake-options";
+import { AGE_GROUPS, CHILD_RELATIONSHIPS, FAITH_CHOICES, HOMES, LOCATIONS, MONEY, RELATIONSHIPS, type Choice } from "@/lib/intake-options";
+import { isChildPlan } from "@/lib/child-plan";
 import { BURIAL_PLACES } from "@/lib/cultures";
 import { BackgroundPicker } from "@/components/plan/background-picker";
 import { AgeQuestion, ALLOWED_AGE_BANDS, useAgeBand } from "@/components/auth/age-question";
@@ -30,7 +31,9 @@ const initialData: IntakeFormData = {
   needsFinancialHelp: "unsure",
 };
 
-const TOTAL = 8;
+const TOTAL = 9;
+// The "Where did they live?" question, skipped when a baby or child has died
+const HOME_STEP = 5;
 // Faiths most often chosen in the UK are shown first; the rest sit behind "Show more"
 const COMMON_FAITHS: FaithOption[] = ["christian", "christian-pentecostal", "muslim", "hindu", "sikh", "jewish"];
 // A short pause so the person sees their answer ticked before the next question
@@ -168,12 +171,20 @@ function Intake({ draft }: { draft: Draft | null }) {
   };
 
   // Tap an answer → save it and move on
+  const isChild = isChildPlan(data);
+  const nextStep = (from: number, child = isChild) => (child && from + 1 === HOME_STEP ? HOME_STEP + 1 : from + 1);
+  const prevStep = (from: number) => (isChild && from - 1 === HOME_STEP ? HOME_STEP - 1 : from - 1);
+
   const choose = <K extends keyof IntakeFormData>(key: K, value: IntakeFormData[K]) => {
     if (advancing.current) return;
     advancing.current = true;
-    setData({ ...data, [key]: value });
+    const patch: Partial<IntakeFormData> = { [key]: value };
+    // A child did not own or rent a home, so that question and its tasks do not apply
+    if (key === "ageGroup" && value !== "adult") patch.housingType = "unsure";
+    const updated = { ...data, ...patch };
+    setData(updated);
     setAnswered((prev) => new Set(prev).add(key));
-    const next = step + 1;
+    const next = nextStep(step, isChildPlan(updated));
     setTimeout(() => go(Math.min(next, TOTAL)), ADVANCE_DELAY_MS);
   };
 
@@ -265,7 +276,7 @@ function Intake({ draft }: { draft: Draft | null }) {
             if (step <= 1) return router.push("/");
             // Use real browser history where we added it, so both back buttons agree
             if (window.history.state?.intakePushed) window.history.back();
-            else go(step - 1);
+            else go(prevStep(step));
           }}
           className="p-2.5 -ml-2.5 rounded-full text-ink-600 hover:bg-stone-100"
           aria-label="Back"
@@ -335,27 +346,38 @@ function Intake({ draft }: { draft: Draft | null }) {
         )}
 
         {step === 2 && (
-          <Question title={`Where is ${first} now?`} options={LOCATIONS} selected={picked("currentLocation")} onPick={(v) => choose("currentLocation", v)} />
+          <Question
+            title={`How old was ${first}?`}
+            subtitle="This helps us show the right steps. We are so sorry."
+            options={AGE_GROUPS}
+            selected={picked("ageGroup")}
+            onPick={(v) => choose("ageGroup", v)}
+          />
         )}
 
         {step === 3 && (
-          <Question title={`How were you related to ${first}?`} options={RELATIONSHIPS} selected={picked("relationship")} onPick={(v) => choose("relationship", v)} />
+          <Question title={`Where is ${first} now?`} options={LOCATIONS} selected={picked("currentLocation")} onPick={(v) => choose("currentLocation", v)} />
         )}
 
         {step === 4 && (
-          <Question title={`Where did ${first} live?`} options={HOMES} selected={picked("housingType")} onPick={(v) => choose("housingType", v)} />
+          <Question title={`How were you related to ${first}?`} options={isChild ? CHILD_RELATIONSHIPS : RELATIONSHIPS} selected={picked("relationship")} onPick={(v) => choose("relationship", v)} />
         )}
 
         {step === 5 && (
+          <Question title={`Where did ${first} live?`} options={HOMES} selected={picked("housingType")} onPick={(v) => choose("housingType", v)} />
+        )}
+
+        {step === 6 && (
           <Question
             title="Will you need help paying for the funeral?"
+            subtitle={isChild ? "For a child, the burial or cremation fees are usually paid for you. We will show you how." : undefined}
             options={MONEY}
             selected={picked("needsFinancialHelp")}
             onPick={(v) => choose("needsFinancialHelp", v)}
           />
         )}
 
-        {step === 6 && (
+        {step === 7 && (
           <div>
             <Title>Any faith or beliefs?</Title>
             <p className="text-ink-500 mb-6">
@@ -401,7 +423,7 @@ function Intake({ draft }: { draft: Draft | null }) {
               </button>
             )}
             {selectedFaiths.length > 0 ? (
-              <button onClick={() => go(7)} className={primaryClass + " mt-5"}>
+              <button onClick={() => go(8)} className={primaryClass + " mt-5"}>
                 Continue
               </button>
             ) : (
@@ -409,7 +431,7 @@ function Intake({ draft }: { draft: Draft | null }) {
                 <button
                   onClick={() => {
                     setData({ ...data, faith: "none", faiths: [] });
-                    go(7);
+                    go(8);
                   }}
                   className="px-4 py-3.5 rounded-2xl border-2 border-stone-200 bg-white font-medium text-ink-900 hover:border-ink-300"
                 >
@@ -418,7 +440,7 @@ function Intake({ draft }: { draft: Draft | null }) {
                 <button
                   onClick={() => {
                     setData({ ...data, faith: "prefer-not-to-say", faiths: [] });
-                    go(7);
+                    go(8);
                   }}
                   className="px-4 py-3.5 rounded-2xl border-2 border-stone-200 bg-white font-medium text-ink-900 hover:border-ink-300"
                 >
@@ -429,7 +451,7 @@ function Intake({ draft }: { draft: Draft | null }) {
           </div>
         )}
 
-        {step === 7 && (
+        {step === 8 && (
           <div>
             <Title>Cultural background</Title>
             <p className="text-ink-500 mb-6">
@@ -445,13 +467,13 @@ function Intake({ draft }: { draft: Draft | null }) {
               other={data.backgroundOther ?? ""}
               onOtherChange={(backgroundOther) => setData({ ...data, backgroundOther, faithConsent: false })}
             />
-            <button onClick={() => go(8)} className={primaryClass + " mt-6"}>
+            <button onClick={() => go(9)} className={primaryClass + " mt-6"}>
               {(data.backgrounds?.length ?? 0) > 0 || data.backgroundOther?.trim() ? "Continue" : "Skip this question"}
             </button>
           </div>
         )}
 
-        {step === 8 && (
+        {step === 9 && (
           <div>
             <Title>Where will {first} be buried or cremated?</Title>
             <p className="text-ink-500 mb-6">If the funeral or burial will be in another country, we will add the extra steps.</p>

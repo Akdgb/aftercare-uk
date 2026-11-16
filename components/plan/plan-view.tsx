@@ -18,6 +18,7 @@ import {
   Zap,
 } from "lucide-react";
 import { generateActionPlan } from "@/lib/action-plan";
+import { isChildPlan } from "@/lib/child-plan";
 import { InstallPrompt } from "@/components/app/install-prompt";
 import { cn, formatDate } from "@/lib/utils";
 import type { ActionPlanTask, IntakeFormData } from "@/types";
@@ -37,6 +38,12 @@ const CATEGORY_META: Record<ActionPlanTask["category"], { label: string; icon: R
 const NOT_YET_HOURS = 24;
 
 // Stages read like GOV.UK's "step by step" guides: when, and why
+// Gentler subtitles when a baby or child has died: there is no estate to deal with
+const CHILD_SUBTITLES: Partial<Record<ActionPlanTask["priority"], string>> = {
+  "this-week": "Time off work, and the people who need to know",
+  "this-month": "Things that can wait a little",
+};
+
 const STAGES: { priority: ActionPlanTask["priority"]; title: string; subtitle: string }[] = [
   { priority: "urgent", title: "First few days", subtitle: "Things with legal deadlines, or that cannot wait" },
   { priority: "this-week", title: "This week", subtitle: "Tell the organisations that need to know" },
@@ -385,7 +392,7 @@ export function PlanView({
                         </span>
                         <span className="flex-1 min-w-0">
                           <span className="block font-semibold text-ink-900">{stage.title}</span>
-                          <span className="block text-sm text-ink-500">{stage.subtitle}</span>
+                          <span className="block text-sm text-ink-500">{(isChildPlan(intake) && CHILD_SUBTITLES[stage.priority]) || stage.subtitle}</span>
                         </span>
                         <span className="flex flex-col items-end gap-1 shrink-0">
                           <span className="text-xs text-ink-500 whitespace-nowrap">
