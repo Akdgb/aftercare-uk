@@ -2,9 +2,11 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, ArrowRight, Check, Loader2 } from "lucide-react";
-import { FAITH_CHOICES, HOMES, LOCATIONS, MONEY, RELATIONSHIPS, type Choice } from "@/lib/intake-options";
+import { AGE_GROUPS, CHILD_RELATIONSHIPS, FAITH_CHOICES, HOMES, LOCATIONS, MONEY, RELATIONSHIPS, type Choice } from "@/lib/intake-options";
+import { isChildPlan } from "@/lib/child-plan";
 import { BURIAL_PLACES } from "@/lib/cultures";
 import { BackgroundPicker } from "@/components/plan/background-picker";
+import { AgeQuestion, ALLOWED_AGE_BANDS, useAgeBand } from "@/components/auth/age-question";
 import { cn } from "@/lib/utils";
 import { LOCAL_KEYS, writeLocal } from "@/lib/use-local-storage";
 import type { FaithOption, IntakeFormData } from "@/types";
@@ -29,7 +31,9 @@ const initialData: IntakeFormData = {
   needsFinancialHelp: "unsure",
 };
 
-const TOTAL = 8;
+const TOTAL = 9;
+// The "Where did they live?" question, skipped when a baby or child has died
+const HOME_STEP = 5;
 // Faiths most often chosen in the UK are shown first; the rest sit behind "Show more"
 const COMMON_FAITHS: FaithOption[] = ["christian", "christian-pentecostal", "muslim", "hindu", "sikh", "jewish"];
 // A short pause so the person sees their answer ticked before the next question
@@ -77,6 +81,13 @@ function Intake({ draft }: { draft: Draft | null }) {
   const [submitting, setSubmitting] = useState(false);
   const [confirmingStartOver, setConfirmingStartOver] = useState(false);
   const [showAllFaiths, setShowAllFaiths] = useState(false);
+  // After the last question: the finished answers, waiting on the optional email screen
+  const [ready, setReady] = useState<IntakeFormData | null>(null);
+  const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [sendFailed, setSendFailed] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [ageBand, setAgeBand] = useAgeBand();
   // Ignore extra taps while the tick is showing, so a double tap cannot skip a question
   const advancing = useRef(false);
   const firstNameRef = useRef<HTMLInputElement>(null);
@@ -160,12 +171,20 @@ function Intake({ draft }: { draft: Draft | null }) {
   };
 
   // Tap an answer → save it and move on
+  const isChild = isChildPlan(data);
+  const nextStep = (from: number, child = isChild) => (child && from + 1 === HOME_STEP ? HOME_STEP + 1 : from + 1);
+  const prevStep = (from: number) => (isChild && from - 1 === HOME_STEP ? HOME_STEP - 1 : from - 1);
+
   const choose = <K extends keyof IntakeFormData>(key: K, value: IntakeFormData[K]) => {
     if (advancing.current) return;
     advancing.current = true;
-    setData({ ...data, [key]: value });
+    const patch: Partial<IntakeFormData> = { [key]: value };
+    // A child did not own or rent a home, so that question and its tasks do not apply
+    if (key === "ageGroup" && value !== "adult") patch.housingType = "unsure";
+    const updated = { ...data, ...patch };
+    setData(updated);
     setAnswered((prev) => new Set(prev).add(key));
-    const next = step + 1;
+    const next = nextStep(step, isChildPlan(updated));
     setTimeout(() => go(Math.min(next, TOTAL)), ADVANCE_DELAY_MS);
   };
 
@@ -187,8 +206,43 @@ function Intake({ draft }: { draft: Draft | null }) {
       requestAnimationFrame(() => consentRef.current?.focus());
       return;
     }
-    if (!needsConsent) return finish({ ...data, faiths: [], backgrounds: [], backgroundOther: undefined, faithConsent: false });
-    finish(data);
+    const final = needsConsent
+      ? data
+      : { ...data, faiths: [], backgrounds: [], backgroundOther: undefined, faithConsent: false };
+    // Signed-in people are already saved; everyone else is offered the email screen
+    if (isSignedIn) return finish(final);
+    setReady(final);
+    go(TOTAL + 1);
+  };
+
+  const savePlanByEmail = async () => {
+    if (!ready) return;
+    const value = email.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+      setEmailError(value ? "Enter an email address in the correct format, like name@example.com" : "Enter your email address");
+      requestAnimationFrame(() => document.getElementById("save-email")?.focus());
+      return;
+    }
+    if (!ageBand) {
+      setEmailError("Tell us your age to continue");
+      return;
+    }
+    if (!ALLOWED_AGE_BANDS.includes(ageBand)) return;
+    setSending(true);
+    const res = await fetch("/api/auth/magic-link", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: value, next: "/dashboard", ageBand }),
+    }).catch(() => null);
+    setSending(false);
+    if (!res?.ok) {
+      setSendFailed(true);
+      return;
+    }
+    await finish(ready);
+    // Clicking the emailed link saves this plan to their email address
+    writeLocal(LOCAL_KEYS.pendingSave, "1");
+    writeLocal(LOCAL_KEYS.linkSentTo, value);
   };
 
   const submitNames = () => {
@@ -222,18 +276,18 @@ function Intake({ draft }: { draft: Draft | null }) {
             if (step <= 1) return router.push("/");
             // Use real browser history where we added it, so both back buttons agree
             if (window.history.state?.intakePushed) window.history.back();
-            else go(step - 1);
+            else go(prevStep(step));
           }}
           className="p-2.5 -ml-2.5 rounded-full text-ink-600 hover:bg-stone-100"
           aria-label="Back"
         >
           <ArrowLeft className="h-5 w-5" />
         </button>
-        <div className="flex-1 h-1.5 bg-stone-200 rounded-full overflow-hidden" role="progressbar" aria-label="Progress through the questions" aria-valuenow={step} aria-valuemin={1} aria-valuemax={TOTAL}>
-          <div className="h-full bg-ink-700 rounded-full transition-all duration-500" style={{ width: `${(step / TOTAL) * 100}%` }} />
+        <div className="flex-1 h-1.5 bg-stone-200 rounded-full overflow-hidden" role="progressbar" aria-label="Progress through the questions" aria-valuenow={Math.min(step, TOTAL)} aria-valuemin={1} aria-valuemax={TOTAL}>
+          <div className="h-full bg-ink-700 rounded-full transition-all duration-500" style={{ width: `${(Math.min(step, TOTAL) / TOTAL) * 100}%` }} />
         </div>
         <span className="text-sm text-ink-500 tabular-nums">
-          {step} of {TOTAL}
+          {step > TOTAL ? "Last step" : `${step} of ${TOTAL}`}
         </span>
       </div>
 
@@ -292,27 +346,38 @@ function Intake({ draft }: { draft: Draft | null }) {
         )}
 
         {step === 2 && (
-          <Question title={`Where is ${first} now?`} options={LOCATIONS} selected={picked("currentLocation")} onPick={(v) => choose("currentLocation", v)} />
+          <Question
+            title={`How old was ${first}?`}
+            subtitle="This helps us show the right steps. We are so sorry."
+            options={AGE_GROUPS}
+            selected={picked("ageGroup")}
+            onPick={(v) => choose("ageGroup", v)}
+          />
         )}
 
         {step === 3 && (
-          <Question title={`How were you related to ${first}?`} options={RELATIONSHIPS} selected={picked("relationship")} onPick={(v) => choose("relationship", v)} />
+          <Question title={`Where is ${first} now?`} options={LOCATIONS} selected={picked("currentLocation")} onPick={(v) => choose("currentLocation", v)} />
         )}
 
         {step === 4 && (
-          <Question title={`Where did ${first} live?`} options={HOMES} selected={picked("housingType")} onPick={(v) => choose("housingType", v)} />
+          <Question title={`How were you related to ${first}?`} options={isChild ? CHILD_RELATIONSHIPS : RELATIONSHIPS} selected={picked("relationship")} onPick={(v) => choose("relationship", v)} />
         )}
 
         {step === 5 && (
+          <Question title={`Where did ${first} live?`} options={HOMES} selected={picked("housingType")} onPick={(v) => choose("housingType", v)} />
+        )}
+
+        {step === 6 && (
           <Question
             title="Will you need help paying for the funeral?"
+            subtitle={isChild ? "For a child, the burial or cremation fees are usually paid for you. We will show you how." : undefined}
             options={MONEY}
             selected={picked("needsFinancialHelp")}
             onPick={(v) => choose("needsFinancialHelp", v)}
           />
         )}
 
-        {step === 6 && (
+        {step === 7 && (
           <div>
             <Title>Any faith or beliefs?</Title>
             <p className="text-ink-500 mb-6">
@@ -358,7 +423,7 @@ function Intake({ draft }: { draft: Draft | null }) {
               </button>
             )}
             {selectedFaiths.length > 0 ? (
-              <button onClick={() => go(7)} className={primaryClass + " mt-5"}>
+              <button onClick={() => go(8)} className={primaryClass + " mt-5"}>
                 Continue
               </button>
             ) : (
@@ -366,7 +431,7 @@ function Intake({ draft }: { draft: Draft | null }) {
                 <button
                   onClick={() => {
                     setData({ ...data, faith: "none", faiths: [] });
-                    go(7);
+                    go(8);
                   }}
                   className="px-4 py-3.5 rounded-2xl border-2 border-stone-200 bg-white font-medium text-ink-900 hover:border-ink-300"
                 >
@@ -375,7 +440,7 @@ function Intake({ draft }: { draft: Draft | null }) {
                 <button
                   onClick={() => {
                     setData({ ...data, faith: "prefer-not-to-say", faiths: [] });
-                    go(7);
+                    go(8);
                   }}
                   className="px-4 py-3.5 rounded-2xl border-2 border-stone-200 bg-white font-medium text-ink-900 hover:border-ink-300"
                 >
@@ -386,7 +451,7 @@ function Intake({ draft }: { draft: Draft | null }) {
           </div>
         )}
 
-        {step === 7 && (
+        {step === 8 && (
           <div>
             <Title>Cultural background</Title>
             <p className="text-ink-500 mb-6">
@@ -402,13 +467,13 @@ function Intake({ draft }: { draft: Draft | null }) {
               other={data.backgroundOther ?? ""}
               onOtherChange={(backgroundOther) => setData({ ...data, backgroundOther, faithConsent: false })}
             />
-            <button onClick={() => go(8)} className={primaryClass + " mt-6"}>
+            <button onClick={() => go(9)} className={primaryClass + " mt-6"}>
               {(data.backgrounds?.length ?? 0) > 0 || data.backgroundOther?.trim() ? "Continue" : "Skip this question"}
             </button>
           </div>
         )}
 
-        {step === 8 && (
+        {step === 9 && (
           <div>
             <Title>Where will {first} be buried or cremated?</Title>
             <p className="text-ink-500 mb-6">If the funeral or burial will be in another country, we will add the extra steps.</p>
@@ -480,6 +545,82 @@ function Intake({ draft }: { draft: Draft | null }) {
               Show my plan
             </button>
           </div>
+        )}
+        {step === TOTAL + 1 && ready && (
+          <form
+            noValidate
+            onSubmit={(e) => {
+              e.preventDefault();
+              savePlanByEmail();
+            }}
+          >
+            <Title>Keep your plan safe</Title>
+            <p className="text-ink-500 mb-6">
+              Enter your email so you do not lose your plan and can come back to your answers at any time. We will
+              send you a link to it. No password needed.
+            </p>
+            {sendFailed ? (
+              <div role="alert" className="rounded-2xl border border-stone-300 bg-white p-4">
+                <p className="font-semibold text-ink-900">We could not send the email just now</p>
+                <p className="text-sm text-ink-700 mt-1">
+                  Your plan is still saved on this device. You can save it to your email later from the plan.
+                </p>
+              </div>
+            ) : (
+              <>
+                <label htmlFor="save-email" className="block text-sm font-medium text-ink-700 mb-1.5">
+                  Your email address
+                </label>
+                {emailError && (
+                  <p id="save-email-error" className="text-sm font-semibold text-rose-800 mb-1.5">
+                    <span className="sr-only">Error: </span>
+                    {emailError}
+                  </p>
+                )}
+                <input
+                  id="save-email"
+                  type="email"
+                  inputMode="email"
+                  autoComplete="email"
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    setEmailError("");
+                  }}
+                  aria-invalid={Boolean(emailError) || undefined}
+                  aria-describedby={emailError ? "save-email-error" : undefined}
+                  className={inputClass(Boolean(emailError))}
+                />
+                {email.trim() && (
+                  <div className="mt-4">
+                    <AgeQuestion value={ageBand} onChange={(v) => { setAgeBand(v); setEmailError(""); }} />
+                  </div>
+                )}
+                <p className="text-xs text-ink-500 mt-3">
+                  We only use your email to send you your plan and reminders you ask for.{" "}
+                  <a href="/privacy" target="_blank" className="underline">Privacy</a>
+                </p>
+              </>
+            )}
+            {sendFailed ? (
+              <button type="button" onClick={() => finish(ready)} className={primaryClass + " mt-6"}>
+                Show my plan
+              </button>
+            ) : (
+              <>
+                <button type="submit" disabled={sending || ageBand === "under-16"} className={primaryClass + " mt-6 disabled:opacity-60"}>
+                  {sending ? <Loader2 className="h-5 w-5 animate-spin" /> : null} Save my plan
+                </button>
+                <button
+                  type="button"
+                  onClick={() => finish(ready)}
+                  className="w-full mt-3 py-3 text-ink-600 font-medium hover:text-ink-900"
+                >
+                  Skip for now
+                </button>
+              </>
+            )}
+          </form>
         )}
       </div>
 

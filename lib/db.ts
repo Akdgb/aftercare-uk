@@ -28,7 +28,7 @@ export interface TaskComment {
 
 export type PlanRole = "owner" | "member";
 
-export const TASK_STATUSES = ["pending", "in-progress", "completed"] as const;
+export const TASK_STATUSES = ["pending", "in-progress", "completed", "not-needed"] as const;
 export type TaskStatus = (typeof TASK_STATUSES)[number];
 
 export async function savePlan(

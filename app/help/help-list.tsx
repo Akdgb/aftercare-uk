@@ -19,7 +19,7 @@ const ICONS = { money: PoundSterling, calc: Calculator, book: BookOpen, heart: H
 const SAVE_MONEY: HelpItem = {
   href: "/help/save-money",
   title: "Save money on the funeral",
-  desc: "Simple choices that can save thousands",
+  desc: "Simple choices that can lower the cost",
   kind: "tool",
   icon: "save",
 };

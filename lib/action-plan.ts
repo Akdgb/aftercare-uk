@@ -1,6 +1,7 @@
 import type { IntakeFormData, ActionPlanTask } from "@/types";
 import { getFaiths } from "@/lib/faith";
 import { traditionTasks } from "@/lib/cultures";
+import { childTasks, isChildPlan } from "@/lib/child-plan";
 
 // Task IDs are stable slugs so saved progress survives changes to the plan.
 // Plans saved before slugs existed stored progress under sequential numbers
@@ -43,6 +44,13 @@ export function generateActionPlan(data: IntakeFormData): ActionPlanTask[] {
 function buildTasks(data: IntakeFormData) {
   legacyCounter = 0;
   const tasks: (ActionPlanTask & { legacyId?: string })[] = [];
+
+  // A baby or child: a separate plan, then the same faith and tradition steps
+  if (isChildPlan(data)) {
+    for (const t of childTasks(data)) tasks.push(makeTask(t.id, t, { legacy: false }));
+    addFaithAndTraditionTasks(tasks, data);
+    return tasks;
+  }
 
   // ── Immediate ──────────────────────────────────────────────────────────────
   if (data.currentLocation === "hospital" || data.currentLocation === "hospice") {
@@ -355,6 +363,11 @@ function buildTasks(data: IntakeFormData) {
     )
   );
 
+  addFaithAndTraditionTasks(tasks, data);
+  return tasks;
+}
+
+function addFaithAndTraditionTasks(tasks: (ActionPlanTask & { legacyId?: string })[], data: IntakeFormData) {
   // ── Faith-specific (several can apply) ────────────────────────────────────
   const faiths = getFaiths(data);
   if (faiths.includes("muslim")) {
@@ -413,6 +426,4 @@ function buildTasks(data: IntakeFormData) {
 
   // Steps for the cultural backgrounds chosen and where they will be laid to rest
   for (const t of traditionTasks(data)) tasks.push(makeTask(t.id, t, { legacy: false }));
-
-  return tasks;
 }

@@ -3,7 +3,7 @@ export function appUrl(): string {
   return normaliseSiteUrl(process.env.NEXT_PUBLIC_APP_URL, "http://localhost:3000");
 }
 
-const FROM = () => process.env.EMAIL_FROM ?? "AfterCare <no-reply@aftercare-uk.co.uk>";
+const FROM = () => process.env.EMAIL_FROM ?? "AfterCare <no-reply@aftercareuk.co.uk>";
 
 /**
  * Sends an email via Resend. Without RESEND_API_KEY (local dev) the email is
@@ -12,6 +12,12 @@ const FROM = () => process.env.EMAIL_FROM ?? "AfterCare <no-reply@aftercare-uk.c
  */
 export async function sendEmail(to: string, subject: string, html: string, text?: string): Promise<boolean> {
   if (!process.env.RESEND_API_KEY) {
+    // On Vercel, a missing key means email is not set up yet: say so honestly
+    // rather than telling people to check an inbox that will stay empty
+    if (process.env.VERCEL_ENV) {
+      console.error("sendEmail: RESEND_API_KEY is not set, so no email was sent");
+      return false;
+    }
     console.log(`\n✉️  EMAIL (dev, not sent) to=${to}\nSubject: ${subject}\n${text ?? ""}\n`);
     return true;
   }

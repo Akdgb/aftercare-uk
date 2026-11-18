@@ -126,7 +126,8 @@ export default function DashboardPage() {
 }
 
 function PlanCard({ plan }: { plan: PlanSummary }) {
-  const tasks = generateActionPlan(plan.intake_data);
+  // Tasks the family removed as not applying do not count
+  const tasks = generateActionPlan(plan.intake_data).filter((t) => plan.task_statuses?.[t.id] !== "not-needed");
   const completed = tasks.filter((t) => plan.task_statuses?.[t.id] === "completed").length;
   const name = `${plan.intake_data.deceasedFirstName} ${plan.intake_data.deceasedLastName}`.trim();
   const pct = tasks.length ? Math.round((completed / tasks.length) * 100) : 0;

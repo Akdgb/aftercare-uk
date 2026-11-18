@@ -23,11 +23,16 @@ export type HousingType =
   | "unsure";
 export type BurialPlace = "uk" | "abroad" | "both" | "unsure";
 export type YesNoUnsure = "yes" | "no" | "unsure";
+
+/** Who died. Plans saved before this question existed are treated as "adult". */
+export type AgeGroup = "baby" | "child" | "adult";
 export type DeceasedLocation = "hospital" | "hospice" | "care-home" | "home" | "funeral-director";
 
 export interface IntakeFormData {
   // About the deceased
   deceasedFirstName: string;
+  /** A baby (including stillbirth), a child under 18, or an adult. Changes the whole plan. */
+  ageGroup?: AgeGroup;
   deceasedLastName: string;
   dateOfDeath: string;
   locationOfDeath: string;
@@ -70,7 +75,8 @@ export interface ActionPlanTask {
   description: string;
   category: "immediate" | "legal" | "financial" | "government" | "housing" | "personal";
   priority: "urgent" | "this-week" | "this-month" | "future";
-  status: "pending" | "in-progress" | "completed";
+  /** "not-needed": removed by the family because it does not apply to them. */
+  status: "pending" | "in-progress" | "completed" | "not-needed";
   assignedTo?: string;
   dueDate?: string;
   link?: string;

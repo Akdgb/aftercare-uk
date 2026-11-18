@@ -19,6 +19,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/partners",
     "/about",
     "/privacy",
+    "/terms",
+    "/cookies",
     "/accessibility",
   ];
   return [

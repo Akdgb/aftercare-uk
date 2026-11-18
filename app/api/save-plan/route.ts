@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
 
     const planUrl = `${appUrl()}/plan/${planId}`;
     const name = `${intake.deceasedFirstName} ${intake.deceasedLastName}`.trim();
-    const urgentCount = tasks.filter((t) => t.priority === "urgent" && statuses[t.id] !== "completed").length;
+    const urgentCount = tasks.filter((t) => t.priority === "urgent" && statuses[t.id] !== "completed" && statuses[t.id] !== "not-needed").length;
     const { subject, html, text } = planConfirmationEmail(name || "your loved one", planUrl, urgentCount);
     // Sent to the verified account email, not the free-text intake field
     await sendEmail(session.email, subject, html, text).catch(() => false);

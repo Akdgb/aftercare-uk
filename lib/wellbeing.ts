@@ -3,7 +3,8 @@
 // health data, so nothing in this file is ever sent to our servers.
 
 export type Mood = 1 | 2 | 3 | 4 | 5;
-export type CheckIn = { date: string; mood: Mood; feelings: string[] };
+/** `note` is the person's own words for "Something else", kept on the device only. */
+export type CheckIn = { date: string; mood: Mood; feelings: string[]; note?: string };
 export type HardDate = { id: string; label: string; date: string };
 export type JournalEntry = { id: string; at: string; prompt: string; text: string };
 export type SmallStep = { date: string; text: string; done: boolean };
@@ -73,6 +74,11 @@ export const FEELINGS: { id: string; label: string; tip: string; href?: string; 
     id: "family",
     label: "Family tension",
     tip: "Families grieve in different ways and at different speeds, and disagreements about the funeral or the estate are common. It can help to talk to someone outside the family first.",
+  },
+  {
+    id: "other",
+    label: "Something else",
+    tip: "Whatever it is, it matters. Writing it down can make it feel a little lighter, and talking it through with someone you trust, or your GP, can help.",
   },
 ];
 

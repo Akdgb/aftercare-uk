@@ -25,7 +25,7 @@ export async function GET(req: NextRequest) {
       const intake = plan.intake_data as unknown as IntakeFormData;
       const statuses = normaliseTaskKeys(intake, plan.task_statuses);
       const pending = generateActionPlan(intake)
-        .filter((t) => (t.priority === "urgent" || t.priority === "this-week") && statuses[t.id] !== "completed")
+        .filter((t) => (t.priority === "urgent" || t.priority === "this-week") && statuses[t.id] !== "completed" && statuses[t.id] !== "not-needed")
         .map((t) => t.title);
       if (pending.length === 0) continue;
 

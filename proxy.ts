@@ -6,6 +6,10 @@ const COOKIE = "aftercare_session";
 // Signed-in areas: the dashboard and saved plans (/plan/<id>). The unsaved
 // local plan at /plan stays public so people can use AfterCare without an account.
 export async function proxy(req: NextRequest) {
+  // The plan document reads the local plan itself, or asks the API, which checks
+  // the session for saved plans, so it does not need this guard
+  if (req.nextUrl.pathname === "/plan/document") return NextResponse.next();
+
   const token = req.cookies.get(COOKIE)?.value;
   const secret = process.env.SESSION_SECRET;
 

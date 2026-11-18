@@ -1,4 +1,4 @@
-import type { DeceasedLocation, FaithOption, HousingType, YesNoUnsure } from "@/types";
+import type { AgeGroup, DeceasedLocation, FaithOption, HousingType, YesNoUnsure } from "@/types";
 
 // Answer options shared by the questions and the "Edit answers" page.
 export type Choice<T extends string> = { value: T; label: string; hint?: string };
@@ -9,6 +9,23 @@ export const LOCATIONS: Choice<DeceasedLocation>[] = [
   { value: "care-home", label: "In a care home" },
   { value: "home", label: "At home" },
   { value: "funeral-director", label: "Already with a funeral director" },
+];
+
+export const AGE_GROUPS: Choice<AgeGroup>[] = [
+  { value: "baby", label: "A baby", hint: "Including a baby who died before, during or soon after birth" },
+  { value: "child", label: "A child or teenager", hint: "Under 18" },
+  { value: "adult", label: "An adult", hint: "18 or over" },
+];
+
+/** Relationships offered when a baby or child has died. */
+export const CHILD_RELATIONSHIPS: Choice<string>[] = [
+  { value: "Mother", label: "Mum" },
+  { value: "Father", label: "Dad" },
+  { value: "Parent", label: "Parent or carer" },
+  { value: "Grandparent", label: "Grandparent" },
+  { value: "Sibling", label: "Brother or sister" },
+  { value: "Other relative", label: "Other relative" },
+  { value: "Close friend", label: "Family friend" },
 ];
 
 export const RELATIONSHIPS: Choice<string>[] = [
