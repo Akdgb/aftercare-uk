@@ -15,8 +15,8 @@ Tick a box only when the thing is done and checked. [ ] = to do, [x] = done.
 
 ## Wednesday 18 November: email
 **Owner**
-- [ ] Make a free Resend account (resend.com), add the domain, copy its DNS records into your domain settings, wait for "Verified"
-- [ ] In Resend, create an API key and copy it (do not paste it in chat)
+- [x] Resend: domain aftercareuk.co.uk verified for sending and receiving (Ireland region)
+- [x] RESEND_API_KEY set in Vercel
 - [ ] Set up free email forwarding so hello@ and privacy@ your domain reach your own inbox (Cloudflare Email Routing or ImprovMX)
 - [ ] Pay the ICO data protection fee at ico.org.uk (about £52 a year) and note the registration number
 - [ ] Vercel → Settings → Environment Variables, add (Production), then Redeploy:
