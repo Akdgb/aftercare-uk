@@ -130,9 +130,8 @@ export default function PrivacyPage() {
               <p>We use the following third-party processors. All are contractually required to process your data only on our instructions and in compliance with UK GDPR:</p>
               <ul>
                 <li><strong>Neon Inc.</strong> (database hosting): stores your account and saved plans</li>
-                <li><strong>Resend Inc.</strong> (email delivery): email addresses are processed to send sign-in links, family invitations, your plan link and reminders</li>
+                <li><strong>Resend Inc.</strong> (email delivery): email addresses are processed to send sign-in links, family invitations, your plan link and reminders, and to receive emails you send to our hello@ and privacy@ addresses so we can read and reply to them</li>
                 <li><strong>Vercel Inc.</strong> (website hosting and domain management): your requests are processed on Vercel servers in London</li>
-                <li><strong>ImprovMX</strong> (email forwarding): passes on emails you send to our hello@ and privacy@ addresses so we can read and reply to them</li>
               </ul>
               <p>
                 We do not use analytics, advertising, tracking pixels or session recording tools. The website&apos;s fonts

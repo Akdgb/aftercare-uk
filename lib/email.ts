@@ -10,7 +10,13 @@ const FROM = () => process.env.EMAIL_FROM ?? "AfterCare <no-reply@aftercareuk.co
  * logged to the console instead so flows can still be exercised end to end.
  * Returns false only when a configured provider rejects the message.
  */
-export async function sendEmail(to: string, subject: string, html: string, text?: string): Promise<boolean> {
+export async function sendEmail(
+  to: string,
+  subject: string,
+  html: string,
+  text?: string,
+  options: { replyTo?: string } = {}
+): Promise<boolean> {
   if (!process.env.RESEND_API_KEY) {
     // On Vercel, a missing key means email is not set up yet: say so honestly
     // rather than telling people to check an inbox that will stay empty
@@ -29,7 +35,7 @@ export async function sendEmail(to: string, subject: string, html: string, text?
         Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ from: FROM(), to, subject, html, text }),
+      body: JSON.stringify({ from: FROM(), to, subject, html, text, ...(options.replyTo ? { reply_to: options.replyTo } : {}) }),
       signal: AbortSignal.timeout(10_000),
     });
     if (!res.ok) {
