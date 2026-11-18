@@ -131,7 +131,8 @@ export default function PrivacyPage() {
               <ul>
                 <li><strong>Neon Inc.</strong> (database hosting): stores your account and saved plans</li>
                 <li><strong>Resend Inc.</strong> (email delivery): email addresses are processed to send sign-in links, family invitations, your plan link and reminders</li>
-                <li><strong>Vercel Inc.</strong> (website hosting): your requests are processed on Vercel servers in London</li>
+                <li><strong>Vercel Inc.</strong> (website hosting and domain management): your requests are processed on Vercel servers in London</li>
+                <li><strong>ImprovMX</strong> (email forwarding): passes on emails you send to our hello@ and privacy@ addresses so we can read and reply to them</li>
               </ul>
               <p>
                 We do not use analytics, advertising, tracking pixels or session recording tools. The website&apos;s fonts
@@ -145,11 +146,11 @@ export default function PrivacyPage() {
             <h2 className="text-lg font-semibold text-ink-800 mb-3">6. Transfers outside the UK</h2>
             <div className="prose text-sm text-ink-600">
               <p>
-                Our processors (Neon, Vercel, Resend) are based in the USA. Transfers to the USA are protected by either:
+                Some of our processors are based in the USA. Transfers outside the UK are protected by either:
               </p>
               <ul>
                 <li>The UK International Data Transfer Agreement (IDTA), or</li>
-                <li>UK adequacy decisions where applicable</li>
+                <li>the UK Extension to the EU-US Data Privacy Framework (the &ldquo;UK-US data bridge&rdquo;), where the company is certified</li>
               </ul>
             </div>
           </section>
