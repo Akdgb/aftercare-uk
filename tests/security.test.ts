@@ -114,8 +114,8 @@ describe("site address setting", () => {
   });
 
   it("falls back when the setting is empty or nonsense", () => {
-    expect(normaliseSiteUrl(undefined)).toBe("https://aftercare-uk.vercel.app");
-    expect(normaliseSiteUrl("   ")).toBe("https://aftercare-uk.vercel.app");
+    expect(normaliseSiteUrl(undefined)).toBe("https://aftercareuk.co.uk");
+    expect(normaliseSiteUrl("   ")).toBe("https://aftercareuk.co.uk");
     expect(normaliseSiteUrl("not a url at all", "http://localhost:3000")).toBe("http://localhost:3000");
   });
 });

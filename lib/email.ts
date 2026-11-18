@@ -3,7 +3,7 @@ export function appUrl(): string {
   return normaliseSiteUrl(process.env.NEXT_PUBLIC_APP_URL, "http://localhost:3000");
 }
 
-const FROM = () => process.env.EMAIL_FROM ?? "AfterCare <no-reply@aftercare-uk.co.uk>";
+const FROM = () => process.env.EMAIL_FROM ?? "AfterCare <no-reply@aftercareuk.co.uk>";
 
 /**
  * Sends an email via Resend. Without RESEND_API_KEY (local dev) the email is

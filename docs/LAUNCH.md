@@ -9,8 +9,8 @@ Tick a box only when the thing is done and checked. [ ] = to do, [x] = done.
 - [ ] Send owner a real PDF from a test plan
 
 **Owner**
-- [ ] Buy the domain (for example aftercare-uk.co.uk, about £10 a year from Cloudflare or Namecheap)
-- [ ] Vercel → aftercare-uk project → Settings → Domains → add the domain, then follow its DNS instructions
+- [x] Buy the domain: aftercareuk.co.uk (GoDaddy)
+- [x] Domain added in Vercel and DNS records set in GoDaddy (check both rows show a blue tick)
 - [ ] Decide the name for the privacy policy: your full name, or your company name
 
 ## Wednesday 18 November: email
@@ -20,11 +20,11 @@ Tick a box only when the thing is done and checked. [ ] = to do, [x] = done.
 - [ ] Set up free email forwarding so hello@ and privacy@ your domain reach your own inbox (Cloudflare Email Routing or ImprovMX)
 - [ ] Pay the ICO data protection fee at ico.org.uk (about £52 a year) and note the registration number
 - [ ] Vercel → Settings → Environment Variables, add (Production), then Redeploy:
-  - NEXT_PUBLIC_APP_URL = https://your-domain
+  - NEXT_PUBLIC_APP_URL = https://aftercareuk.co.uk
   - RESEND_API_KEY = the key from Resend
-  - EMAIL_FROM = AfterCare <no-reply@your-domain>
-  - NEXT_PUBLIC_CONTACT_EMAIL = hello@your-domain
-  - NEXT_PUBLIC_PRIVACY_EMAIL = privacy@your-domain
+  - EMAIL_FROM = AfterCare <no-reply@aftercareuk.co.uk>
+  - NEXT_PUBLIC_CONTACT_EMAIL = hello@aftercareuk.co.uk
+  - NEXT_PUBLIC_PRIVACY_EMAIL = privacy@aftercareuk.co.uk
   - NEXT_PUBLIC_OPERATOR_NAME = your name or company
   - NEXT_PUBLIC_ICO_NUMBER = your ICO number
 - [ ] Check these already exist in Vercel: SESSION_SECRET, DATABASE_URL, CRON_SECRET
