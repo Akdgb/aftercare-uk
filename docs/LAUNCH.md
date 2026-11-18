@@ -4,9 +4,9 @@ Tick a box only when the thing is done and checked. [ ] = to do, [x] = done.
 
 ## Tuesday 17 November
 **Claude**
-- [ ] Build "Save or share as PDF" (cover with progress bar, steps left only, contacts page)
-- [ ] Add "Send as a message" for WhatsApp
-- [ ] Send owner a real PDF from a test plan
+- [x] Build "Save or share as PDF" (cover with progress bar, steps left only, contacts page)
+- [x] Add "Send as a message" for WhatsApp
+- [x] Send owner a real PDF from a test plan
 
 **Owner**
 - [x] Buy the domain: aftercareuk.co.uk (GoDaddy)

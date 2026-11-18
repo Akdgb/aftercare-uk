@@ -202,3 +202,315 @@ textarea {
 .animate-card-in {
   animation: cardIn 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
+
+/* ── Plan document ("Save or share as PDF") ─────────────────────────────── */
+.plan-doc {
+  color: #1d2b28;
+}
+.doc-page {
+  position: relative;
+  background: #fff;
+  width: 100%;
+  max-width: 210mm;
+  margin: 0 auto 24px;
+  padding: 16mm;
+  box-shadow: 0 1px 3px rgba(24, 42, 38, 0.08), 0 8px 24px -12px rgba(24, 42, 38, 0.18);
+  border-radius: 8px;
+}
+.doc-cover {
+  min-height: 297mm;
+  background: #f7f4ee;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.doc-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(90% 55% at 80% 0%, #dfe9e3 0%, transparent 70%);
+}
+.doc-title {
+  font-size: clamp(2.2rem, 7vw, 3rem);
+  line-height: 1.05;
+  font-weight: 500;
+  margin-top: 36mm;
+}
+.doc-title i {
+  color: #3b554e;
+}
+.doc-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8mm;
+  margin-top: 9mm;
+  font-size: 13px;
+  color: #3b554e;
+}
+.doc-facts dd {
+  margin: 2px 0 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1d2b28;
+}
+.doc-progress {
+  margin-top: 9mm;
+  max-width: 90mm;
+  font-size: 12.5px;
+  color: #3b554e;
+}
+.doc-progress b {
+  color: #1d2b28;
+}
+.doc-bar {
+  height: 6px;
+  background: #e2dcd1;
+  border-radius: 3px;
+  margin-top: 6px;
+  overflow: hidden;
+}
+.doc-bar span {
+  display: block;
+  height: 100%;
+  background: #2c4640;
+}
+.doc-intro {
+  margin-top: 10mm;
+  max-width: 120mm;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: #3b554e;
+}
+.doc-tips {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 10mm;
+}
+.doc-tips div {
+  background: #fff;
+  border: 1px solid #e2dcd1;
+  border-radius: 12px;
+  padding: 12px;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: #3b554e;
+}
+.doc-tips b,
+.doc-qr b,
+.doc-help h3,
+.doc-notes h3,
+.doc-stage h3 {
+  font-family: var(--font-display);
+  font-variation-settings: "SOFT" 60;
+}
+.doc-tips b {
+  display: block;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1d2b28;
+  margin-bottom: 4px;
+}
+.doc-qr {
+  position: relative;
+  margin-top: auto;
+  margin-bottom: 12mm;
+  background: #223833;
+  color: #fff;
+  border-radius: 16px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.doc-qr-code {
+  width: 26mm;
+  height: 26mm;
+  flex: none;
+  background: #fff;
+  border-radius: 8px;
+  padding: 6px;
+}
+.doc-qr-code svg {
+  width: 100%;
+  height: 100%;
+}
+.doc-qr b {
+  font-size: 17px;
+  font-weight: 600;
+}
+.doc-qr p {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: #c5d5ce;
+  line-height: 1.5;
+}
+.doc-foot {
+  position: absolute;
+  bottom: 8mm;
+  left: 16mm;
+  right: 16mm;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 10px;
+  color: #587469;
+  border-top: 1px solid #e2dcd1;
+  padding-top: 6px;
+}
+.doc-h2 {
+  font-size: 28px;
+  font-weight: 500;
+}
+.doc-sub {
+  font-size: 12.5px;
+  color: #3b554e;
+  margin-top: 4px;
+}
+.doc-stage {
+  margin-top: 8mm;
+  break-inside: avoid;
+}
+.doc-stage h3 {
+  margin: 0 0 6px;
+  font-size: 16px;
+  font-weight: 600;
+}
+.doc-step {
+  display: grid;
+  grid-template-columns: 16px 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 9px 0;
+  border-top: 1px solid #efebe3;
+  break-inside: avoid;
+}
+.doc-box {
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid #9db6ad;
+  border-radius: 4px;
+}
+.doc-step-title {
+  font-size: 14px;
+  font-weight: 500;
+}
+.doc-ref {
+  font-size: 11px;
+  color: #587469;
+  text-align: right;
+}
+.doc-contacts {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 6mm;
+  font-size: 12.5px;
+}
+.doc-contacts th {
+  text-align: left;
+  font-weight: 600;
+  color: #3b554e;
+  font-size: 11px;
+  padding-bottom: 6px;
+  border-bottom: 1.5px solid #cdc5b7;
+}
+.doc-contacts td {
+  height: 12mm;
+  border-bottom: 1px solid #e2dcd1;
+  vertical-align: bottom;
+  padding-bottom: 4px;
+}
+.doc-contacts td:first-child {
+  width: 38%;
+  font-weight: 500;
+}
+.doc-help {
+  margin-top: 9mm;
+  background: #f7f4ee;
+  border-radius: 14px;
+  padding: 14px 16px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 18px;
+  font-size: 11.5px;
+  color: #3b554e;
+  break-inside: avoid;
+}
+.doc-help h3 {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1d2b28;
+}
+.doc-help b {
+  display: block;
+  font-size: 13px;
+  color: #1d2b28;
+}
+.doc-notes {
+  margin-top: 8mm;
+  break-inside: avoid;
+}
+.doc-notes h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+.doc-notes div {
+  height: 9mm;
+  border-bottom: 1px solid #e2dcd1;
+}
+@media (max-width: 640px) {
+  .doc-page {
+    padding: 8mm;
+  }
+  .doc-tips {
+    grid-template-columns: 1fr;
+  }
+  .doc-cover {
+    min-height: 0;
+  }
+  .doc-qr {
+    margin-top: 10mm;
+    margin-bottom: 14mm;
+  }
+}
+@media print {
+  @page {
+    size: A4;
+    margin: 0;
+  }
+  html,
+  body {
+    background: #fff !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .doc-page {
+    max-width: none;
+    width: 210mm;
+    margin: 0;
+    padding: 16mm 18mm;
+    box-shadow: none;
+    border-radius: 0;
+    break-after: page;
+    /* Keep the page margins when a long checklist runs onto another page */
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+  .doc-page:last-child {
+    break-after: auto;
+  }
+  .doc-cover {
+    height: 297mm;
+    min-height: 0;
+  }
+  .doc-tips {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .doc-qr {
+    margin-top: auto;
+    margin-bottom: 12mm;
+  }
+}

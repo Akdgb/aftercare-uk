@@ -12,6 +12,7 @@ import {
   Phone,
   PoundSterling,
   Printer,
+  Share2,
   Scale,
   Heart,
   User,
@@ -65,6 +66,8 @@ interface PlanViewProps {
   sidebar?: React.ReactNode;
   /** Extra controls shown when a task is opened (e.g. assignee and notes). */
   renderTaskExtras?: (task: ActionPlanTask) => React.ReactNode;
+  /** The designed document to save as PDF or send as a message. */
+  documentHref?: string;
   /** Where "Edit answers" goes; omit to hide it (e.g. for invited family). */
   editHref?: string;
   /** Extra controls on the "Up next" card (e.g. who's doing it). */
@@ -86,6 +89,7 @@ export function PlanView({
   renderTaskMeta,
   renderUpNextExtras,
   editHref,
+  documentHref,
   extraFilter,
 }: PlanViewProps) {
   const [view, setView] = useState<View>("todo");
@@ -463,12 +467,21 @@ export function PlanView({
                 );
               })}
             </ol>
-            <button
-              onClick={() => window.print()}
-              className="print:hidden inline-flex items-center gap-2 text-sm text-ink-600 hover:text-ink-900"
-            >
-              <Printer className="h-4 w-4" /> Print or save as PDF
-            </button>
+            {documentHref ? (
+              <Link
+                href={documentHref}
+                className="print:hidden flex items-center justify-center gap-2 w-full rounded-2xl border border-stone-300 bg-white px-4 py-3.5 font-semibold text-ink-800 hover:border-ink-300"
+              >
+                <Share2 className="h-4 w-4" aria-hidden="true" /> Save or share your plan
+              </Link>
+            ) : (
+              <button
+                onClick={() => window.print()}
+                className="print:hidden inline-flex items-center gap-2 text-sm text-ink-600 hover:text-ink-900"
+              >
+                <Printer className="h-4 w-4" /> Print or save as PDF
+              </button>
+            )}
           </div>
 
           {/* ── Side column ───────────────────────────────────────────── */}
