@@ -11,7 +11,7 @@ Tick a box only when the thing is done and checked. [ ] = to do, [x] = done.
 **Owner**
 - [x] Buy the domain: aftercareuk.co.uk (GoDaddy)
 - [x] Domain added in Vercel and DNS records set in GoDaddy (check both rows show a blue tick)
-- [ ] Decide the name for the privacy policy: your full name, or your company name
+- [x] Decide the name for the privacy policy (set in Vercel as NEXT_PUBLIC_OPERATOR_NAME)
 
 ## Wednesday 18 November: email
 **Owner**
@@ -30,7 +30,7 @@ Tick a box only when the thing is done and checked. [ ] = to do, [x] = done.
 - [ ] Check these already exist in Vercel: SESSION_SECRET, DATABASE_URL, CRON_SECRET
 
 **Claude**
-- [ ] Merge everything waiting (after owner says "merge it")
+- [x] Merge everything waiting (merged 18 November)
 - [ ] Update the handover note
 
 ## Thursday 19 November: test day
