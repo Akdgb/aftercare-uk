@@ -127,7 +127,7 @@ export default function PrivacyPage() {
                 <li><strong>Saved plans:</strong> 3 years from the date of creation, then automatically deleted</li>
                 <li><strong>Your account:</strong> until you delete it from your dashboard (Account tab). This removes all plans you own.</li>
                 <li><strong>Family members and task notes:</strong> deleted with the plan, or when the owner removes that person</li>
-                <li><strong>Sign-in links:</strong> expire after 20 minutes and are deleted after 1 day. If you ask us to save your plan, a copy is kept with the link until you open it, and is deleted with the link if you do not.</li>
+                <li><strong>Sign-in links:</strong> expire after 20 minutes (family invitation links after 7 days) and are deleted a day after they expire. If you ask us to save your plan, a copy is kept with the link until you open it, and is deleted with the link if you do not.</li>
                 <li><strong>Hosting logs:</strong> basic request records kept by our hosting provider, Vercel, for the short period set by Vercel. We do not log the content of your plan or notes.</li>
                 <li><strong>Emails you send to us:</strong> kept in our inbox while we deal with your message, and deleted within 2 years</li>
                 <li><strong>Backups:</strong> deleted data can remain in our database provider&apos;s backups for a short period until they are overwritten. It is not used during that time.</li>

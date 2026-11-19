@@ -3,6 +3,7 @@ import { addMember, getMembers, removeMember } from "@/lib/db";
 import { appUrl, sendEmail } from "@/lib/email";
 import { inviteEmail } from "@/lib/email-templates";
 import { normaliseEmail } from "@/lib/security";
+import { createMagicLink } from "@/lib/auth-db";
 import { requirePlanAccess } from "@/lib/plan-access";
 
 type Params = { params: Promise<{ id: string }> };
@@ -34,9 +35,11 @@ export async function POST(req: NextRequest, { params }: Params) {
   if (!added) return NextResponse.json({ error: "That person has already been invited." }, { status: 409 });
 
   const deceased = `${access.intake.deceasedFirstName} ${access.intake.deceasedLastName}`.trim();
-  const link = new URL("/auth/signin", appUrl());
+  // A one-time link that opens the plan directly, after a short age group question
+  const token = await createMagicLink(email, undefined, undefined, { purpose: "invite" });
+  const link = new URL("/auth/invite", appUrl());
+  link.searchParams.set("token", token);
   link.searchParams.set("next", `/plan/${id}`);
-  link.searchParams.set("email", email);
   const { subject, html, text } = inviteEmail(access.session.email, name, deceased, link.toString());
   const sent = await sendEmail(email, subject, html, text);
 

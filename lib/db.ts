@@ -269,6 +269,6 @@ export async function markReminded(planId: string) {
 /** Enforces the retention periods stated in the privacy policy. */
 export async function purgeExpiredData() {
   const plans = await db()`DELETE FROM saved_plans WHERE created_at < NOW() - INTERVAL '3 years'`;
-  const links = await db()`DELETE FROM magic_links WHERE created_at < NOW() - INTERVAL '1 day'`;
+  const links = await db()`DELETE FROM magic_links WHERE expires_at < NOW() - INTERVAL '1 day'`;
   return { plans: plans.count, magicLinks: links.count };
 }

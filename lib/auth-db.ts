@@ -2,6 +2,7 @@ import { db } from "@/lib/postgres";
 import { createHash, randomBytes } from "crypto";
 
 const LINK_TTL_MINUTES = 20;
+const INVITE_TTL_MINUTES = 7 * 24 * 60;
 const MAX_LINKS_PER_WINDOW = 5;
 const WINDOW_MINUTES = 15;
 const MAX_LINKS_PER_REQUESTER_PER_HOUR = 20;
@@ -26,25 +27,35 @@ export async function isRateLimited(email: string, requester?: string): Promise<
   return r.by_email >= MAX_LINKS_PER_WINDOW || r.by_requester >= MAX_LINKS_PER_REQUESTER_PER_HOUR;
 }
 
-export async function createMagicLink(email: string, requester?: string, pendingPlan?: unknown): Promise<string> {
+export async function createMagicLink(
+  email: string,
+  requester?: string,
+  pendingPlan?: unknown,
+  options: { purpose?: "invite" } = {}
+): Promise<string> {
   const token = randomBytes(32).toString("hex");
-  const expiresAt = new Date(Date.now() + LINK_TTL_MINUTES * 60 * 1000);
+  // Invitations last 7 days, because people do not always read them straight away
+  const minutes = options.purpose === "invite" ? INVITE_TTL_MINUTES : LINK_TTL_MINUTES;
+  const expiresAt = new Date(Date.now() + minutes * 60 * 1000);
 
   await db()`
-    INSERT INTO magic_links (email, token, expires_at, requester, pending_plan)
-    VALUES (${email}, ${hashToken(token)}, ${expiresAt}, ${requester ?? null}, ${pendingPlan ? db().json(pendingPlan as never) : null})
+    INSERT INTO magic_links (email, token, expires_at, requester, pending_plan, purpose)
+    VALUES (${email}, ${hashToken(token)}, ${expiresAt}, ${requester ?? null}, ${pendingPlan ? db().json(pendingPlan as never) : null}, ${options.purpose ?? null})
   `;
 
   return token;
 }
 
 export async function verifyMagicLink(
-  token: string
+  token: string,
+  /** Family invitations can only be used once an allowed age group has been chosen. */
+  { ageAllowed = false }: { ageAllowed?: boolean } = {}
 ): Promise<{ userId: string; email: string; pendingPlan: unknown } | null> {
   // Claim the token atomically so a double-click cannot create two sessions
   const rows = await db()`
     UPDATE magic_links SET used_at = NOW()
     WHERE token = ${hashToken(token)} AND expires_at > NOW() AND used_at IS NULL
+      AND (purpose IS DISTINCT FROM 'invite' OR ${ageAllowed})
     RETURNING email, pending_plan
   `;
 

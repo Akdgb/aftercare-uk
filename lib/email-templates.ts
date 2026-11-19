@@ -142,8 +142,25 @@ export function inviteEmail(inviterEmail: string, inviteeName: string, deceasedN
           )}</strong>. You'll be able to see the task list, tick off tasks, take on tasks and leave notes for the family.`
         ) +
         button(signInUrl, "Open the plan →") +
-        small("You'll be asked to confirm your email address. No password is needed. If you weren't expecting this, you can ignore this email.")
+        small("No password or sign-up is needed. This link works once, for 7 days. If you were not expecting this, you can ignore this email.")
     ),
     text: `${inviterEmail} has invited you to help with the AfterCare plan for ${deceasedName}.\n\nOpen the plan: ${signInUrl}`,
+  };
+}
+
+/** Sent after someone deletes their account, as their record that it happened. */
+export function accountDeletedEmail(): Email {
+  return {
+    subject: "Your AfterCare account has been deleted",
+    html: layout(
+      h("Your account has been deleted") +
+        p(
+          "Your AfterCare account and every plan you owned have been deleted, along with the family members, task notes and sign-in links connected to them."
+        ) +
+        small(
+          `Deleted data can remain in our database provider's backups for a short time until they are overwritten, and is not used. Anything kept only on your own phone or computer stays there until you clear it. If you did not ask for this, email ${SITE.privacyEmail}.`
+        )
+    ),
+    text: `Your AfterCare account and every plan you owned have been deleted, along with family members, task notes and sign-in links connected to them. Deleted data can remain in backups for a short time until overwritten. If you did not ask for this, email ${SITE.privacyEmail}.`,
   };
 }
