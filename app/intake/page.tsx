@@ -346,8 +346,8 @@ function Intake({ draft }: { draft: Draft | null }) {
 
         {step === 2 && (
           <Question
-            title={`How old was ${first}?`}
-            subtitle="This helps us show the right steps. We are so sorry."
+            title={`Which age group was ${first} in?`}
+            subtitle="This helps us show the right steps."
             options={AGE_GROUPS}
             selected={picked("ageGroup")}
             onPick={(v) => choose("ageGroup", v)}

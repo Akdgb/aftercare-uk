@@ -193,10 +193,10 @@ function EditAnswers() {
       <Section title="Where they are now">
         <Pills name="currentLocation" label="Where they are now" options={LOCATIONS} value={data.currentLocation} onChange={(v) => set({ currentLocation: v })} />
       </Section>
-      <Section title="How old they were">
+      <Section title="Their age group">
         <Pills
           name="ageGroup"
-          label="How old they were"
+          label="Their age group"
           options={AGE_GROUPS}
           value={data.ageGroup ?? "adult"}
           onChange={(v) => set({ ageGroup: v, ...(v !== "adult" ? { housingType: "unsure" as const } : {}) })}
