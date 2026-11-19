@@ -8,6 +8,7 @@ const ITEMS = [
   { name: "aftercare_intake, aftercare_task_statuses and similar", kind: "Browser storage", why: "Keeps your plan, answers and ticked tasks on your device", lasts: "Until you delete them" },
   { name: "aftercare_wellbeing_…", kind: "Browser storage", why: "Keeps your check-ins, dates and private notes on your device only", lasts: "Until you delete them" },
   { name: "aftercare_resumed", kind: "Session storage", why: "Takes you to your plan once when you open AfterCare", lasts: "Until you close the browser tab" },
+  { name: "aftercare_prev_path, aftercare_cur_path", kind: "Session storage", why: "Makes the Back link return you to the page you came from", lasts: "Until you close the browser tab" },
 ];
 
 export default function CookiesPage() {

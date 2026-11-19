@@ -1,8 +1,17 @@
+import { createHmac } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { createMagicLink, isRateLimited } from "@/lib/auth-db";
 import { appUrl, sendEmail } from "@/lib/email";
 import { magicLinkEmail } from "@/lib/email-templates";
 import { normaliseEmail, safeNextPath } from "@/lib/security";
+
+/** A keyed hash of the caller's IP address: enough to rate limit, without storing the IP itself. */
+function requesterKey(req: NextRequest): string | undefined {
+  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || req.headers.get("x-real-ip") || "";
+  const secret = process.env.SESSION_SECRET;
+  if (!ip || !secret) return undefined;
+  return createHmac("sha256", secret).update(`rate-limit:${ip}`).digest("hex").slice(0, 32);
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -18,14 +27,15 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Please tell us your age to continue." }, { status: 400 });
     }
 
-    if (await isRateLimited(email)) {
+    const requester = requesterKey(req);
+    if (await isRateLimited(email, requester)) {
       return NextResponse.json(
         { error: "Too many sign-in links requested. Please wait a few minutes and check your inbox." },
         { status: 429 }
       );
     }
 
-    const token = await createMagicLink(email);
+    const token = await createMagicLink(email, requester);
     const link = new URL("/api/auth/verify", appUrl());
     link.searchParams.set("token", token);
     const next = safeNextPath(body.next, "");

@@ -83,7 +83,8 @@ export function planConfirmationEmail(deceasedName: string, planUrl: string, urg
       : "";
 
   return {
-    subject: `Your AfterCare plan for ${deceasedName} is saved`,
+    // Subjects stay neutral: they show on lock screens and in inbox previews
+    subject: "Your AfterCare plan is saved",
     html: layout(
       h("Your plan has been saved") +
         p(`We have saved your AfterCare bereavement plan for <strong>${name}</strong>. You can return to it at any time.`) +
@@ -132,7 +133,7 @@ export function reminderEmail(
 
 export function inviteEmail(inviterEmail: string, inviteeName: string, deceasedName: string, signInUrl: string): Email {
   return {
-    subject: `You've been invited to help with arrangements for ${deceasedName}`,
+    subject: "You have been invited to a shared AfterCare plan",
     html: layout(
       h(`Hello ${escapeHtml(inviteeName)},`) +
         p(

@@ -25,6 +25,9 @@ CREATE TABLE IF NOT EXISTS magic_links (
 );
 
 CREATE INDEX IF NOT EXISTS magic_links_email_created_idx ON magic_links (email, created_at);
+-- A keyed hash of the requester's IP address, for per-device rate limiting (never the raw IP)
+ALTER TABLE magic_links ADD COLUMN IF NOT EXISTS requester TEXT;
+CREATE INDEX IF NOT EXISTS magic_links_requester_created_idx ON magic_links (requester, created_at);
 
 -- Saved bereavement plans
 CREATE TABLE IF NOT EXISTS saved_plans (

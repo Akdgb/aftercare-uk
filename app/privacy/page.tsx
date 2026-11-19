@@ -14,7 +14,7 @@ export default function PrivacyPage() {
       <div className="bg-white border-b border-stone-200/70">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
           <h1 className="text-3xl sm:text-4xl font-semibold text-ink-900 mb-2">Privacy Policy</h1>
-          <p className="text-ink-500 text-sm">Last updated: November 2026</p>
+          <p className="text-ink-500 text-sm">Last updated: 19 November 2026</p>
         </div>
       </div>
 
@@ -69,13 +69,14 @@ export default function PrivacyPage() {
                 </thead>
                 <tbody>
                   {[
-                    ["Generate your personalised bereavement plan", "Legitimate interests (necessary to provide the service you requested)"],
-                    ["Save your plan and allow you to return to it", "Legitimate interests / Contract"],
-                    ["Send you your plan link by email", "Legitimate interests / Contract"],
-                    ["Use your faith and cultural background answers to add tailored steps (optional)", "Explicit consent (UK GDPR Article 9(2)(a))"],
-                    ["Let invited family members see and update a shared plan", "Legitimate interests (you asked us to share it)"],
-                    ["Send occasional task reminder emails (at most weekly; turn off any time)", "Legitimate interests"],
-                    ["Improve the service and fix errors", "Legitimate interests"],
+                    ["Generate your plan from your answers", "Contract: providing the service you ask for under our terms of use (Article 6(1)(b))"],
+                    ["Save your plan to your email address so you can return to it", "Contract (Article 6(1)(b))"],
+                    ["Send sign-in links and your plan link by email", "Contract (Article 6(1)(b))"],
+                    ["Use your faith and cultural background answers to add tailored steps (optional)", "Consent (Article 6(1)(a)) and explicit consent (Article 9(2)(a))"],
+                    ["Let family members you invite see and update a shared plan, and send their invitation email", "Contract with you (Article 6(1)(b)); for the people you invite, legitimate interests in delivering the invitation you asked us to send (Article 6(1)(f))"],
+                    ["Send task reminder emails about your own plan (at most weekly; turn off any time)", "Legitimate interests in helping you meet deadlines you asked us to track (Article 6(1)(f)). These are service messages, not marketing. We do not send marketing emails."],
+                    ["Keep the service secure, prevent abuse of sign-in and fix errors", "Legitimate interests in running a safe, working service (Article 6(1)(f))"],
+                    ["Answer emails you send to us", "Legitimate interests in replying to you (Article 6(1)(f))"],
                     ["Comply with legal obligations", "Legal obligation"],
                   ].map(([purpose, basis]) => (
                     <tr key={purpose} className="border-b border-stone-100">
@@ -107,6 +108,15 @@ export default function PrivacyPage() {
                 plan&rdquo; on your saved plan, by changing your answers, by deleting the plan or by emailing us. The
                 answers are visible only to you and family members you invite to the plan.
               </p>
+            <p>
+              Task notes are free text. Please avoid writing health details or other sensitive information about
+              yourself or other people in them. If you do, they are only visible to people on that plan, and they are
+              deleted with the plan.
+            </p>
+            <p>
+              Giving us your email address is optional. Without it you can still use AfterCare, but your plan is
+              kept only on your device. We do not make decisions about you by automated means.
+            </p>
             </div>
           </section>
 
@@ -118,7 +128,9 @@ export default function PrivacyPage() {
                 <li><strong>Your account:</strong> until you delete it from your dashboard (Account tab). This removes all plans you own.</li>
                 <li><strong>Family members and task notes:</strong> deleted with the plan, or when the owner removes that person</li>
                 <li><strong>Sign-in links:</strong> expire after 20 minutes and are deleted after 1 day</li>
-                <li><strong>Server logs:</strong> 90 days</li>
+                <li><strong>Hosting logs:</strong> basic request records kept by our hosting provider, Vercel, for the short period set by Vercel. We do not log the content of your plan or notes.</li>
+                <li><strong>Emails you send to us:</strong> kept in our inbox while we deal with your message, and deleted within 2 years</li>
+                <li><strong>Backups:</strong> deleted data can remain in our database provider&apos;s backups for a short period until they are overwritten. It is not used during that time.</li>
               </ul>
               <p>You can request deletion of your data at any time. See section 7.</p>
             </div>
@@ -178,7 +190,7 @@ export default function PrivacyPage() {
                 To exercise any of these rights, email{" "}
                 <a href={`mailto:${SITE.privacyEmail}`} className="text-ink-700 underline">
                   {SITE.privacyEmail}
-                </a>. We will respond within 30 days.
+                </a>. We will usually respond within one calendar month. If a request is complex, or you send several, we can extend this by up to two further months, and we will tell you why within the first month. We may ask you to confirm your identity first, for example by replying from the email address on your account, and we will not share information about other people, such as family members on a shared plan, without a lawful reason.
               </p>
               <p>
                 You also have the right to lodge a complaint with the{" "}

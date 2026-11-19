@@ -60,7 +60,7 @@ export default function AccessibilityPage() {
 
       <h2>How we tested this website</h2>
       <p>
-        On 7 October 2026 we tested every page of the website with automated tools (axe-core) on a mobile screen size,
+        On 19 November 2026 we tested every main page of the website with automated tools (axe-core) on a mobile screen size,
         checking against WCAG 2.2 level A and AA, and fixed the issues found. We also checked keyboard use on the main
         journey of creating and updating a plan.
       </p>

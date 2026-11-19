@@ -125,7 +125,7 @@ If you have them, it helps to bring:
 
 ## What you will receive
 
-- A **death certificate**: this is the official record. Certified copies cost £12.50 each in England and Wales when you buy them at registration (fees may change from 9 November 2026). Many families need 5 to 10 copies.
+- A **death certificate**: this is the official record. Certified copies are cheapest when you buy them at registration. Fees in England and Wales changed on 9 November 2026, so ask the register office for the current price. Many families need 5 to 10 copies.
 - A **Certificate for Burial or Cremation** (the 'green form'): give this to the funeral director
 - A **Tell Us Once reference number** in England, Scotland and Wales
 - A **BD8 form**: you may get one if you cannot use Tell Us Once. It is used to tell the DWP about the death.
@@ -185,7 +185,7 @@ You can apply online through GOV.UK, by post, or through a solicitor.
 1. Find out what the estate is worth, including money, property and debts
 2. Check whether you need to send Inheritance Tax forms. Since January 2022 most estates with no tax to pay ("excepted estates") do not need to send them.
 3. Apply for probate online or by post
-4. Pay the probate fee: **£526** for estates over £5,000 (since 13 July 2026). There is no fee if the estate is £5,000 or less. Extra copies of the grant cost £2 each.
+4. Pay the probate fee: **£526** for estates over £5,000 (since July 2026). There is no fee if the estate is £5,000 or less. Extra copies of the grant cost £2 each.
 5. Receive the grant
 6. Use the grant to collect money and property, pay debts, and share out the estate
 
@@ -253,7 +253,7 @@ Costs in London and the South East are usually higher than the national average.
 - Coffin upgrades
 - Flowers
 - Funeral cars (hearse and limousines)
-- Death certificate copies: £12.50 each in England and Wales when bought at registration
+- Death certificate copies: ask the register office for the current price (fees in England and Wales changed on 9 November 2026)
 - Catering or a wake
 
 ## How to keep costs down
