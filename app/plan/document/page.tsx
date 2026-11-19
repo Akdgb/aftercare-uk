@@ -69,7 +69,7 @@ function DocumentView() {
   }
 
   const shareMessage = async () => {
-    const text = planMessage(intake, statuses, planUrl);
+    const text = planMessage(intake, statuses, planUrl, !isLocal);
     try {
       if (navigator.share) {
         await navigator.share({ title: "AfterCare plan", text });

@@ -27,6 +27,8 @@ CREATE TABLE IF NOT EXISTS magic_links (
 CREATE INDEX IF NOT EXISTS magic_links_email_created_idx ON magic_links (email, created_at);
 -- A keyed hash of the requester's IP address, for per-device rate limiting (never the raw IP)
 ALTER TABLE magic_links ADD COLUMN IF NOT EXISTS requester TEXT;
+-- A plan to save when this link is opened, so it works in any browser or app
+ALTER TABLE magic_links ADD COLUMN IF NOT EXISTS pending_plan JSONB;
 CREATE INDEX IF NOT EXISTS magic_links_requester_created_idx ON magic_links (requester, created_at);
 
 -- Saved bereavement plans

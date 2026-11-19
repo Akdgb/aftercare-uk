@@ -41,8 +41,8 @@ export default function LocalPlanPage() {
       });
       if (res.status === 401) {
         // Dashboard finishes the save once they're signed in
-        writeLocal(LOCAL_KEYS.pendingSave, "1");
-        const params = new URLSearchParams({ next: "/dashboard" });
+        // The sign-in request carries this plan, so it is saved whichever browser opens the email
+        const params = new URLSearchParams({ next: "/dashboard", save: "local" });
         if (intake.email) params.set("email", intake.email);
         router.push(`/auth/signin?${params}`);
         return;

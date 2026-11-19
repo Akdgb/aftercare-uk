@@ -35,6 +35,15 @@ describe.skipIf(!url)("database layer (real Postgres)", async () => {
     await db().end();
   });
 
+  it("carries a plan with the sign-in link and hands it over once", async () => {
+    const plan = { intake: { deceasedFirstName: "Pat" }, statuses: {} };
+    const token = await auth.createMagicLink("carry@example.com", undefined, plan);
+    const user = await auth.verifyMagicLink(token);
+    expect(user?.pendingPlan).toEqual(plan);
+    const rows = await db()`SELECT pending_plan FROM magic_links WHERE email = 'carry@example.com'`;
+    expect(rows[0].pending_plan).toBeNull();
+  });
+
   it("stores only a hash of the sign-in token", async () => {
     const token = await auth.createMagicLink("hashed@example.com");
     const rows = await db()`SELECT token FROM magic_links WHERE email = 'hashed@example.com'`;

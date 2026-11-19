@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { LOCAL_KEYS, writeLocal } from "@/lib/use-local-storage";
 import Link from "next/link";
 import { CheckCircle2, Loader2, MessageSquare, Send, Trash2, UserPlus, Users, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -55,6 +56,12 @@ export default function SavedPlanPage() {
 
   // Bumped when the tab regains focus so family members see each other's changes
   const [version, setVersion] = useState(0);
+
+  // Just saved from this device's plan: the local copy is no longer needed here
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get("saved") !== "1") return;
+    for (const key of [LOCAL_KEYS.intake, LOCAL_KEYS.statuses, LOCAL_KEYS.pendingSave, LOCAL_KEYS.linkSentTo]) writeLocal(key, null);
+  }, []);
 
   useEffect(() => {
     let cancelled = false;

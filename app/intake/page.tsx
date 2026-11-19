@@ -232,7 +232,7 @@ function Intake({ draft }: { draft: Draft | null }) {
     const res = await fetch("/api/auth/magic-link", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: value, next: "/dashboard", ageBand }),
+      body: JSON.stringify({ email: value, next: "/dashboard", ageBand, plan: { intakeData: ready, taskStatuses: {} } }),
     }).catch(() => null);
     setSending(false);
     if (!res?.ok) {
@@ -240,8 +240,7 @@ function Intake({ draft }: { draft: Draft | null }) {
       return;
     }
     await finish(ready);
-    // Clicking the emailed link saves this plan to their email address
-    writeLocal(LOCAL_KEYS.pendingSave, "1");
+    // The plan travelled with the request: opening the emailed link saves it, in any browser
     writeLocal(LOCAL_KEYS.linkSentTo, value);
   };
 

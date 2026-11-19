@@ -20,6 +20,18 @@ export default function SignInPage() {
   );
 }
 
+/** When asked to save the plan on this device (?save=local), send it with the sign-in request. */
+function localPlanToSave() {
+  if (typeof window === "undefined" || new URLSearchParams(window.location.search).get("save") !== "local") return undefined;
+  try {
+    const intakeData = JSON.parse(localStorage.getItem("aftercare_intake") ?? "null");
+    const taskStatuses = JSON.parse(localStorage.getItem("aftercare_task_statuses") ?? "{}");
+    return intakeData ? { intakeData, taskStatuses } : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 function SignInForm() {
   const params = useSearchParams();
   const error = params.get("error");
@@ -50,7 +62,7 @@ function SignInForm() {
       const res = await fetch("/api/auth/magic-link", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email.trim(), next, ageBand }),
+        body: JSON.stringify({ email: email.trim(), next, ageBand, plan: localPlanToSave() }),
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
