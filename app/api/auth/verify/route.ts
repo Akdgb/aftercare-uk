@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { verifyMagicLink } from "@/lib/auth-db";
 import { createSession } from "@/lib/session";
 import { safeNextPath } from "@/lib/security";
+import { savePlan } from "@/lib/db";
+import { parsePlanInput } from "@/lib/plan-input";
 
 export async function GET(req: NextRequest) {
   const token = req.nextUrl.searchParams.get("token");
@@ -21,6 +23,14 @@ export async function GET(req: NextRequest) {
   }
 
   await createSession({ userId: user.userId, email: user.email });
+
+  // Save the plan sent with this link, then open it
+  const pending = user.pendingPlan as { intake?: unknown; statuses?: unknown } | null;
+  const plan = pending ? parsePlanInput(pending.intake, pending.statuses) : null;
+  if (plan) {
+    const planId = await savePlan(user.userId, plan.intake, plan.statuses).catch(() => null);
+    if (planId) return NextResponse.redirect(new URL(`/plan/${planId}?saved=1`, req.url));
+  }
 
   return NextResponse.redirect(new URL(next, req.url));
 }

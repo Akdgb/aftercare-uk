@@ -4,6 +4,7 @@ import { createMagicLink, isRateLimited } from "@/lib/auth-db";
 import { appUrl, sendEmail } from "@/lib/email";
 import { magicLinkEmail } from "@/lib/email-templates";
 import { normaliseEmail, safeNextPath } from "@/lib/security";
+import { parsePlanInput } from "@/lib/plan-input";
 
 /** A keyed hash of the caller's IP address: enough to rate limit, without storing the IP itself. */
 function requesterKey(req: NextRequest): string | undefined {
@@ -35,7 +36,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const token = await createMagicLink(email, requester);
+    // A plan sent with the request is kept with this link and saved when it is
+    // opened, so it works even if the email opens in a different browser or app
+    const plan = body.plan ? parsePlanInput(body.plan.intakeData, body.plan.taskStatuses) : null;
+    if (body.plan && !plan) return NextResponse.json({ error: "We could not read your plan. Please try again." }, { status: 400 });
+    const token = await createMagicLink(email, requester, plan ?? undefined);
     const link = new URL("/api/auth/verify", appUrl());
     link.searchParams.set("token", token);
     const next = safeNextPath(body.next, "");
