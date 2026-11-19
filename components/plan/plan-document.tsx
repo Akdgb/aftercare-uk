@@ -40,19 +40,32 @@ export function planProgress(intake: IntakeFormData, statuses: Record<string, st
   return { tasks, left, done: tasks.length - left.length };
 }
 
-/** A short checklist for WhatsApp or a text message. */
-export function planMessage(intake: IntakeFormData, statuses: Record<string, string>, url: string): string {
+/**
+ * A short, calm message for WhatsApp or a text: where things are, the next
+ * three steps, and a link. Saved plans link to the plan itself; a plan kept
+ * only on this device links to AfterCare so others can make their own.
+ */
+export function planMessage(
+  intake: IntakeFormData,
+  statuses: Record<string, string>,
+  url: string,
+  saved = false
+): string {
   const { tasks, left, done } = planProgress(intake, statuses);
   const name = `${intake.deceasedFirstName} ${intake.deceasedLastName}`.trim();
-  const next = STAGES.map((s) => left.filter((t) => t.priority === s.priority)).find((l) => l.length) ?? [];
-  const lines = [
-    `AfterCare plan for ${name}: ${done} of ${tasks.length} done`,
+  const next = STAGES.flatMap((s) => left.filter((t) => t.priority === s.priority)).slice(0, 3);
+  const progress =
+    left.length === 0
+      ? "Every step is done."
+      : done === 0
+        ? `${tasks.length} steps to work through, one at a time.`
+        : `${done} of ${tasks.length} steps done so far.`;
+  const lines = [`Plan for ${name}`, progress];
+  if (next.length) lines.push("", "Next up:", ...next.map((t, i) => `${i + 1}. ${t.title}`));
+  lines.push(
     "",
-    next.length ? "Still to do next:" : "Everything on the plan is done.",
-    ...next.slice(0, 8).map((t) => `☐ ${t.title}`),
-    "",
-    `Full plan: ${url}`,
-  ];
+    saved ? `See the full plan: ${url}` : `Made with AfterCare, free step-by-step help after a death: ${url}`
+  );
   return lines.join("\n");
 }
 
