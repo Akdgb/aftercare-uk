@@ -1,9 +1,8 @@
 "use client";
 import { LOCAL_KEYS, useLocalStorage } from "@/lib/use-local-storage";
 
-export type AgeBand = "under-16" | "16-17" | "18-plus";
-/** Accounts are for people aged 16 or over. */
-export const ALLOWED_AGE_BANDS: AgeBand[] = ["16-17", "18-plus"];
+import { ALLOWED_AGE_BANDS, type AgeBand } from "@/lib/age";
+export { ALLOWED_AGE_BANDS, type AgeBand };
 
 /**
  * Neutral age question asked before an account is created: no default answer
@@ -20,7 +19,7 @@ export function AgeQuestion({ value, onChange }: { value: AgeBand | ""; onChange
   return (
     <div>
       <label className="block">
-        <span className="block text-sm font-medium text-ink-700 mb-1.5">How old are you?</span>
+        <span className="block text-sm font-medium text-ink-700 mb-1.5">Your age group</span>
         <select
           value={value}
           onChange={(e) => onChange(e.target.value as AgeBand)}

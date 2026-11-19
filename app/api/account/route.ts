@@ -1,3 +1,5 @@
+import { sendEmail } from "@/lib/email";
+import { accountDeletedEmail } from "@/lib/email-templates";
 import { NextRequest, NextResponse } from "next/server";
 import { clearSession, getSession } from "@/lib/session";
 import { deleteAccount, getUserPreferences, setRemindersEnabled } from "@/lib/db";
@@ -26,5 +28,8 @@ export async function DELETE() {
   if (!session) return NextResponse.json({ error: "Not signed in" }, { status: 401 });
   await deleteAccount(session.userId, session.email);
   await clearSession();
+  // Confirm by email, so the person has a record that their data was deleted
+  const { subject, html, text } = accountDeletedEmail();
+  await sendEmail(session.email, subject, html, text).catch(() => false);
   return NextResponse.json({ ok: true });
 }

@@ -35,6 +35,16 @@ describe.skipIf(!url)("database layer (real Postgres)", async () => {
     await db().end();
   });
 
+  it("family invitation links need an allowed age group, last 7 days and work once", async () => {
+    const token = await auth.createMagicLink("invitee@example.com", undefined, undefined, { purpose: "invite" });
+    expect(await auth.verifyMagicLink(token)).toBeNull(); // no age group: refused, not used up
+    const user = await auth.verifyMagicLink(token, { ageAllowed: true });
+    expect(user?.email).toBe("invitee@example.com");
+    expect(await auth.verifyMagicLink(token, { ageAllowed: true })).toBeNull(); // only once
+    const rows = await db()`SELECT expires_at FROM magic_links WHERE email = 'invitee@example.com'`;
+    expect(new Date(rows[0].expires_at).getTime() - Date.now()).toBeGreaterThan(6 * 24 * 3600 * 1000);
+  });
+
   it("carries a plan with the sign-in link and hands it over once", async () => {
     const plan = { intake: { deceasedFirstName: "Pat" }, statuses: {} };
     const token = await auth.createMagicLink("carry@example.com", undefined, plan);

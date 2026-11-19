@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { verifyMagicLink } from "@/lib/auth-db";
 import { createSession } from "@/lib/session";
 import { safeNextPath } from "@/lib/security";
+import { ALLOWED_AGE_BANDS, type AgeBand } from "@/lib/age";
 import { savePlan } from "@/lib/db";
 import { parsePlanInput } from "@/lib/plan-input";
 
@@ -13,7 +14,8 @@ export async function GET(req: NextRequest) {
     return NextResponse.redirect(new URL("/auth/signin?error=missing", req.url));
   }
 
-  const user = await verifyMagicLink(token).catch(() => null);
+  const age = req.nextUrl.searchParams.get("age") as AgeBand | null;
+  const user = await verifyMagicLink(token, { ageAllowed: Boolean(age && ALLOWED_AGE_BANDS.includes(age)) }).catch(() => null);
 
   if (!user) {
     const retry = new URL("/auth/signin", req.url);

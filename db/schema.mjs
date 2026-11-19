@@ -29,6 +29,8 @@ CREATE INDEX IF NOT EXISTS magic_links_email_created_idx ON magic_links (email, 
 ALTER TABLE magic_links ADD COLUMN IF NOT EXISTS requester TEXT;
 -- A plan to save when this link is opened, so it works in any browser or app
 ALTER TABLE magic_links ADD COLUMN IF NOT EXISTS pending_plan JSONB;
+-- 'invite' for family invitation links, which last longer and need an age group when opened
+ALTER TABLE magic_links ADD COLUMN IF NOT EXISTS purpose TEXT;
 CREATE INDEX IF NOT EXISTS magic_links_requester_created_idx ON magic_links (requester, created_at);
 
 -- Saved bereavement plans
