@@ -66,9 +66,9 @@ const CATERING: Record<ServiceSize, [number, number]> = {
   large: [900, 2500],
 };
 
-// Death certificates: £12.50 each in England and Wales when bought at registration (fees may change from 9 November 2026).
+// Death certificates: fees in England and Wales changed on 9 November 2026 (SI 2026/672); this range is an estimate to review.
 // Many families need 5 to 10 copies.
-// Probate fee (not included in this estimate): £526 for estates over £5,000 since 13 July 2026; no fee at £5,000 or less.
+// Probate fee (not included in this estimate): £526 for estates over £5,000 since July 2026; no fee at £5,000 or less.
 
 function add(a: [number, number], b: [number, number]): [number, number] {
   return [a[0] + b[0], a[1] + b[1]];

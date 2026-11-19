@@ -110,7 +110,7 @@ function buildTasks(data: IntakeFormData) {
     makeTask("death-certificate-copies", {
       title: "Order copies of the death certificate",
       description:
-        "Most families need 5 to 10 certified copies for banks, pension providers and insurers. In England and Wales they cost £12.50 each when you buy them at registration, and more if you order them later. Prices are different in Scotland and Northern Ireland.",
+        "Most families need 5 to 10 certified copies for banks, pension providers and insurers. Copies are cheapest when you buy them at registration, and the register office will tell you the current price. Fees in England and Wales changed on 9 November 2026, and prices are different in Scotland and Northern Ireland.",
       category: "immediate",
       priority: "urgent",
     })

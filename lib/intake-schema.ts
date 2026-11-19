@@ -22,6 +22,9 @@ const faithEnum = z.enum([
 ]);
 
 /** Server-side validation for intake data before it is stored in a saved plan. */
+/** Changes whenever the consent wording on the setup and edit pages changes. */
+export const CONSENT_VERSION = "2026-11-v1";
+
 const baseIntakeSchema = z.object({
   deceasedFirstName: text(100).min(1),
   ageGroup: z.enum(["baby", "child", "adult"]).optional(),
@@ -37,6 +40,9 @@ const baseIntakeSchema = z.object({
   faith: faithEnum,
   faiths: z.array(faithEnum).max(10).optional(),
   faithConsent: z.boolean().optional(),
+  /** When consent was given and which wording was shown, as a record of consent. */
+  faithConsentAt: z.string().max(40).optional(),
+  faithConsentVersion: z.string().max(20).optional(),
   backgrounds: z.array(z.string().refine(isBackgroundId)).max(20).optional(),
   backgroundOther: text(100).optional(),
   burialPlace: z.enum(["uk", "abroad", "both", "unsure"]).optional(),
@@ -54,7 +60,17 @@ export const intakeSchema = baseIntakeSchema.transform((data) => {
   const backgrounds = [...new Set(data.backgrounds ?? [])];
   const backgroundOther = data.backgroundOther?.trim() || undefined;
   if ((faiths.length > 0 || backgrounds.length > 0 || backgroundOther) && data.faithConsent === true) {
-    return { ...data, faith: faiths[0] ?? ("prefer-not-to-say" as const), faiths, backgrounds, backgroundOther, faithConsent: true };
+    return {
+      ...data,
+      faith: faiths[0] ?? ("prefer-not-to-say" as const),
+      faiths,
+      backgrounds,
+      backgroundOther,
+      faithConsent: true,
+      // Keep the original time consent was given; record it now if this is the first time
+      faithConsentAt: data.faithConsentAt ?? new Date().toISOString(),
+      faithConsentVersion: data.faithConsentVersion ?? CONSENT_VERSION,
+    };
   }
   return {
     ...data,
@@ -63,5 +79,8 @@ export const intakeSchema = baseIntakeSchema.transform((data) => {
     backgrounds: [],
     backgroundOther: undefined,
     faithConsent: false,
+    // Consent withdrawn or never given: no consent record is kept
+    faithConsentAt: undefined,
+    faithConsentVersion: undefined,
   };
 });

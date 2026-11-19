@@ -35,6 +35,19 @@ describe.skipIf(!url)("database layer (real Postgres)", async () => {
     await db().end();
   });
 
+  it("stores only a hash of the sign-in token", async () => {
+    const token = await auth.createMagicLink("hashed@example.com");
+    const rows = await db()`SELECT token FROM magic_links WHERE email = 'hashed@example.com'`;
+    expect(rows[0].token).not.toBe(token);
+    expect(rows[0].token).toHaveLength(64);
+  });
+
+  it("rate limits one device across many email addresses", async () => {
+    for (let i = 0; i < 20; i++) await auth.createMagicLink(`spray${i}@example.com`, "device-a");
+    expect(await auth.isRateLimited("new@example.com", "device-a")).toBe(true);
+    expect(await auth.isRateLimited("new@example.com", "device-b")).toBe(false);
+  });
+
   it("magic links work once only", async () => {
     const token = await auth.createMagicLink("once@example.com");
     expect(await auth.verifyMagicLink(token)).not.toBeNull();

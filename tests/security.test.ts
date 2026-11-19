@@ -119,3 +119,21 @@ describe("site address setting", () => {
     expect(normaliseSiteUrl("not a url at all", "http://localhost:3000")).toBe("http://localhost:3000");
   });
 });
+
+describe("consent record for faith and background", () => {
+  const base = {
+    deceasedFirstName: "A", deceasedLastName: "", dateOfDeath: "2026-11-01", locationOfDeath: "", currentLocation: "hospital",
+    relationship: "Parent", postcode: "", email: "", phone: "", funeralPreference: "unsure", faith: "muslim",
+    faiths: ["muslim"], housingType: "unsure", receivingBenefits: "unsure", needsFinancialHelp: "unsure",
+  };
+  it("records when consent was given and the wording version", () => {
+    const out = intakeSchema.parse({ ...base, faithConsent: true });
+    expect(out.faithConsentAt).toMatch(/^\d{4}-/);
+    expect(out.faithConsentVersion).toBeTruthy();
+  });
+  it("drops the answers and the consent record when consent is not given", () => {
+    const out = intakeSchema.parse({ ...base, faithConsent: false, faithConsentAt: "2026-01-01T00:00:00Z" });
+    expect(out.faiths).toEqual([]);
+    expect(out.faithConsentAt).toBeUndefined();
+  });
+});

@@ -11,7 +11,7 @@ const DOCUMENTS = [
   },
   {
     label: "Certified copies of the death certificate",
-    from: "The register office when you register. Copies cost £12.50 each in England and Wales at registration (fees may change from 9 November 2026), and usually cost more later.",
+    from: "The register office when you register. Copies are cheapest at registration. Fees in England and Wales changed on 9 November 2026, so ask the register office for the current price.",
     needed: "Banks, pensions, insurers, utilities and probate",
   },
   {
