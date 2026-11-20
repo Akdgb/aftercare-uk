@@ -33,6 +33,11 @@ export default function DashboardPage() {
   const [account, setAccount] = useState<{ email: string; remindersEnabled: boolean } | null>(null);
   const [plans, setPlans] = useState<PlanSummary[]>([]);
   const [loading, setLoading] = useState(true);
+  // A plan made on this device that is not in the account yet (for example after
+  // skipping "Keep your plan safe" and signing in later)
+  const [localPlanName, setLocalPlanName] = useState<string | null>(null);
+  const [savingLocal, setSavingLocal] = useState(false);
+  const [saveError, setSaveError] = useState("");
   useEffect(() => {
     let cancelled = false;
     (async () => {
@@ -68,6 +73,12 @@ export default function DashboardPage() {
         setPlans(data.plans);
         setAccount(data.account);
       }
+      try {
+        const local = JSON.parse(localStorage.getItem(LOCAL_KEYS.intake) ?? "null");
+        if (local?.deceasedFirstName) setLocalPlanName(`${local.deceasedFirstName} ${local.deceasedLastName ?? ""}`.trim());
+      } catch {
+        /* no readable local plan */
+      }
       setLoading(false);
     })();
     return () => {
@@ -86,6 +97,27 @@ export default function DashboardPage() {
     );
   }
 
+  const saveLocalPlan = async () => {
+    setSavingLocal(true);
+    setSaveError("");
+    try {
+      const intakeData = JSON.parse(localStorage.getItem(LOCAL_KEYS.intake) ?? "null");
+      const taskStatuses = JSON.parse(localStorage.getItem(LOCAL_KEYS.statuses) ?? "{}");
+      const res = await fetch("/api/save-plan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ intakeData, taskStatuses }),
+      });
+      if (!res.ok) throw new Error();
+      const { planId } = await res.json();
+      for (const key of [LOCAL_KEYS.intake, LOCAL_KEYS.statuses, LOCAL_KEYS.pendingSave, LOCAL_KEYS.linkSentTo]) writeLocal(key, null);
+      router.push(`/plan/${planId}`);
+    } catch {
+      setSaveError("We could not save it just now. Your plan is still on this device, so please try again.");
+      setSavingLocal(false);
+    }
+  };
+
   const owned = plans.filter((p) => p.role === "owner");
   const shared = plans.filter((p) => p.role === "member");
 
@@ -93,6 +125,24 @@ export default function DashboardPage() {
     <div className="max-w-2xl mx-auto px-4 pt-6 pb-10">
       <h1 className="text-3xl font-semibold text-ink-900">Account</h1>
       {account && <p className="text-ink-500 mt-1">{account.email}</p>}
+
+      {localPlanName && (
+        <div className="mt-6 rounded-2xl border-2 border-ink-700 bg-white p-5" role="region" aria-labelledby="local-plan">
+          <h2 id="local-plan" className="font-sans text-base font-semibold text-ink-900">
+            Your plan for {localPlanName} is only on this device
+          </h2>
+          <p className="text-sm text-ink-600 mt-1">Save it to your account so you can open it anywhere and share it with family.</p>
+          {saveError && <p role="alert" className="text-sm font-semibold text-rose-800 mt-2">{saveError}</p>}
+          <button
+            type="button"
+            onClick={saveLocalPlan}
+            disabled={savingLocal}
+            className="mt-4 inline-flex items-center gap-2 rounded-xl bg-ink-700 px-5 py-3 font-semibold text-white hover:bg-ink-800 disabled:opacity-60"
+          >
+            {savingLocal && <Loader2 className="h-4 w-4 animate-spin" />} Save it to my account
+          </button>
+        </div>
+      )}
 
       <div className="flex items-center justify-between mt-8 mb-3">
         <h2 className="font-sans text-lg font-semibold text-ink-900">Your plans</h2>
