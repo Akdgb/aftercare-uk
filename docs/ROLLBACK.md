@@ -20,4 +20,4 @@ Ask Claude: "revert to <commit> from ROLLBACK.md". Claude opens a pull request r
 | 19 November 2026 | 63535ea | Age group wording; one-email family invitations; account deletion confirmation email |
 | 19 November 2026 | 4f8808f | Age group wording for the person who died |
 | 19 November 2026 | 1031748 | Tester feedback form at /feedback |
-| 20 November 2026 | 1b0dc5a | Account page offers to save a plan that is only on this device |
+| 20 November 2026 | 1b0dc5a | Account page offers to save a plan that is only on this device; cookieless visit counts (Vercel Web Analytics) |
