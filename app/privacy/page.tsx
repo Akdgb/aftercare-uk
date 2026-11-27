@@ -14,7 +14,7 @@ export default function PrivacyPage() {
       <div className="bg-white border-b border-stone-200/70">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
           <h1 className="text-3xl sm:text-4xl font-semibold text-ink-900 mb-2">Privacy Policy</h1>
-          <p className="text-ink-500 text-sm">Last updated: 19 November 2026</p>
+          <p className="text-ink-500 text-sm">Last updated: 27 November 2026</p>
         </div>
       </div>
 
@@ -77,6 +77,7 @@ export default function PrivacyPage() {
                     ["Send task reminder emails about your own plan (at most weekly; turn off any time)", "Legitimate interests in helping you meet deadlines you asked us to track (Article 6(1)(f)). These are service messages, not marketing. We do not send marketing emails."],
                     ["Keep the service secure, prevent abuse of sign-in and fix errors", "Legitimate interests in running a safe, working service (Article 6(1)(f))"],
                     ["Answer emails you send to us", "Legitimate interests in replying to you (Article 6(1)(f))"],
+                    ["Count visits to pages, without cookies or identifying you, to see what helps people", "Legitimate interests in improving the service (Article 6(1)(f))"],
                     ["Comply with legal obligations", "Legal obligation"],
                   ].map(([purpose, basis]) => (
                     <tr key={purpose} className="border-b border-stone-100">
@@ -144,10 +145,10 @@ export default function PrivacyPage() {
               <ul>
                 <li><strong>Neon Inc.</strong> (database hosting): stores your account and saved plans</li>
                 <li><strong>Resend Inc.</strong> (email delivery): email addresses are processed to send sign-in links, family invitations, your plan link and reminders, and to receive emails you send to our hello@ and privacy@ addresses so we can read and reply to them</li>
-                <li><strong>Vercel Inc.</strong> (website hosting and domain management): your requests are processed on Vercel servers in London</li>
+                <li><strong>Vercel Inc.</strong> (website hosting, domain management and cookieless visit counts): your requests are processed on Vercel servers in London</li>
               </ul>
               <p>
-                We do not use analytics, advertising, tracking pixels or session recording tools. The website&apos;s fonts
+                We count visits with Vercel Web Analytics, which uses no cookies and does not identify you: it records the page, the date, the type of device and the website you came from, in aggregate. We do not use advertising, tracking pixels or session recording tools. The website&apos;s fonts
                 are stored on our own hosting, so your browser does not contact Google or any other font service.
               </p>
               <p><strong>We do not sell your data.</strong> We do not share your data with funeral directors, insurers, or any other commercial partners without your explicit consent.</p>

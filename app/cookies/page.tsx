@@ -13,14 +13,14 @@ const ITEMS = [
 
 export default function CookiesPage() {
   return (
-    <ProsePage title="Cookie policy" updated="November 2026">
+    <ProsePage title="Cookie policy" updated="27 November 2026">
       <p>
         AfterCare uses one cookie and some storage in your browser. All of it is strictly necessary to give you the
         service you ask for, such as keeping your plan or keeping you signed in. Because of this, the law does not require
         us to ask for your consent, and we do not show a cookie banner.
       </p>
       <p>
-        We do not use advertising cookies, analytics or tracking, and we do not let other companies set cookies on
+        We count visits with Vercel Web Analytics, which sets no cookies and stores nothing on your device. We do not use advertising cookies or tracking, and we do not let other companies set cookies on
         AfterCare. Our fonts are served from our own website, not from Google.
       </p>
 

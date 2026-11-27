@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { SITE } from "@/lib/site";
 import { Figtree, Fraunces } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
@@ -55,6 +56,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Header />
         <main id="main" tabIndex={-1} className="flex-1 focus:outline-none">{children}</main>
         <Footer />
+        {/* Vercel Web Analytics: cookieless page-view counts, served from our own domain. Only runs on Vercel once enabled there. */}
+        <Script id="va-init" strategy="afterInteractive">{`window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };`}</Script>
+        <Script src="/_vercel/insights/script.js" strategy="afterInteractive" />
       </body>
     </html>
   );
